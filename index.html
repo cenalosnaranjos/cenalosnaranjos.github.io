@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control de Asistencia</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Control de Asistencia Estudiantil & Docente</h1>
+           <strong>
+            <p>Sistema de registro y seguimiento de asistencia mediante códigos QR.</p></strong>
+        </header>
+
+        <!-- Sección de registro de estudiantes -->
+        <section class="card">
+            <h2>Registrar Estudiante</h2>
+            <div class="form-group">
+                <input type="text" id="nombre" placeholder="Nombre del Estudiante" class="input-text">
+                <button onclick="registrarEstudiante()" class="btn-primary">Registrar y Generar QR</button>
+            </div>
+            <div id="qr-code" class="qr-container"></div>
+        </section>
+
+        <!-- Sección de escaneo de QR -->
+        <section class="card">
+            <h2>Escanear Código QR</h2>
+            <div class="form-group">
+                <label for="qr-input" class="btn-secondary">Seleccionar Imagen QR</label>
+                <input type="file" id="qr-input" accept="image/*" style="display: none;">
+                <button id="btn-camara" class="btn-secondary">Iniciar Cámara</button>
+            </div>
+            <div id="camara-container" class="camara-container">
+                <video id="video" width="300" height="200" style="display: none;"></video>
+                <canvas id="canvas" style="display: none;"></canvas>
+            </div>
+        </section>
+
+        <!-- Tabla de asistencia -->
+        <section class="card">
+            <h2>Registro de Asistencia</h2>
+            <button id="btn-generar-pdf" class="btn-primary">Descargar PDF</button>
+            <table id="tabla-asistencia">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Las filas se agregarán dinámicamente -->
+                </tbody>
+            </table>
+        </section>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+</body>
+</html>
