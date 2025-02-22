@@ -132,3 +132,16 @@ header p {
 #btn-generar-pdf {
     margin-bottom: 20px;
 }
+/* Estilos para el footer */
+footer {
+    text-align: center;
+    margin-top: 40px;
+    padding: 20px 0;
+    background-color: #1beca7;
+    color: #000000;
+    font-size: 0.9rem;
+}
+
+footer p {
+    margin: 0;
+}
