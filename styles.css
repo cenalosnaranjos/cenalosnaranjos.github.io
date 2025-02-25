@@ -1,147 +1,66 @@
-/* Estilos generales */
 body {
-    font-family: 'Roboto', sans-serif;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
     margin: 0;
-    padding: 0;
-    background-color: #1beca7;
-    color: #333;
 }
 
 .container {
-    max-width: 1200px;
-    margin: 0 auto;
+    background-color: #fff;
     padding: 20px;
-}
-
-header {
-    text-align: center;
-    margin-bottom: 40px;
-}
-
-header h1 {
-    font-size: 2.5rem;
-    margin: 0;
-    color: #2c3e50;
-}
-
-header p {
-    font-size: 1.1rem;
-    color: #000000;
-}
-
-/* Tarjetas */
-.card {
-    background: #ffffff;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    margin-bottom: 20px;
-}
-
-.card h2 {
-    font-size: 1.5rem;
-    margin-top: 0;
-    color: #34495e;
-}
-
-/* Formularios y botones */
-.form-group {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.input-text {
-    flex: 1;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 1rem;
-}
-
-.btn-primary, .btn-secondary {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.btn-primary {
-    background-color: #3498db;
-    color: #fff;
-}
-
-.btn-primary:hover {
-    background-color: #2980b9;
-}
-
-.btn-secondary {
-    background-color: #95a5a6;
-    color: #fff;
-}
-
-.btn-secondary:hover {
-    background-color: #7f8c8d;
-}
-
-/* Contenedor del código QR */
-.qr-container {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
     text-align: center;
-    margin-top: 20px;
 }
 
-/* Tabla de asistencia */
-#tabla-asistencia {
+.hidden {
+    display: none;
+}
+
+label {
+    display: block;
+    margin: 10px 0 5px;
+}
+
+input, select, button {
     width: 100%;
-    border-collapse: collapse;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+#preguntas {
     margin-top: 20px;
 }
 
-#tabla-asistencia th, #tabla-asistencia td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-}
-
-#tabla-asistencia th {
-    background-color: #3498db;
-    color: #fff;
-}
-
-#tabla-asistencia tr:hover {
-    background-color: #f1f1f1;
-}
-/* Contenedor de la cámara */
-.camara-container {
-    text-align: center;
-    margin-top: 20px;
-}
-
-#video {
-    border-radius: 10px;
-    background: #000;
-}
-
-/* Botón de cámara */
-#btn-camara {
-    margin-left: 10px;
-}
-/* Botón de descargar PDF */
-#btn-generar-pdf {
+#lista-preguntas {
     margin-bottom: 20px;
 }
-/* Estilos para el footer */
-footer {
-    text-align: center;
-    margin-top: 40px;
-    padding: 20px 0;
-    background-color: #1beca7;
-    color: #000000;
-    font-size: 0.9rem;
+
+#resultado {
+    margin-top: 20px;
+}
+#volver-inicio {
+    background-color: #007bff;
+    margin-top: 10px;
 }
 
-footer p {
-    margin: 0;
+#volver-inicio:hover {
+    background-color: #0056b3;
 }

@@ -1,299 +1,167 @@
-let estudiantes = [];
-
-function registrarEstudiante() {
+document.getElementById('iniciar').addEventListener('click', function() {
     const nombre = document.getElementById('nombre').value;
-    if (nombre) {
-        const estudiante = {
-            id: estudiantes.length + 1,
-            nombre: nombre
-        };
-        estudiantes.push(estudiante);
-        generarQR(estudiante);
-        document.getElementById('nombre').value = ''; // Limpiar el campo de texto
+    const tabla = parseInt(document.getElementById('tabla').value);
+    
+    if (nombre && tabla) {
+        document.getElementById('preguntas').classList.remove('hidden');
+        generarPreguntas(tabla);
     } else {
-        alert('Por favor, ingresa un nombre.');
-    }
-}
-
-function generarQR(estudiante) {
-    const qrCodeDiv = document.getElementById('qr-code');
-    qrCodeDiv.innerHTML = ''; // Limpiar el contenedor de QR
-    const qr = new QRCode(qrCodeDiv, {
-        text: JSON.stringify(estudiante),
-        width: 128,
-        height: 128
-    });
-}
-
-document.getElementById('qr-input').addEventListener('change', function(event) {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const img = new Image();
-            img.src = e.target.result;
-            img.onload = function() {
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                canvas.width = img.width;
-                canvas.height = img.height;
-                ctx.drawImage(img, 0, 0, img.width, img.height);
-                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                const code = jsQR(imageData.data, imageData.width, imageData.height);
-                if (code) {
-                    const estudiante = JSON.parse(code.data);
-                    registrarAsistencia(estudiante);
-                } else {
-                    alert('No se pudo leer el código QR.');
-                }
-            };
-        };
-        reader.readAsDataURL(file);
+        alert('Por favor, ingresa tu nombre y selecciona una tabla.');
     }
 });
 
-function registrarAsistencia(estudiante) {
-    const fechaHora = new Date();
-    const fecha = fechaHora.toLocaleDateString();
-    const hora = fechaHora.toLocaleTimeString();
-
-    const tabla = document.getElementById('tabla-asistencia').getElementsByTagName('tbody')[0];
-    const fila = tabla.insertRow();
-    fila.insertCell(0).textContent = estudiante.nombre;
-    fila.insertCell(1).textContent = fecha;
-    fila.insertCell(2).textContent = hora;
-}
-
-
-let stream = null;
-let scanning = false;
-
-// Registrar estudiante y generar QR
-function registrarEstudiante() {
+document.getElementById('calificar').addEventListener('click', function() {
+    const respuestas = document.querySelectorAll('.respuesta');
+    let correctas = 0;
+    let incorrectas = 0;
+    
+    respuestas.forEach(respuesta => {
+        const pregunta = respuesta.dataset.pregunta;
+        const resultadoCorrecto = parseInt(respuesta.dataset.resultado);
+        const respuestaUsuario = parseInt(respuesta.value);
+        
+        if (respuestaUsuario === resultadoCorrecto) {
+            correctas++;
+        } else {
+            incorrectas++;
+        }
+    });
+    
     const nombre = document.getElementById('nombre').value;
-    if (nombre) {
-        const estudiante = {
-            id: estudiantes.length + 1,
-            nombre: nombre
-        };
-        estudiantes.push(estudiante);
-        generarQR(estudiante);
-        document.getElementById('nombre').value = ''; // Limpiar el campo de texto
-    } else {
-        alert('Por favor, ingresa un nombre.');
+    const mensaje = `${nombre}, has respondido ${correctas} correctamente y te has equivocado en ${incorrectas}.`;
+    
+    document.getElementById('mensaje-resultado').textContent = mensaje;
+    document.getElementById('resultado').classList.remove('hidden');
+    
+    // Guardar resultado para descarga
+    window.resultadoDescarga = {
+        nombre: nombre,
+        correctas: correctas,
+        incorrectas: incorrectas
+    };
+});
+
+document.getElementById('descargar').addEventListener('click', function() {
+    const resultado = window.resultadoDescarga;
+    const contenido = `Nombre: ${resultado.nombre}\nCorrectas: ${resultado.correctas}\nIncorrectas: ${resultado.incorrectas}`;
+    const blob = new Blob([contenido], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'resultado.txt';
+    a.click();
+    URL.revokeObjectURL(url);
+});
+
+function generarPreguntas(tabla) {
+    const listaPreguntas = document.getElementById('lista-preguntas');
+    listaPreguntas.innerHTML = '';
+    
+    for (let i = 1; i <= 12; i++) {
+        const pregunta = document.createElement('div');
+        pregunta.innerHTML = `
+            <label>${tabla} x ${i} = </label>
+            <input type="number" class="respuesta" data-pregunta="${i}" data-resultado="${tabla * i}">
+        `;
+        listaPreguntas.appendChild(pregunta);
     }
 }
+document.getElementById('iniciar').addEventListener('click', function () {
+    const nombre = document.getElementById('nombre').value;
+    const tabla = parseInt(document.getElementById('tabla').value);
 
-// Generar código QR
-function generarQR(estudiante) {
-    const qrCodeDiv = document.getElementById('qr-code');
-    qrCodeDiv.innerHTML = ''; // Limpiar el contenedor de QR
-    const qr = new QRCode(qrCodeDiv, {
-        text: JSON.stringify(estudiante),
-        width: 128,
-        height: 128
-    });
-}
-
-// Escanear QR desde la cámara
-document.getElementById('btn-camara').addEventListener('click', () => {
-    if (!scanning) {
-        iniciarCamara();
+    if (nombre && tabla) {
+        document.getElementById('preguntas').classList.remove('hidden');
+        generarPreguntas(tabla);
     } else {
-        detenerCamara();
+        alert('Por favor, ingresa tu nombre y selecciona una tabla.');
     }
 });
 
-// Iniciar la cámara
-function iniciarCamara() {
-    navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
-        .then((s) => {
-            stream = s;
-            const video = document.getElementById('video');
-            video.srcObject = stream;
-            video.play();
-            video.style.display = 'block';
-            scanning = true;
-            document.getElementById('btn-camara').textContent = 'Detener Cámara';
-            escanearQR();
-        })
-        .catch((err) => {
-            alert('No se pudo acceder a la cámara: ' + err);
-        });
-}
+document.getElementById('calificar').addEventListener('click', function () {
+    const respuestas = document.querySelectorAll('.respuesta');
+    let correctas = 0;
+    let incorrectas = 0;
+    const errores = [];
 
-// Detener la cámara
-function detenerCamara() {
-    if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-        document.getElementById('video').style.display = 'none';
-        scanning = false;
-        document.getElementById('btn-camara').textContent = 'Iniciar Cámara';
-    }
-}
+    respuestas.forEach(respuesta => {
+        const pregunta = parseInt(respuesta.dataset.pregunta);
+        const resultadoCorrecto = parseInt(respuesta.dataset.resultado);
+        const respuestaUsuario = parseInt(respuesta.value);
 
-// Escanear QR en tiempo real
-function escanearQR() {
-    const video = document.getElementById('video');
-    const canvas = document.getElementById('canvas');
-    const context = canvas.getContext('2d');
-
-    function tick() {
-        if (video.readyState === video.HAVE_ENOUGH_DATA) {
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-            const code = jsQR(imageData.data, imageData.width, imageData.height);
-            if (code) {
-                const estudiante = JSON.parse(code.data);
-                registrarAsistencia(estudiante);
-                detenerCamara(); // Detener la cámara después de leer el QR
-            }
+        if (respuestaUsuario === resultadoCorrecto) {
+            correctas++;
+        } else {
+            incorrectas++;
+            errores.push(`En ${respuesta.dataset.tabla} x ${pregunta}, respondiste ${respuestaUsuario} (Correcto: ${resultadoCorrecto})`);
         }
-        if (scanning) {
-            requestAnimationFrame(tick);
-        }
-    }
-    tick();
-}
-
-// Registrar asistencia
-function registrarAsistencia(estudiante) {
-    const fechaHora = new Date();
-    const fecha = fechaHora.toLocaleDateString();
-    const hora = fechaHora.toLocaleTimeString();
-
-    const tabla = document.getElementById('tabla-asistencia').getElementsByTagName('tbody')[0];
-    const fila = tabla.insertRow();
-    fila.insertCell(0).textContent = estudiante.nombre;
-    fila.insertCell(1).textContent = fecha;
-    fila.insertCell(2).textContent = hora;
-}
-const { jsPDF } = window.jspdf; // Inicializar jsPDF
-
-
-// Registrar estudiante y generar QR
-function registrarEstudiante() {
-    const nombre = document.getElementById('nombre').value;
-    if (nombre) {
-        const estudiante = {
-            id: estudiantes.length + 1,
-            nombre: nombre
-        };
-        estudiantes.push(estudiante);
-        generarQR(estudiante);
-        document.getElementById('nombre').value = ''; // Limpiar el campo de texto
-    } else {
-        alert('Por favor, ingresa un nombre.');
-    }
-}
-
-// Generar código QR
-function generarQR(estudiante) {
-    const qrCodeDiv = document.getElementById('qr-code');
-    qrCodeDiv.innerHTML = ''; // Limpiar el contenedor de QR
-    const qr = new QRCode(qrCodeDiv, {
-        text: JSON.stringify(estudiante),
-        width: 128,
-        height: 128
     });
-}
 
-// Escanear QR desde la cámara
-document.getElementById('btn-camara').addEventListener('click', () => {
-    if (!scanning) {
-        iniciarCamara();
-    } else {
-        detenerCamara();
-    }
+    const nombre = document.getElementById('nombre').value;
+    const mensaje = `${nombre}, has respondido ${correctas} correctamente y te has equivocado en ${incorrectas}.`;
+
+    document.getElementById('mensaje-resultado').textContent = mensaje;
+    document.getElementById('resultado').classList.remove('hidden');
+
+    // Guardar resultado para descarga
+    window.resultadoDescarga = {
+        nombre: nombre,
+        correctas: correctas,
+        incorrectas: incorrectas,
+        errores: errores
+    };
 });
 
-// Iniciar la cámara
-function iniciarCamara() {
-    navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
-        .then((s) => {
-            stream = s;
-            const video = document.getElementById('video');
-            video.srcObject = stream;
-            video.play();
-            video.style.display = 'block';
-            scanning = true;
-            document.getElementById('btn-camara').textContent = 'Detener Cámara';
-            escanearQR();
-        })
-        .catch((err) => {
-            alert('No se pudo acceder a la cámara: ' + err);
-        });
-}
-
-// Detener la cámara
-function detenerCamara() {
-    if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-        document.getElementById('video').style.display = 'none';
-        scanning = false;
-        document.getElementById('btn-camara').textContent = 'Iniciar Cámara';
-    }
-}
-
-// Escanear QR en tiempo real
-function escanearQR() {
-    const video = document.getElementById('video');
-    const canvas = document.getElementById('canvas');
-    const context = canvas.getContext('2d');
-
-    function tick() {
-        if (video.readyState === video.HAVE_ENOUGH_DATA) {
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-            const code = jsQR(imageData.data, imageData.width, imageData.height);
-            if (code) {
-                const estudiante = JSON.parse(code.data);
-                registrarAsistencia(estudiante);
-                detenerCamara(); // Detener la cámara después de leer el QR
-            }
-        }
-        if (scanning) {
-            requestAnimationFrame(tick);
-        }
-    }
-    tick();
-}
-
-// Registrar asistencia
-function registrarAsistencia(estudiante) {
-    const fechaHora = new Date();
-    const fecha = fechaHora.toLocaleDateString();
-    const hora = fechaHora.toLocaleTimeString();
-
-    const tabla = document.getElementById('tabla-asistencia').getElementsByTagName('tbody')[0];
-    const fila = tabla.insertRow();
-    fila.insertCell(0).textContent = estudiante.nombre;
-    fila.insertCell(1).textContent = fecha;
-    fila.insertCell(2).textContent = hora;
-}
-
-// Generar y descargar PDF
-document.getElementById('btn-generar-pdf').addEventListener('click', () => {
+document.getElementById('descargar').addEventListener('click', function () {
+    const resultado = window.resultadoDescarga;
+    const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
+
+    // Título del PDF
     doc.setFontSize(18);
-    doc.text('Registro de Asistencia', 10, 10);
+    doc.text("Resultado de la Evaluación", 10, 10);
 
-    const tabla = document.getElementById('tabla-asistencia');
-    const rows = tabla.querySelectorAll('tbody tr');
-    let y = 20;
+    // Nombre del estudiante
+    doc.setFontSize(12);
+    doc.text(`Nombre: ${resultado.nombre}`, 10, 20);
 
-    rows.forEach((row, index) => {
-        const nombre = row.cells[0].textContent;
-        const fecha = row.cells[1].textContent;
-        const hora = row.cells[2].textContent;
-        doc.setFontSize(12);
-        doc.text(`${index + 1}. ${nombre} - ${fecha} ${hora}`, 10, y);
+    // Resultados
+    doc.text(`Respuestas correctas: ${resultado.correctas}`, 10, 30);
+    doc.text(`Respuestas incorrectas: ${resultado.incorrectas}`, 10, 40);
+
+    // Errores
+    doc.text("Errores:", 10, 50);
+    let y = 60;
+    resultado.errores.forEach((error, index) => {
+        doc.text(`${index + 1}. ${error}`, 10, y);
         y += 10;
     });
 
-    doc.save('asistencias.pdf');
+    // Guardar el PDF
+    doc.save(`resultado_${resultado.nombre}.pdf`);
 });
+
+document.getElementById('volver-inicio').addEventListener('click', function () {
+    // Ocultar resultados y preguntas
+    document.getElementById('resultado').classList.add('hidden');
+    document.getElementById('preguntas').classList.add('hidden');
+
+    // Limpiar campos
+    document.getElementById('nombre').value = '';
+    document.getElementById('tabla').value = '1';
+    document.getElementById('lista-preguntas').innerHTML = '';
+});
+
+function generarPreguntas(tabla) {
+    const listaPreguntas = document.getElementById('lista-preguntas');
+    listaPreguntas.innerHTML = '';
+
+    for (let i = 1; i <= 12; i++) {
+        const pregunta = document.createElement('div');
+        pregunta.innerHTML = `
+            <label>${tabla} x ${i} = </label>
+            <input type="number" class="respuesta" data-pregunta="${i}" data-resultado="${tabla * i}" data-tabla="${tabla}">
+        `;
+        listaPreguntas.appendChild(pregunta);
+    }
+}
