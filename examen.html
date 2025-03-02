@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examen - Centro de Especialidades y Tutorías Académicas "Los Naranjos"</title>
+    <link rel="stylesheet" href="stylesex.css">
+</head>
+<body>
+    <div id="app">
+        <header>
+            <div class="institution-info">
+                <img src="logo.jpeg" alt="Logo de la Institución" class="logo">
+                <h1>Centro de Especialidades y Tutorías Académicas "Los Naranjos"</h1>
+                <h2>Docente: Ing. Teddy Valencia</h2>
+            </div>
+            <p>Tiempo restante: <span id="timer">2:00:00</span></p>
+        </header>
+        <main>
+            <div id="student-info">
+                <label for="student-name">Nombre del Estudiante:</label>
+                <input type="text" id="student-name" placeholder="Ingresa tu nombre">
+            </div>
+            <div id="questions-container">
+                <!-- Aquí se generarán dinámicamente las preguntas -->
+            </div>
+        </main>
+        <footer>
+            <button id="submit-btn">Finalizar Examen</button>
+            <div id="results" style="display: none;">
+                <h2>Resultados del Examen:</h2>
+                <p id="student-result"></p>
+            </div>
+        </footer>
+    </div>
+    <script src="scriptex.js"></script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to right, #d7f9f5, #f9f9d7);
+    color: #333;
+}
+
+#app {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.institution-info {
+    text-align: center;
+}
+
+.logo {
+    width: auto;
+    margin-bottom: auto;
+}
+
+h1 {
+    font-size: 24px;
+    color: #4CAF50;
+}
+
+h2 {
+    font-size: 18px;
+    color: #333;
+}
+
+#student-info {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#student-name {
+    width: 80%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+footer {
+    text-align: center;
+    margin-top: 20px;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+#results {
+    margin-top: 20px;
+}
