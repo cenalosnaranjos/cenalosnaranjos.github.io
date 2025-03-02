@@ -8,12 +8,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <section class="card">
     <div class="container">
         <header>
+            <img src="logo.jpeg" alt="Logo de la Institución">
             <h1>Control de Asistencia Estudiantil & Docente</h1>
-           <strong>
-            <p>Sistema de registro y seguimiento de asistencia mediante códigos QR.</p></strong>
+            <strong>
+                <p>Sistema de registro y seguimiento de asistencia mediante códigos QR.</p>
+            </strong>
         </header>
+    </section>
 
         <!-- Sección de registro de estudiantes -->
         <section class="card">
@@ -42,6 +46,7 @@
         <!-- Tabla de asistencia -->
         <section class="card">
             <h2>Registro de Asistencia</h2>
+            <button id="btn-generar-pdf" class="btn-primary">Descargar PDF</button>
             <a href="index.html"><button class="btn-primary">Regresar</button></a>
             <table id="tabla-asistencia">
                 <thead>
@@ -61,11 +66,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="scriptqr.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </body>
 <!-- Footer -->
 <footer>
     <center>
-   <STRong> <p>&copy; CENA 2025 Control de Asistencia. Todos los derechos reservados. Ing. Teddy Valencia</p></STRong>
-</footer></center>
+        <strong>
+            <p>&copy; CETA 2025 Control de Asistencia. Todos los derechos reservados. Departamento Técnico</p>
+        </strong>
+    </center>
+</footer>
 </html>

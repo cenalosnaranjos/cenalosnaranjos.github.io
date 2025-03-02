@@ -18,6 +18,12 @@ header {
     margin-bottom: 40px;
 }
 
+header img {
+    max-width: auto;
+    height: auto;
+    margin-bottom: auto;
+}
+
 header h1 {
     font-size: 2.5rem;
     margin: 0;
@@ -47,6 +53,7 @@ header p {
 /* Formularios y botones */
 .form-group {
     display: flex;
+    flex-direction: column;
     gap: 10px;
     margin-bottom: 20px;
 }
@@ -113,6 +120,7 @@ header p {
 #tabla-asistencia tr:hover {
     background-color: #f1f1f1;
 }
+
 /* Contenedor de la cámara */
 .camara-container {
     text-align: center;
@@ -122,16 +130,20 @@ header p {
 #video {
     border-radius: 10px;
     background: #000;
+    max-width: 100%;
+    height: auto;
 }
 
 /* Botón de cámara */
 #btn-camara {
     margin-left: 10px;
 }
+
 /* Botón de descargar PDF */
 #btn-generar-pdf {
     margin-bottom: 20px;
 }
+
 /* Estilos para el footer */
 footer {
     text-align: center;
@@ -144,4 +156,28 @@ footer {
 
 footer p {
     margin: 0;
+}
+
+/* Media Queries para Responsive Design */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 2rem;
+    }
+
+    header p {
+        font-size: 1rem;
+    }
+
+    .form-group {
+        flex-direction: column;
+    }
+
+    .btn-primary, .btn-secondary {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    #video {
+        width: 100%;
+    }
 }
