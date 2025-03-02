@@ -3,47 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Evaluación de Tablas de Multiplicar</title>
+    <title>CETA - Herramientas Disponibles</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
     <div class="container">
-        <h1>Evaluación de Tablas de Multiplicar</h1>
-        <label for="nombre">Nombre del Estudiante:</label>
-        <input type="text" id="nombre" placeholder="Ingresa tu nombre">
-        
-        <label for="tabla">Selecciona la tabla de multiplicar:</label>
-        <select id="tabla">
-            <option value="1">Tabla del 1</option>
-            <option value="2">Tabla del 2</option>
-            <option value="3">Tabla del 3</option>
-            <option value="4">Tabla del 4</option>
-            <option value="5">Tabla del 5</option>
-            <option value="6">Tabla del 6</option>
-            <option value="7">Tabla del 7</option>
-            <option value="8">Tabla del 8</option>
-            <option value="9">Tabla del 9</option>
-            <option value="10">Tabla del 10</option>
-            <option value="11">Tabla del 11</option>
-            <option value="12">Tabla del 12</option>
-        </select>
-        
-        <button id="iniciar">Iniciar Evaluación</button>
-        
-        <div id="preguntas" class="hidden">
-            <h2>Resuelve las siguientes multiplicaciones:</h2>
-            <div id="lista-preguntas"></div>
-            <button id="calificar">Calificar</button>
-        </div>
-        
-        <div id="resultado" class="hidden">
-            <h2>Resultado</h2>
-            <p id="mensaje-resultado"></p>
-            <button id="descargar">Descargar Resultado en PDF</button>
-            <button id="volver-inicio">Volver al Inicio</button>
-        </div>
+        <!-- Logo y nombre de la institución -->
+        <header>
+            <img src="logo.jpeg" alt="Logo de la Institución" class="logo">
+            <h1>Centro de Especialidades y Tutorías Académicas "Los Naranjos"</h1>
+        </header>
+
+        <!-- Tabla de herramientas -->
+        <section class="herramientas">
+            <h2>Herramientas Disponibles</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Acceso</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Tomar asistemcia</td>
+                        <td><a href="qr.html" class="btn">Acceder</a></td>
+                    </tr>
+                    <tr>
+                        <td>Simulador de las tablas de multiplicar</td>
+                        <td><a href="tabla.html" class="btn">Acceder</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Pie de página -->
+        <footer>
+            <p>&copy; 2025 CETA. Todos los derechos reservados - Ing. Teddy Valencia.</p>
+        </footer>
     </div>
-    <script src="script.js"></script>
 </body>
 </html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluación de Tablas de Multiplicar</title>
+    <link rel="stylesheet" href="stylestb.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Evaluación de Tablas de Multiplicar</h1>
+        <label for="nombre">Nombre del Estudiante:</label>
+        <input type="text" id="nombre" placeholder="Ingresa tu nombre">
+        
+        <label for="tabla">Selecciona la tabla de multiplicar:</label>
+        <select id="tabla">
+            <option value="1">Tabla del 1</option>
+            <option value="2">Tabla del 2</option>
+            <option value="3">Tabla del 3</option>
+            <option value="4">Tabla del 4</option>
+            <option value="5">Tabla del 5</option>
+            <option value="6">Tabla del 6</option>
+            <option value="7">Tabla del 7</option>
+            <option value="8">Tabla del 8</option>
+            <option value="9">Tabla del 9</option>
+            <option value="10">Tabla del 10</option>
+            <option value="11">Tabla del 11</option>
+            <option value="12">Tabla del 12</option>
+        </select>
+        
+        <button id="iniciar">Iniciar Evaluación</button>
+        <a href="index.html"><button>Regresar</button></a>
+        
+        <div id="preguntas" class="hidden">
+            <h2>Resuelve las siguientes multiplicaciones:</h2>
+            <div id="lista-preguntas"></div>
+            <button id="calificar">Calificar</button>
+        </div>
+        
+        <div id="resultado" class="hidden">
+            <h2>Resultado</h2>
+            <p id="mensaje-resultado"></p>
+            <button id="descargar">Descargar Resultado en PDF</button>
+            <button id="volver-inicio">Volver al Inicio</button>
+            <a href="index.html"><button>Regresar</button></a>
+        </div>
+    </div>
+    <script src="scripttb.js"></script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+/* Estilos generales */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #2ae7de;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px; /* Ancho máximo para escritorios */
+    text-align: center;
+}
+
+.hidden {
+    display: none;
+}
+
+label {
+    display: block;
+    margin: 10px 0 5px;
+    font-weight: bold;
+}
+
+input, select, button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+#preguntas {
+    margin-top: 20px;
+}
+
+#lista-preguntas {
+    margin-bottom: 20px;
+}
+
+#lista-preguntas div {
+    margin-bottom: 10px;
+}
+
+#lista-preguntas label {
+    display: inline-block;
+    width: 80px; /* Ajusta el ancho de las etiquetas */
+}
+
+#lista-preguntas input {
+    width: calc(100% - 90px); /* Ajusta el ancho de los inputs */
+    display: inline-block;
+}
+
+#resultado {
+    margin-top: 20px;
+}
+
+#volver-inicio {
+    background-color: #007bff;
+    margin-top: 10px;
+}
+
+#volver-inicio:hover {
+    background-color: #0056b3;
+}
+
+/* Estilos para móviles */
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+
+    .container {
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 1.5rem; /* Título más pequeño en móviles */
+    }
+
+    label {
+        font-size: 0.9rem; /* Etiquetas más pequeñas */
+    }
+
+    input, select, button {
+        font-size: 0.9rem; /* Texto más pequeño en inputs y botones */
+    }
+
+    #lista-preguntas label {
+        width: 60px; /* Menos espacio para las etiquetas en móviles */
+    }
+
+    #lista-preguntas input {
+        width: calc(100% - 70px); /* Más espacio para los inputs en móviles */
+    }
+}
+
+/* Estilos para tablets */
+@media (min-width: 601px) and (max-width: 1024px) {
+    .container {
+        max-width: 80%; /* Más ancho en tablets */
+    }
+
+    h1 {
+        font-size: 1.75rem; /* Título un poco más grande */
+    }
+}
