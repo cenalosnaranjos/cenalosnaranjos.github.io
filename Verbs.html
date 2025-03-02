@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluación de Verbos en Inglés</title>
+    <link rel="stylesheet" href="stylesvb.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Evaluación de Verbos en Inglés</h1>
+        <p>Completa la tabla con las formas correctas de los verbos en inglés.</p>
+        <form id="verbForm">
+            <label for="studentName">Nombre del Estudiante:</label>
+            <input type="text" id="studentName" placeholder="Escribe tu nombre" required>
+            
+            <div class="table-container">
+                <table id="verbTable">
+                    <thead>
+                        <tr>
+                            <th>Verbo (Español)</th>
+                            <th>Present</th>
+                            <th>Past</th>
+                            <th>Past Participle</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Las filas de los verbos se generarán dinámicamente con JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="buttons">
+                <button type="button" onclick="evaluate()">Calificar</button>
+                <button type="button" onclick="downloadPDF()">Descargar Resultado en PDF</button>
+                <button type="button" onclick="reloadPage()">Recargar Página</button>
+            </div>
+        </form>
+        <div id="result"></div>
+    </div>
+    <script src="scriptvb.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</body>
+</html>
