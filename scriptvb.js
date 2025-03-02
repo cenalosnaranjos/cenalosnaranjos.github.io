@@ -76,6 +76,11 @@ const verbs = [
     { spanish: "escribir", base: "write", past: "wrote", participle: "written" },
 ];
 
+// Función para capitalizar la primera letra de un string
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 function getRandomVerbs(num) {
     const shuffled = verbs.sort(() => 0.5 - Math.random());
     return shuffled.slice(0, num);
@@ -83,12 +88,14 @@ function getRandomVerbs(num) {
 
 function generateTable() {
     const tableBody = document.querySelector("#verbTable tbody");
-    const randomVerbs = getRandomVerbs(300);
+    const randomVerbs = getRandomVerbs(25); // Cambia aquí el número de verbos
 
     randomVerbs.forEach(verb => {
         const row = document.createElement("tr");
+        // Capitalizamos el verbo en español
+        const spanishVerb = capitalizeFirstLetter(verb.spanish);
         row.innerHTML = `
-            <td>${verb.spanish}</td>
+            <td>${spanishVerb}</td>
             <td><input type="text" class="present"></td>
             <td><input type="text" class="past"></td>
             <td><input type="text" class="participle"></td>
