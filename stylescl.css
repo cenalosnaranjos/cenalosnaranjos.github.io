@@ -1,0 +1,111 @@
+body {
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    background-color: #19f0ff;
+}
+
+.header {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.logo {
+    width: auto;
+    height: auto;
+}
+
+.calculator {
+    width: 320px;
+    background: #e8e8e8;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+#display {
+    width: 100%;
+    height: 60px;
+    margin-bottom: 20px;
+    font-size: 1.6rem;
+    text-align: right;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: #ffffff;
+}
+
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+button {
+    font-size: 1.2rem;
+    padding: 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Estilo para botones básicos */
+button.basic {
+    background: #f2f2f2;
+    color: #333;
+}
+
+button.basic:hover {
+    background: #d9d9d9;
+}
+
+/* Estilo para operadores */
+button.operator {
+    background: #4caf50;
+    color: white;
+}
+
+button.operator:hover {
+    background: #45a049;
+}
+
+/* Estilo para botones científicos */
+button.scientific {
+    background: #2196F3;
+    color: white;
+}
+
+button.scientific:hover {
+    background: #1e88e5;
+}
+
+/* Estilo para botón igual */
+button.equals {
+    background: #ff9800;
+    color: white;
+    grid-column: span 2;
+}
+
+button.equals:hover {
+    background: #fb8c00;
+}
+
+/* Estilo para botón de limpiar */
+button.clear {
+    background: #f44336;
+    color: white;
+}
+
+button.clear:hover {
+    background: #e53935;
+}
+
+.footer {
+    margin-top: 20px;
+    text-align: center;
+    color: #555;
+    font-size: 0.9rem;
+}
