@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Course Registration</title>
+    <link rel="icon" type="image/x-icon" href="logo.jpeg">
+    <style>
+        body {
+            background-color: aqua;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+        }
+
+        p {
+            font-size: 1rem;
+            margin: 10px 0;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 1rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            width: 100%;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        #downloadBtn {
+            background-color: #008CBA;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        a {
+            text-decoration: none;
+            color: #008CBA;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="header">
+            <img src="logo.jpeg" alt="Institution Logo">
+            <h1>ACADEMIC TUTORING CENTER "LOS NARANJOS"</h1>
+        </div>
+
+        <p>Welcome to our English Course.</p>
+        <p>Dear students, please complete the following information:</p>
+
+        <form id="registrationForm">
+            <div class="form-group">
+                <label>Full Name:</label>
+                <input type="text" id="fullName" required>
+            </div>
+            <div class="form-group">
+                <label>Age:</label>
+                <input type="number" id="age" required>
+            </div>
+            <div class="form-group">
+                <label>Address:</label>
+                <input type="text" id="address" required>
+            </div>
+            <div class="form-group">
+                <label>Personal Phone Number:</label>
+                <input type="tel" id="personalPhone" required>
+            </div>
+            <div class="form-group">
+                <label>Representative's Phone Number:</label>
+                <input type="tel" id="representativePhone" required>
+            </div>
+            <div class="form-group">
+                <label>Representative's Name:</label>
+                <input type="text" id="representativeName" required>
+            </div>
+            <button type="button" id="saveBtn">Save Data</button>
+            <button type="button" id="downloadBtn" disabled>Download PDF</button>
+        </form>
+
+        <p>Thank you so much, your classes will start on Monday, March 10th, 2025.</p>
+        <p>We are located in Chone-Manabí-Ecuador.</p>
+        <p>
+            After registering, please send the registration proof through 
+            <a href="https://wa.me/your_whatsapp_number" target="_blank">WhatsApp</a>.
+        </p>
+    </div>
+
+    <script>
+        const registrationData = {};
+        let isDataSaved = false;
+
+        document.getElementById('saveBtn').addEventListener('click', () => {
+            const fields = {
+                fullName: document.getElementById('fullName'),
+                age: document.getElementById('age'),
+                address: document.getElementById('address'),
+                personalPhone: document.getElementById('personalPhone'),
+                representativePhone: document.getElementById('representativePhone'),
+                representativeName: document.getElementById('representativeName')
+            };
+
+            let isValid = true;
+
+            Object.entries(fields).forEach(([key, field]) => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.style.border = '2px solid red';
+                } else {
+                    field.style.border = '1px solid #ddd';
+                    registrationData[key] = field.value.trim();
+                }
+            });
+
+            if (!isValid) {
+                alert('Please complete all required fields.');
+                return;
+            }
+
+            isDataSaved = true;
+            document.getElementById('downloadBtn').disabled = false;
+            alert('Data saved successfully!');
+        });
+
+        document.getElementById('downloadBtn').addEventListener('click', () => {
+            if (!isDataSaved) {
+                alert('Please save the data first.');
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            doc.setFontSize(18);
+            doc.text('ACADEMIC TUTORING CENTER "LOS NARANJOS"', 15, 20);
+
+            doc.setFontSize(14);
+            doc.text('Registration Details:', 15, 35);
+
+            doc.setFontSize(12);
+            let yPosition = 45;
+            Object.entries(registrationData).forEach(([key, value]) => {
+                doc.text(`${key}: ${value}`, 15, yPosition);
+                yPosition += 10;
+            });
+
+            doc.save('english_course_registration.pdf');
+        });
+    </script>
+</body>
+</html>
