@@ -6,6 +6,36 @@ body {
     color: #333;
 }
 
+.instructions {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.instructions summary {
+    font-weight: bold;
+    cursor: pointer;
+    color: #2c3e50;
+}
+
+.instructions ul {
+    padding-left: 20px;
+    margin-top: 10px;
+}
+
+.instructions li {
+    margin: 8px 0;
+    color: #34495e;
+}
+
+#timer {
+    background: #34495e;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+}
+
 #app {
     max-width: 900px;
     margin: 30px auto;
