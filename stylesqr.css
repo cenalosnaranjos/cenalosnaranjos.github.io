@@ -67,7 +67,7 @@ header p {
 }
 
 .btn-primary, .btn-secondary {
-    padding: 10px 20px;
+    padding: 9px 15px;
     border: none;
     border-radius: 5px;
     font-size: 1rem;
@@ -173,8 +173,8 @@ footer p {
     }
 
     .btn-primary, .btn-secondary {
-        width: 100%;
-        margin-bottom: 10px;
+        width: auto;
+        margin-bottom: auto;
     }
 
     #video {
