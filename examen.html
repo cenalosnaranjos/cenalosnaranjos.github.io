@@ -6,6 +6,7 @@
     <title>Examen - Centro de Especialidades y Tutorías Académicas "Los Naranjos"</title>
     <link rel="stylesheet" href="stylesex.css">
     <link rel="icon" type="image/x-icon" href="logo.jpeg">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
 </head>
 <body>
     <div id="app">
@@ -38,12 +39,60 @@
         </main>
         <footer>
             <button id="submit-btn">Finalizar Examen</button>
+            <button id="download-pdf-btn" style="display: none;">Descargar en PDF</button>
             <div id="results" style="display: none;">
                 <h2>Resultados del Examen:</h2>
                 <p id="student-result"></p>
+                <p id="feedback"></p>
             </div>
         </footer>
     </div>
+    <script>
+        document.getElementById('submit-btn').addEventListener('click', () => {
+            const studentName = document.getElementById('student-name').value || 'Nombre no ingresado';
+            
+            // Simulamos una calificación para este ejemplo
+            const score = Math.floor(Math.random() * 11); // Calificación entre 0 y 10
+            const resultElement = document.getElementById('student-result');
+            const feedbackElement = document.getElementById('feedback');
+
+            // Mostrar el resultado y el feedback
+            let feedbackMessage = '';
+            if (score >= 7) {
+                resultElement.innerText = `Estudiante: ${studentName}, tu calificación es ${score}/10. ¡Has aprobado! 🎉`;
+            } else {
+                feedbackMessage = 'Necesitas reforzar los temas clave del examen.';
+                resultElement.innerText = `Estudiante: ${studentName}, tu calificación es ${score}/10. Lo siento, reprobaste. 😔`;
+            }
+            feedbackElement.innerText = feedbackMessage;
+
+            // Mostrar resultados en la página
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('download-pdf-btn').style.display = 'inline-block';
+        });
+
+        document.getElementById('download-pdf-btn').addEventListener('click', () => {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            const studentName = document.getElementById('student-name').value || 'Nombre no ingresado';
+            const resultText = document.getElementById('student-result').innerText;
+            const feedbackText = document.getElementById('feedback').innerText;
+
+            // Generar contenido del PDF
+            doc.text('Centro de Especialidades y Tutorías Académicas "Los Naranjos"', 10, 10);
+            doc.text(`Estudiante: ${studentName}`, 10, 20);
+            doc.text('Resultados del Examen:', 10, 30);
+            doc.text(resultText, 10, 40);
+            if (feedbackText) {
+                doc.text('Sugerencias:', 10, 50);
+                doc.text(feedbackText, 10, 60);
+            }
+
+            // Descargar el archivo PDF
+            doc.save('resultado_examen.pdf');
+        });
+    </script>
     <script src="scriptex.js"></script>
 </body>
 </html>

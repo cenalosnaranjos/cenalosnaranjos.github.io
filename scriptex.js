@@ -98,3 +98,72 @@ function finishExam() {
 document.getElementById("submit-btn").addEventListener("click", finishExam);
 startTimer();
 generateQuestions();
+
+document.getElementById('submit-btn').addEventListener('click', () => {
+    const studentName = document.getElementById('student-name').value || 'Nombre no ingresado';
+
+    // Ejemplo de respuestas correctas (debes reemplazar por las correctas reales)
+    const correctAnswers = ['A', 'B', 'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B'];
+    const questions = document.querySelectorAll('#questions-container .question'); // Asegúrate de que las preguntas tienen la clase "question"
+    let correctCount = 0;
+    const pointsPerQuestion = 10 / correctAnswers.length; // Puntaje por pregunta (10 dividido entre 18)
+
+    // Contar respuestas correctas
+    questions.forEach((question, index) => {
+        const selectedAnswer = question.querySelector('input[type="radio"]:checked');
+        if (selectedAnswer && selectedAnswer.value === correctAnswers[index]) {
+            correctCount++;
+        }
+    });
+
+    // Calcular la calificación final
+    const finalScore = (correctCount * pointsPerQuestion).toFixed(2); // Redondear a 2 decimales
+    const resultElement = document.getElementById('student-result');
+    const feedbackElement = document.getElementById('feedback');
+
+    // Mostrar si aprobó o reprobó
+    let feedbackMessage = '';
+    if (finalScore >= 7) {
+        resultElement.innerText = `Estudiante: ${studentName}, tu calificación es ${finalScore}/10. ¡Has aprobado! 🎉`;
+    } else {
+        feedbackMessage = 'Necesitas reforzar los temas clave del examen.';
+        resultElement.innerText = `Estudiante: ${studentName}, tu calificación es ${finalScore}/10. Lo siento, reprobaste. 😔`;
+    }
+    feedbackElement.innerText = feedbackMessage;
+
+    // Mostrar resultados
+    document.getElementById('results').style.display = 'block';
+    document.getElementById('download-pdf-btn').style.display = 'inline-block';
+
+    // Bloquear formulario al finalizar
+    lockForm();
+});
+
+// Función para bloquear el formulario
+function lockForm() {
+    document.getElementById('student-name').disabled = true;
+    const questionElements = document.querySelectorAll('#questions-container input');
+    questionElements.forEach(element => element.disabled = true);
+    document.getElementById('submit-btn').disabled = true;
+}
+
+// Función para descargar PDF
+document.getElementById('download-pdf-btn').addEventListener('click', () => {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    const studentName = document.getElementById('student-name').value || 'Nombre no ingresado';
+    const resultText = document.getElementById('student-result').innerText;
+    const feedbackText = document.getElementById('feedback').innerText;
+
+    doc.text('Centro de Especialidades y Tutorías Académicas "Los Naranjos"', 10, 10);
+    doc.text(`Estudiante: ${studentName}`, 10, 20);
+    doc.text('Resultados del Examen:', 10, 30);
+    doc.text(resultText, 10, 40);
+    if (feedbackText) {
+        doc.text('Sugerencias:', 10, 50);
+        doc.text(feedbackText, 10, 60);
+    }
+
+    doc.save('resultado_examen.pdf');
+});
