@@ -138,6 +138,33 @@
             gap: 1rem;
         }
 
+        .btn-primary, .btn-secondary {
+    padding: 9px 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #3498db;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+}
+
+.btn-secondary {
+    background-color: #95a5a6;
+    color: #fff;
+}
+
+.btn-secondary:hover {
+    background-color: #7f8c8d;
+}
+
         .avatar {
             width: 40px;
             height: 40px;
@@ -206,6 +233,8 @@
         </div>
         
         <button onclick="validarCodigo()">Ingresar al aula</button>
+        <br><br><br>
+        <a href="index.html"><button class="btn-primary">Regresar</button></a>
         
         <div class="error-message" id="mensajeError">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
