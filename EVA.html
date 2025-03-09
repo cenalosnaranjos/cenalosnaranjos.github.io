@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema EVA | Centro de Especialidades y Tutorías Académicas "Los Naranjos"</title>
+    <link rel="icon" type="image/x-icon" href="logo.jpeg">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --background: #f8fafc;
+            --text-color: #1e293b;
+            --success: #22c55e;
+            --error: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #6edfee 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-color);
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 400px;
+            transition: transform 0.3s ease;
+        }
+
+        .login-container:hover {
+            transform: translateY(-5px);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo h1 {
+            color: var(--primary-color);
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo p {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .error-message {
+            background: #fee2e2;
+            color: var(--error);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .error-message svg {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        .content-container {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 800px;
+            display: none;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .logout-btn {
+            background: none;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            padding: 0.5rem 1rem;
+            width: auto;
+        }
+
+        .logout-btn:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .section-content {
+            background: #f8fafc;
+            border-radius: 1rem;
+            padding: 2rem;
+        }
+
+        .material-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .material-card:hover {
+            transform: translateY(-3px);
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 1.5rem;
+            }
+            
+            .content-container {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Contenedor de Login -->
+    <div class="login-container" id="loginContainer">
+        <div class="logo">
+            <h1>Centro de Especialidades y Tutorías Académicas "Los Naranjos"</h1>
+            <p>Sistema de Educación Virtual</p>
+        </div>
+        
+        <div class="input-group">
+            <input type="text" id="inputCodigo" placeholder="Código de acceso">
+        </div>
+        
+        <button onclick="validarCodigo()">Ingresar al aula</button>
+        
+        <div class="error-message" id="mensajeError">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
+            </svg>
+            <span>Código incorrecto o no válido</span>
+        </div>
+    </div>
+
+    <!-- Contenedor de Contenido -->
+    <div class="content-container" id="contentContainer">
+        <div class="header">
+            <div class="user-info">
+                <div class="avatar" id="userAvatar"></div>
+                <h2 id="userName"></h2>
+            </div>
+            <button class="logout-btn" onclick="logout()">Cerrar sesión</button>
+        </div>
+
+        <div class="section-content" id="sectionContent"></div>
+    </div>
+
+    <script>
+        // Base de datos simulada
+        const estudiantes = [
+            {
+                codigo: 'ABC123',
+                nombre: 'Juan Pérez',
+                seccion: 'matematicas'
+            },
+            {
+                codigo: 'DEF456',
+                nombre: 'María García',
+                seccion: 'literatura'
+            },
+            {
+                codigo: 'GHI789',
+                nombre: 'Carlos Gómez',
+                seccion: 'historia'
+            }
+        ];
+
+        // Contenido de las secciones
+        const secciones = {
+            matematicas: {
+                titulo: 'Matemáticas Avanzadas',
+                contenido: `
+                    <div class="material-card">
+                        <h3>Álgebra Lineal</h3>
+                        <p>Materiales disponibles:</p>
+                        <ul>
+                            <li>📚 Vectores y matrices</li>
+                            <li>📐 Sistemas de ecuaciones</li>
+                            <li>🔢 Espacios vectoriales</li>
+                        </ul>
+                    </div>
+                    <div class="material-card">
+                        <h3>Próximas evaluaciones</h3>
+                        <p>📅 15 Oct - Examen parcial</p>
+                        <p>📅 28 Oct - Entrega proyecto</p>
+                    </div>
+                `
+            },
+            literatura: {
+                titulo: 'Literatura Universal',
+                contenido: `
+                    <div class="material-card">
+                        <h3>Clásicos Literarios</h3>
+                        <p>Obras para analizar:</p>
+                        <ul>
+                            <li>📖 Don Quijote de la Mancha</li>
+                            <li>📖 Cien años de soledad</li>
+                            <li>📖 La divina comedia</li>
+                        </ul>
+                    </div>
+                    <div class="material-card">
+                        <h3>Tareas pendientes</h3>
+                        <p>📝 Ensayo sobre realismo mágico</p>
+                        <p>📝 Análisis del capítulo 5</p>
+                    </div>
+                `
+            },
+            historia: {
+                titulo: 'Historia Contemporánea',
+                contenido: `
+                    <div class="material-card">
+                        <h3>Revoluciones del siglo XX</h3>
+                        <p>Temas principales:</p>
+                        <ul>
+                            <li>🌍 Revolución Rusa</li>
+                            <li>🌎 Guerra Fría</li>
+                            <li>🌏 Globalización</li>
+                        </ul>
+                    </div>
+                    <div class="material-card">
+                        <h3>Recursos adicionales</h3>
+                        <p>🎥 Documental: "El siglo del pueblo"</p>
+                        <p>📚 Libro recomendado: "Armas, gérmenes y acero"</p>
+                    </div>
+                `
+            }
+        };
+
+        function validarCodigo() {
+            const codigo = document.getElementById('inputCodigo').value.trim();
+            const estudiante = estudiantes.find(e => e.codigo === codigo);
+
+            if (estudiante) {
+                mostrarSeccion(estudiante);
+                document.getElementById('mensajeError').style.display = 'none';
+            } else {
+                document.getElementById('mensajeError').style.display = 'flex';
+            }
+        }
+
+        function mostrarSeccion(estudiante) {
+            // Mostrar contenido y ocultar login
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('contentContainer').style.display = 'block';
+            
+            // Actualizar información de usuario
+            document.getElementById('userAvatar').textContent = estudiante.nombre[0];
+            document.getElementById('userName').textContent = estudiante.nombre;
+            
+            // Cargar contenido de la sección
+            const seccion = secciones[estudiante.seccion];
+            document.getElementById('sectionContent').innerHTML = `
+                <h2>${seccion.titulo}</h2>
+                ${seccion.contenido}
+            `;
+            
+            // Guardar en sessionStorage
+            sessionStorage.setItem('evaUser', JSON.stringify(estudiante));
+        }
+
+        function logout() {
+            // Limpiar y mostrar login
+            sessionStorage.removeItem('evaUser');
+            document.getElementById('loginContainer').style.display = 'block';
+            document.getElementById('contentContainer').style.display = 'none';
+            document.getElementById('inputCodigo').value = '';
+        }
+
+        // Verificar sesión al cargar
+        window.onload = () => {
+            const usuario = JSON.parse(sessionStorage.getItem('evaUser'));
+            if (usuario) {
+                mostrarSeccion(usuario);
+            }
+        };
+    </script>
+</body>
+</html>
