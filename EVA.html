@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema EVA | Centro de Especialidades y Tutorías Académicas "Los Naranjos"</title>
+    <title>Sistema EVA | CETA "Los Naranjos"</title>
     <link rel="icon" type="image/x-icon" href="logo.jpeg">
     <style>
         :root {
@@ -20,15 +20,36 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', system-ui, sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
         }
 
         body {
             background: var(--background);
             min-height: 100vh;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            color: var(--text-color);
+            padding-bottom: 60px;
+            -webkit-touch-callout: none;
+        }
+
+        .institutional-header {
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .institutional-logo {
+            max-width: auto;
+            height: auto;
+            margin-bottom: 10px;
+            pointer-events: none;
         }
 
         .login-container {
@@ -38,18 +59,8 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             width: 95%;
             max-width: 500px;
-            margin: 1rem;
+            margin: 1rem auto;
             transition: transform 0.3s ease;
-        }
-
-        .logo {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .logo img {
-            max-width: 120px;
-            margin-bottom: 1rem;
         }
 
         .input-group {
@@ -105,39 +116,11 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             width: 95%;
             max-width: 1200px;
-            margin: 1rem;
+            margin: 1rem auto;
             display: none;
         }
 
-        .media-container {
-            position: relative;
-            padding-bottom: 56.25%;
-            height: 0;
-            overflow: hidden;
-            margin: 2rem 0;
-            border-radius: 0.5rem;
-            background: #000;
-        }
-
-        .media-container video {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .pdf-viewer {
-            width: 100%;
-            height: 600px;
-            border: none;
-            margin: 2rem 0;
-            border-radius: 0.5rem;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .header {
+        .user-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -152,7 +135,7 @@
             gap: 1rem;
         }
 
-        .avatar {
+        .user-avatar {
             width: 45px;
             height: 45px;
             background: var(--accent-color);
@@ -165,56 +148,138 @@
             font-size: 1.2rem;
         }
 
-        .material-card {
+        .connectivity-section {
+            margin: 2rem 0;
+            overflow-x: auto;
+        }
+
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
             background: white;
-            padding: 1.5rem;
             border-radius: 0.5rem;
-            margin-bottom: 1.5rem;
+            overflow: hidden;
             box-shadow: 0 3px 10px rgba(0,0,0,0.05);
         }
 
+        .schedule-table th,
+        .schedule-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .schedule-table th {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .schedule-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .join-button {
+            padding: 0.5rem 1rem;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .join-button:hover {
+            background: #2980b9;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: var(--primary-color);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 0.9rem;
+            z-index: 1000;
+        }
+
+        .media-container {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%; /* Relación 16:9 para video responsive */
+    margin: 20px 0;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #000;
+}
+
+.media-container video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Muestra todo el video sin recortar */
+}
+
+@media (max-width: 768px) {
+    .media-container {
+        border-radius: 8px;
+        margin: 15px 0;
+    }
+    
+    .media-container video {
+        object-fit: cover; /* En móviles llena el contenedor */
+    }
+}
+
+@media (max-width: 480px) {
+    .media-container {
+        padding-bottom: 75%; /* Relación 4:3 para móviles */
+    }
+}
         @media (max-width: 768px) {
-            .login-container, .content-container {
-                padding: 1.5rem;
+            .schedule-table {
+                min-width: 600px;
             }
             
-            .pdf-viewer {
-                height: 400px;
-            }
-            
-            .media-container {
-                margin: 1rem 0;
+            .connectivity-section {
+                overflow-x: auto;
             }
         }
 
         @media (max-width: 480px) {
-            html {
-                font-size: 14px;
+            .institutional-logo {
+                max-width: 120px;
             }
             
-            .logo img {
-                max-width: 100px;
+            .institutional-header h1 {
+                font-size: 1.2rem;
             }
             
-            .pdf-viewer {
-                height: 300px;
+            footer {
+                font-size: 0.8rem;
+                padding: 10px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Login Container -->
+    <!-- Encabezado Institucional -->
+    <header class="institutional-header">
+        <img src="logo.jpeg" alt="Logo Institucional" class="institutional-logo">
+        <h1>Centro de Especialidades y Tutorías Académicas "Los Naranjos"</h1>
+    </header>
+
+    <!-- Contenedor de Login -->
     <div class="login-container" id="loginContainer">
-        <div class="logo">
-            <h1>Entorno Virtual de Aprendizaje</h1>
-            <p>Centro de Especialidades y Tutorías Académicas "Los Naranjos"</p>
-        </div>
-        
         <div class="input-group">
-            <input type="text" id="inputCode" placeholder="Enter access code">
+            <input type="text" id="inputCode" placeholder="Ingrese su código de acceso">
         </div>
         
-        <button onclick="validateCode()">Access Platform</button>
+        <button onclick="validateCode()">Ingresar al sistema</button>
         
         <div class="error-message" id="errorMessage">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -222,46 +287,115 @@
                 <line x1="12" y1="8" x2="12" y2="12"></line>
                 <line x1="12" y1="16" x2="12" y2="16"></line>
             </svg>
-            <span id="errorText">Invalid access code</span>
+            <span id="errorText">Código de acceso inválido</span>
         </div>
     </div>
 
-    <!-- Content Container -->
+    <!-- Contenedor de Contenido -->
     <div class="content-container" id="contentContainer">
-        <div class="header">
+        <div class="user-header">
             <div class="user-info">
-                <div class="avatar" id="userAvatar">C</div>
-                <h2 id="userName">Camila Quijije</h2>
+                <div class="user-avatar" id="userAvatar"></div>
+                <h2 id="userName"></h2>
             </div>
-            <button class="logout-btn" onclick="logout()">Logout</button>
+            <button onclick="logout()" class="logout-btn">Cerrar sesión</button>
+        </div>
+
+        <!-- Sección de Conectividad -->
+        <div class="connectivity-section">
+            <h3>📅 Conectividad - Reuniones Programadas</h3>
+            <table class="schedule-table">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Hora de Conexión</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!--
+                    <tr>
+                        <td>Lunes, 15 Julio 2024</td>
+                        <td>09:00 AM - 11:00 AM</td>
+                        <td><button class="join-button" onclick="joinMeeting('https://meet.losnaranjos.edu.ec/english-advanced')">Unirse</button></td>
+                    </tr>-->
+                </tbody>
+            </table>
         </div>
 
         <div class="material-card">
-            <h3>English Language Course</h3>
-            <p>Current level: Advanced</p>
-        </div>
-
-        <div class="media-container">
-            <video controls controlsList="nodownload" id="lessonVideo">
-                <source src="Vídeo Clover.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
+            <h3>Contenido Educativo</h3>
+            <div class="media-container">
+                <video controls controlsList="nodownload" id="lessonVideo" preload="metadata">
+                    <source src="Vídeo Clover.mp4" type="video/mp4">
+                    <track label="Español" kind="subtitles" srclang="es" src="subtitulos.vtt" default>
+                    Tu navegador no soporta el elemento de video.
+                </video>
+            </div>
+            <div class="video-controls">
+                <button onclick="toggleFullScreen()" class="btn-secondary">Pantalla Completa</button>
+            </div>
         </div>
 
         <div class="material-card">
-            <h3>Study Materials</h3>
-            <iframe class="pdf-viewer" id="pdfViewer" src="ecob,+441-454.pdf"></iframe>
+            <h3>Material de Estudio</h3>
+            <iframe class="pdf-viewer" id="pdfViewer" src="material.pdf#toolbar=0&navpanes=0"></iframe>
         </div>
     </div>
+
+    <!-- Pie de Página -->
+    <footer>
+        <p>© 2025 Centro de Especialidades y Tutorías Académicas "Los Naranjos"</p>
+        <p>Contacto: cnalosnaranjos@gmail.com | Teléfono: (593) 99 418 3892</p>
+    </footer>
 
     <script>
+        // Base de usuarios autorizados
         const validUsers = [
             {
                 code: 'CAMILA2025',
                 name: 'Camila Quijije',
                 access: 'full'
+            },
+            {
+                code: 'AMY2025',
+                name: 'Amy Solorzano',
+                access: 'full'
             }
         ];
+
+        function toggleFullScreen() {
+    const videoContainer = document.querySelector('.media-container');
+    if (!document.fullscreenElement) {
+        if (videoContainer.requestFullscreen) {
+            videoContainer.requestFullscreen();
+        } else if (videoContainer.mozRequestFullScreen) { /* Firefox */
+            videoContainer.mozRequestFullScreen();
+        } else if (videoContainer.webkitRequestFullscreen) { /* Chrome, Safari y Opera */
+            videoContainer.webkitRequestFullscreen();
+        } else if (videoContainer.msRequestFullscreen) { /* IE/Edge */
+            videoContainer.msRequestFullscreen();
+        }
+    } else {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+    }
+}
+
+// Detectar cambios de tamaño para ajustar el video
+window.addEventListener('resize', () => {
+    const video = document.getElementById('lessonVideo');
+    video.style.height = 'auto';
+    video.style.width = '100%';
+});
+
+        // Restricciones anti-captura
+        document.addEventListener('contextmenu', (e) => e.preventDefault());
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.shiftKey && e.keyCode === 73) e.preventDefault(); // Bloquea Ctrl+Shift+I
+            if (e.keyCode === 123) e.preventDefault(); // Bloquea F12
+        });
 
         function validateCode() {
             const input = document.getElementById('inputCode').value.trim();
@@ -269,14 +403,14 @@
             const user = validUsers.find(u => u.code === input);
 
             if (user) {
-                if (user.access === 'full') {
-                    showContent();
-                    errorElement.style.display = 'none';
-                }
+                document.getElementById('userName').textContent = user.name;
+                document.getElementById('userAvatar').textContent = user.name[0];
+                showContent();
+                errorElement.style.display = 'none';
             } else {
                 errorElement.style.display = 'flex';
                 document.getElementById('errorText').textContent = 
-                    input.length > 0 ? 'Access restricted' : 'Please enter access code';
+                    input.length > 0 ? 'Acceso restringido' : 'Ingrese un código válido';
             }
         }
 
@@ -287,7 +421,6 @@
         }
 
         function initializeMediaProtection() {
-            // Video protection
             const video = document.getElementById('lessonVideo');
             if (video) {
                 video.addEventListener('contextmenu', (e) => e.preventDefault());
@@ -296,11 +429,14 @@
                 });
             }
 
-            // PDF protection
             const pdfFrame = document.getElementById('pdfViewer');
             if (pdfFrame) {
                 pdfFrame.contentWindow.document.addEventListener('contextmenu', (e) => e.preventDefault());
             }
+        }
+
+        function joinMeeting(url) {
+            window.open(url, '_blank', 'noopener,noreferrer');
         }
 
         function logout() {
@@ -309,7 +445,6 @@
             document.getElementById('inputCode').value = '';
         }
 
-        // Mobile menu toggle
         document.addEventListener('DOMContentLoaded', () => {
             const video = document.getElementById('lessonVideo');
             if (video) {
