@@ -223,6 +223,52 @@
     height: 100%;
     object-fit: contain; /* Muestra todo el video sin recortar */
 }
+.reloj-contenedor {
+            display: inline-block;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .tiempo {
+            color: #333333;
+            display: flex;
+            gap: 4px;
+            font-size: clamp(18px, 6vw, 36px);
+            align-items: center;
+        }
+
+        .tiempo span {
+            padding: 4px 8px;
+            border-radius: 4px;
+            background-color: transparent;
+            font-weight: 300;
+        }
+
+        .fecha {
+            color: #666666;
+            font-size: clamp(12px, 2vw, 18px);
+            text-align: center;
+            margin-top: 4px;
+            font-weight: 300;
+        }
+
+        /* Opcional: Añadir separadores con pseudoelementos */
+        .tiempo span:not(:last-child)::after {
+            content: ":";
+            margin-left: 8px;
+            color: #333333;
+        }
+
+        @media (max-width: 480px) {
+            .tiempo {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .tiempo span {
+                width: 80%;
+                margin: 2px 0;
+            }
+        }
 
 @media (max-width: 768px) {
     .media-container {
@@ -271,6 +317,15 @@
     <header class="institutional-header">
         <img src="logo.jpeg" alt="Logo Institucional" class="institutional-logo">
         <h1>Centro de Especialidades y Tutorías Académicas "Los Naranjos"</h1>
+        <br>
+        <div class="reloj-contenedor">
+            <div class="tiempo">
+                <span id="horas">00</span>
+                <span id="minutos">00</span>
+                <span id="segundos">00</span>
+            </div>
+            <div class="fecha" id="fecha"></div>
+        </div>
     </header>
 
     <!-- Contenedor de Login -->
@@ -303,7 +358,7 @@
 
         <!-- Sección de Conectividad -->
         <div class="connectivity-section">
-            <h3>📅 Conectividad - Reuniones Programadas</h3>
+            <h3>📅 Conectividad - Reunión Virtual Programada</h3>
             <table class="schedule-table">
                 <thead>
                     <tr>
@@ -313,18 +368,19 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!--
+                   
                     <tr>
-                        <td>Lunes, 15 Julio 2024</td>
-                        <td>09:00 AM - 11:00 AM</td>
-                        <td><button class="join-button" onclick="joinMeeting('https://meet.losnaranjos.edu.ec/english-advanced')">Unirse</button></td>
-                    </tr>-->
+                        <td>Lunes, 17 Marzo 2025</td>
+                        <td>15:45 PM - 16:45 PM</td>
+                        <td><button class="join-button" onclick="joinMeeting('https://us05web.zoom.us/j/81291088135?pwd=2icSgozbYa4x7bwfXsootNzVXbSrLv.1')">Unirse</button></td>
+                    </tr>
                 </tbody>
             </table>
         </div>
 
         <div class="material-card">
             <h3>Contenido Educativo</h3>
+             <!--
             <div class="media-container">
                 <video controls controlsList="nodownload" id="lessonVideo" preload="metadata">
                     <source src="Vídeo Clover.mp4" type="video/mp4">
@@ -335,11 +391,15 @@
             <div class="video-controls">
                 <button onclick="toggleFullScreen()" class="btn-secondary">Pantalla Completa</button>
             </div>
-        </div>
-
+        </div>-->
+<CEnter>
+        <h1>La grabación de la clase será subida al sistema</h1></CEnter>
+<br><br>
         <div class="material-card">
             <h3>Material de Estudio</h3>
-            <iframe class="pdf-viewer" id="pdfViewer" src="material.pdf#toolbar=0&navpanes=0"></iframe>
+           <!-- <iframe class="pdf-viewer" id="pdfViewer" src="#"></iframe>-->
+           <CEnter>
+            <h1>El material de la clase será subida al sistema</h1></CEnter>
         </div>
     </div>
 
@@ -452,6 +512,29 @@ window.addEventListener('resize', () => {
                 video.setAttribute('webkit-playsinline', '');
             }
         });
+        function actualizarReloj() {
+            const ahora = new Date();
+            
+            const horas = ahora.getHours().toString().padStart(2, '0');
+            const minutos = ahora.getMinutes().toString().padStart(2, '0');
+            const segundos = ahora.getSeconds().toString().padStart(2, '0');
+            
+            const opcionesFecha = { 
+                weekday: 'short', 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric' 
+            };
+            const fecha = ahora.toLocaleDateString('es-ES', opcionesFecha);
+            
+            document.getElementById('horas').textContent = horas;
+            document.getElementById('minutos').textContent = minutos;
+            document.getElementById('segundos').textContent = segundos;
+            document.getElementById('fecha').textContent = fecha;
+        }
+
+        actualizarReloj();
+        setInterval(actualizarReloj, 1000);
     </script>
 </body>
 </html>
