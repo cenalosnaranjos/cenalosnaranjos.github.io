@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FrAI - Simulador de Fracciones - CETA "Los Naranjos"</title>
+    <title>🧮 FrAI - Simulador de Fracciones</title>
     <link rel="icon" type="image/x-icon" href="logo.jpeg">
     <style>
         :root {
@@ -13,6 +13,8 @@
             --background: white;
             --text: #2c3e50;
             --container-bg: white;
+            --chart-stroke: #2c3e50;
+            --chart-fill: #3498db;
         }
 
         [data-theme="dark"] {
@@ -22,6 +24,8 @@
             --background: #1a1a1a;
             --text: #ecf0f1;
             --container-bg: #2c3e50;
+            --chart-stroke: #3498db;
+            --chart-fill: #2c3e50;
         }
 
         * {
@@ -40,6 +44,22 @@
             position: relative;
         }
 
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            color: var(--primary);
+            margin: 0;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
         .container {
             max-width: 1000px;
             margin: 0 auto;
@@ -48,7 +68,7 @@
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
             position: relative;
-            padding-bottom: 60px; /* Espacio para el footer */
+            padding-bottom: 60px;
         }
 
         .controls {
@@ -56,6 +76,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         .theme-toggle {
@@ -70,6 +92,7 @@
         .fraction-controls {
             display: flex;
             gap: 10px;
+            flex-wrap: wrap;
         }
 
         .calculator {
@@ -122,15 +145,25 @@
             font-size: 1.5em;
         }
 
+        .explanation {
+            background: var(--background);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px solid var(--primary);
+        }
+
         .visualization {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             gap: 20px;
+            margin-top: 30px;
         }
 
         .canvas-container {
             text-align: center;
+            margin: 15px 0;
         }
 
         canvas {
@@ -166,15 +199,22 @@
                 font-size: 0.8em;
                 padding: 10px;
             }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="header">
+        <h1>🧮 FrAI - Simulador de Fracciones</h1>
+    </div>
+
     <div class="container">
         <div class="controls">
-            <h1>FrAI 🧮</h1> 
             <div class="fraction-controls">
-                <select id="fraction-count" onchange="updateFractionInputs()">
+                <select id="fraction-count" onchange="resetCalculator()">
                     <option value="2">2 Fracciones</option>
                     <option value="3">3 Fracciones</option>
                     <option value="4">4 Fracciones</option>
@@ -185,7 +225,7 @@
                     <option value="9">9 Fracciones</option>
                     <option value="10">10 Fracciones</option>
                 </select>
-                <select id="operation">
+                <select id="operation" onchange="resetResults()">
                     <option value="+">Suma ➕</option>
                     <option value="-">Resta ➖</option>
                     <option value="*">Multiplicación ✖️</option>
@@ -198,12 +238,11 @@
             </div>
         </div>
 
-        <div class="calculator" id="fractions-container">
-            <!-- Las fracciones se generan dinámicamente aquí -->
-        </div>
+        <div class="calculator" id="fractions-container"></div>
 
         <div class="result">
-            <p id="result-text"></p>
+            <div class="explanation" id="calculation-explanation"></div>
+            <div class="explanation" id="step-explanation"></div>
             <div class="visualization">
                 <div id="input-visualization" class="canvas-container"></div>
                 <canvas id="result-canvas" width="150" height="150"></canvas>
@@ -216,7 +255,24 @@
     </div>
 
     <script>
-        // Generar fracciones iniciales
+        let currentNumerators = [];
+        let currentDenominators = [];
+        let currentOperation = '+';
+
+        function resetCalculator() {
+            updateFractionInputs();
+            resetResults();
+        }
+
+        function resetResults() {
+            document.getElementById('calculation-explanation').innerHTML = '';
+            document.getElementById('step-explanation').innerHTML = '';
+            document.getElementById('input-visualization').innerHTML = '';
+            const canvas = document.getElementById('result-canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
         function updateFractionInputs() {
             const container = document.getElementById('fractions-container');
             const count = parseInt(document.getElementById('fraction-count').value);
@@ -229,22 +285,30 @@
                 group.innerHTML = `
                     <label>Fracción ${i + 1}</label>
                     <div class="fraction-input">
-                        <input type="number" class="numerator" placeholder="Numerador">
+                        <input type="number" class="numerator" placeholder="0" 
+                               oninput="validateInput(this)" onchange="updateCalculations()">
                         <span>/</span>
-                        <input type="number" class="denominator" placeholder="Denominador">
+                        <input type="number" class="denominator" placeholder="1" 
+                               oninput="validateInput(this)" onchange="updateCalculations()">
                     </div>
                 `;
                 container.appendChild(group);
             }
             
-            // Agregar botón de calcular
             const btnContainer = document.createElement('div');
             btnContainer.style.gridColumn = '1 / -1';
             btnContainer.innerHTML = '<button onclick="calculate()" style="width: 100%">Calcular ⚡</button>';
             container.appendChild(btnContainer);
+            
+            resetResults();
         }
 
-        // Modo oscuro
+        function validateInput(input) {
+            if (input.value === '' || isNaN(input.value)) {
+                input.value = input.classList.contains('denominator') ? '1' : '0';
+            }
+        }
+
         function toggleDarkMode() {
             const body = document.body;
             const currentTheme = body.getAttribute('data-theme');
@@ -261,7 +325,6 @@
             button.textContent = theme === 'dark' ? '🌞 Modo Claro' : '🌓 Modo Oscuro';
         }
 
-        // Dibujar fracciones
         function drawFraction(canvasId, numerator, denominator) {
             const canvas = document.getElementById(canvasId);
             if(!canvas) return;
@@ -269,18 +332,15 @@
             const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            ctx.strokeStyle = getComputedStyle(document.body).getPropertyValue('--primary');
+            ctx.strokeStyle = getComputedStyle(document.body).getPropertyValue('--chart-stroke');
+            ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--chart-fill');
             ctx.lineWidth = 2;
             
-            // Círculo
             ctx.beginPath();
             ctx.arc(canvas.width/2, canvas.height/2, canvas.width/2 - 5, 0, Math.PI * 2);
             ctx.stroke();
             
-            // Porciones
-            ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--secondary');
             const slice = (Math.PI * 2) / denominator;
-            
             for(let i = 0; i < numerator; i++) {
                 ctx.beginPath();
                 ctx.moveTo(canvas.width/2, canvas.height/2);
@@ -290,70 +350,93 @@
             }
         }
 
-        // Calcular resultados
+        const gcd = (a, b) => b ? gcd(b, a % b) : a;
+        const lcm = (a, b) => (a * b) / gcd(a, b);
+
         function calculate() {
-            const numerators = [];
-            const denominators = [];
+            currentNumerators = [];
+            currentDenominators = [];
             
             document.querySelectorAll('.fraction-input-group').forEach(group => {
                 const num = parseInt(group.querySelector('.numerator').value);
                 const den = parseInt(group.querySelector('.denominator').value);
-                numerators.push(num);
-                denominators.push(den);
+                currentNumerators.push(num);
+                currentDenominators.push(den);
             });
             
-            const operation = document.getElementById('operation').value;
+            currentOperation = document.getElementById('operation').value;
             
-            // Validación
-            if(numerators.some(isNaN) || denominators.some(isNaN)) {
-                alert('Por favor complete todos los campos');
+            if(currentDenominators.some(d => d === 0)) {
+                alert('¡Error! Denominador no puede ser cero');
                 return;
             }
             
-            if(denominators.some(d => d === 0)) {
-                alert('¡Los denominadores no pueden ser cero!');
-                return;
-            }
-            
-            // Cálculos
+            updateCalculations();
+        }
+
+        function updateCalculations() {
             let resultNum, resultDen;
+            let explanation = '';
+            let steps = '';
             
-            switch(operation) {
+            switch(currentOperation) {
                 case '+':
-                    resultDen = denominators.reduce((a, b) => a * b, 1);
-                    resultNum = numerators.reduce((acc, num, i) => 
-                        acc + num * (resultDen / denominators[i]), 0);
-                    break;
-                    
                 case '-':
-                    resultDen = denominators.reduce((a, b) => a * b, 1);
-                    resultNum = numerators.reduce((acc, num, i) => 
-                        i === 0 ? num * (resultDen / denominators[i]) : 
-                        acc - num * (resultDen / denominators[i]), 0);
+                    const commonDenominator = currentDenominators.reduce((a, b) => lcm(a, b), 1);
+                    resultNum = currentNumerators.reduce((acc, num, i) => {
+                        const converted = num * (commonDenominator / currentDenominators[i]);
+                        return i === 0 ? converted : 
+                               currentOperation === '+' ? acc + converted : acc - converted;
+                    }, 0);
+                    resultDen = commonDenominator;
+                    
+                    explanation = `Operación de ${currentOperation === '+' ? 'suma' : 'resta'}:`;
+                    steps = currentNumerators.map((num, i) => 
+                        `${num}/${currentDenominators[i]} = ${num * (commonDenominator / currentDenominators[i])}/${commonDenominator}`
+                    ).join(` ${currentOperation} `);
                     break;
                     
                 case '*':
-                    resultNum = numerators.reduce((a, b) => a * b, 1);
-                    resultDen = denominators.reduce((a, b) => a * b, 1);
+                    resultNum = currentNumerators.reduce((a, b) => a * b, 1);
+                    resultDen = currentDenominators.reduce((a, b) => a * b, 1);
+                    
+                    explanation = 'Multiplicación:';
+                    steps = currentNumerators.join(' × ') + ' / (' + currentDenominators.join(' × ') + ')';
                     break;
                     
                 case '/':
-                    resultNum = numerators[0] * denominators.slice(1).reduce((a, b) => a * b, 1);
-                    resultDen = denominators[0] * numerators.slice(1).reduce((a, b) => a * b, 1);
+                    resultNum = currentNumerators[0] * currentDenominators.slice(1).reduce((a, b) => a * b, 1);
+                    resultDen = currentDenominators[0] * currentNumerators.slice(1).reduce((a, b) => a * b, 1);
+                    
+                    explanation = 'División:';
+                    steps = currentNumerators.map((num, i) => 
+                        i === 0 ? `${num}/${currentDenominators[i]}` : ` ÷ ${num}/${currentDenominators[i]}`
+                    ).join(' ');
                     break;
             }
             
-            // Simplificar
             const [simplifiedNum, simplifiedDen] = simplifyFraction(resultNum, resultDen);
             
-            // Actualizar UI
-            document.getElementById('result-text').innerHTML = `
-                Resultado: ${resultNum}/${resultDen} 
-                ${simplifiedNum !== resultNum ? `= ${simplifiedNum}/${simplifiedDen}` : ''}
-                ${simplifiedDen === 1 ? `= ${simplifiedNum}` : ''}
+            document.getElementById('calculation-explanation').innerHTML = `
+                <h3>${explanation}</h3>
+                <p>${steps} = ${resultNum}/${resultDen}</p>
             `;
             
-            // Dibujar visualización
+            document.getElementById('step-explanation').innerHTML = `
+                <h3>Simplificación:</h3>
+                <p>MCD(${resultNum}, ${resultDen}) = ${gcd(resultNum, resultDen)}</p>
+                <p>${resultNum}/${resultDen} = ${simplifiedNum}/${simplifiedDen}</p>
+            `;
+            
+            updateVisualization(currentNumerators, currentDenominators, simplifiedNum, simplifiedDen);
+        }
+
+        function simplifyFraction(numerator, denominator) {
+            const divisor = gcd(numerator, denominator);
+            return [numerator / divisor, denominator / divisor];
+        }
+
+        function updateVisualization(numerators, denominators, resultNum, resultDen) {
             const inputViz = document.getElementById('input-visualization');
             inputViz.innerHTML = '';
             
@@ -366,25 +449,22 @@
                 drawFraction(`frac-${i}`, num, denominators[i]);
             });
             
-            drawFraction('result-canvas', simplifiedNum, simplifiedDen);
+            drawFraction('result-canvas', resultNum, resultDen);
         }
 
-        function simplifyFraction(numerator, denominator) {
-            const gcd = (a, b) => b ? gcd(b, a % b) : a;
-            const divisor = gcd(numerator, denominator);
-            return [numerator / divisor, denominator / divisor];
+        function redrawCanvases() {
+            updateVisualization(currentNumerators, currentDenominators, ...simplifyFraction(resultNum, resultDen));
         }
 
-        // Inicialización
         function loadTheme() {
             const savedTheme = localStorage.getItem('theme') || 'light';
             document.body.setAttribute('data-theme', savedTheme);
             updateThemeButton();
         }
 
+        // Inicialización
         loadTheme();
         updateFractionInputs();
-        document.getElementById('fraction-count').value = '2';
     </script>
 </body>
 </html>
