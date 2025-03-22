@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FrAI - Simulador de Fracciones - CETA "Los Naranjos"</title>
+    <link rel="icon" type="image/x-icon" href="logo.jpeg">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --light: #ecf0f1;
+            --background: white;
+            --text: #2c3e50;
+            --container-bg: white;
+        }
+
+        [data-theme="dark"] {
+            --primary: #3498db;
+            --secondary: #2c3e50;
+            --light: #2c3e50;
+            --background: #1a1a1a;
+            --text: #ecf0f1;
+            --container-bg: #2c3e50;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            padding: 20px;
+            transition: all 0.3s ease;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--container-bg);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            position: relative;
+            padding-bottom: 60px; /* Espacio para el footer */
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .theme-toggle {
+            padding: 8px 12px;
+            border-radius: 20px;
+            background: var(--secondary);
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .fraction-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .calculator {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .fraction-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .fraction-input {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            text-align: center;
+            border: 2px solid var(--primary);
+            border-radius: 5px;
+            background: var(--background);
+            color: var(--text);
+            transition: all 0.3s ease;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: var(--secondary);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .result {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.5em;
+        }
+
+        .visualization {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .canvas-container {
+            text-align: center;
+        }
+
+        canvas {
+            border: 2px solid var(--primary);
+            border-radius: 10px;
+            margin: 10px;
+            background: var(--background);
+            transition: all 0.3s ease;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+            padding: 20px;
+            background-color: var(--primary);
+            color: var(--light);
+            margin-top: 30px;
+        }
+
+        @media (max-width: 600px) {
+            .calculator {
+                grid-template-columns: 1fr;
+            }
+            
+            .fraction-controls {
+                flex-direction: column;
+            }
+            
+            .footer {
+                font-size: 0.8em;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="controls">
+            <h1>FrAI 🧮</h1> 
+            <div class="fraction-controls">
+                <select id="fraction-count" onchange="updateFractionInputs()">
+                    <option value="2">2 Fracciones</option>
+                    <option value="3">3 Fracciones</option>
+                    <option value="4">4 Fracciones</option>
+                    <option value="5">5 Fracciones</option>
+                    <option value="6">6 Fracciones</option>
+                    <option value="7">7 Fracciones</option>
+                    <option value="8">8 Fracciones</option>
+                    <option value="9">9 Fracciones</option>
+                    <option value="10">10 Fracciones</option>
+                </select>
+                <select id="operation">
+                    <option value="+">Suma ➕</option>
+                    <option value="-">Resta ➖</option>
+                    <option value="*">Multiplicación ✖️</option>
+                    <option value="/">División ➗</option>
+                </select>
+            </div>
+            <div>
+                <button class="theme-toggle" onclick="toggleDarkMode()">🌓 Modo Oscuro</button>
+                <button onclick="window.location.reload()">🔄 Refrescar</button>
+            </div>
+        </div>
+
+        <div class="calculator" id="fractions-container">
+            <!-- Las fracciones se generan dinámicamente aquí -->
+        </div>
+
+        <div class="result">
+            <p id="result-text"></p>
+            <div class="visualization">
+                <div id="input-visualization" class="canvas-container"></div>
+                <canvas id="result-canvas" width="150" height="150"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        © 2025 Todos los derechos reservados - Ing. Teddy Valencia
+    </div>
+
+    <script>
+        // Generar fracciones iniciales
+        function updateFractionInputs() {
+            const container = document.getElementById('fractions-container');
+            const count = parseInt(document.getElementById('fraction-count').value);
+            
+            container.innerHTML = '';
+            
+            for(let i = 0; i < count; i++) {
+                const group = document.createElement('div');
+                group.className = 'fraction-input-group';
+                group.innerHTML = `
+                    <label>Fracción ${i + 1}</label>
+                    <div class="fraction-input">
+                        <input type="number" class="numerator" placeholder="Numerador">
+                        <span>/</span>
+                        <input type="number" class="denominator" placeholder="Denominador">
+                    </div>
+                `;
+                container.appendChild(group);
+            }
+            
+            // Agregar botón de calcular
+            const btnContainer = document.createElement('div');
+            btnContainer.style.gridColumn = '1 / -1';
+            btnContainer.innerHTML = '<button onclick="calculate()" style="width: 100%">Calcular ⚡</button>';
+            container.appendChild(btnContainer);
+        }
+
+        // Modo oscuro
+        function toggleDarkMode() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeButton();
+            redrawCanvases();
+        }
+
+        function updateThemeButton() {
+            const theme = localStorage.getItem('theme') || 'light';
+            const button = document.querySelector('.theme-toggle');
+            button.textContent = theme === 'dark' ? '🌞 Modo Claro' : '🌓 Modo Oscuro';
+        }
+
+        // Dibujar fracciones
+        function drawFraction(canvasId, numerator, denominator) {
+            const canvas = document.getElementById(canvasId);
+            if(!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.strokeStyle = getComputedStyle(document.body).getPropertyValue('--primary');
+            ctx.lineWidth = 2;
+            
+            // Círculo
+            ctx.beginPath();
+            ctx.arc(canvas.width/2, canvas.height/2, canvas.width/2 - 5, 0, Math.PI * 2);
+            ctx.stroke();
+            
+            // Porciones
+            ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--secondary');
+            const slice = (Math.PI * 2) / denominator;
+            
+            for(let i = 0; i < numerator; i++) {
+                ctx.beginPath();
+                ctx.moveTo(canvas.width/2, canvas.height/2);
+                ctx.arc(canvas.width/2, canvas.height/2, canvas.width/2 - 5, 
+                        i * slice, (i + 1) * slice);
+                ctx.fill();
+            }
+        }
+
+        // Calcular resultados
+        function calculate() {
+            const numerators = [];
+            const denominators = [];
+            
+            document.querySelectorAll('.fraction-input-group').forEach(group => {
+                const num = parseInt(group.querySelector('.numerator').value);
+                const den = parseInt(group.querySelector('.denominator').value);
+                numerators.push(num);
+                denominators.push(den);
+            });
+            
+            const operation = document.getElementById('operation').value;
+            
+            // Validación
+            if(numerators.some(isNaN) || denominators.some(isNaN)) {
+                alert('Por favor complete todos los campos');
+                return;
+            }
+            
+            if(denominators.some(d => d === 0)) {
+                alert('¡Los denominadores no pueden ser cero!');
+                return;
+            }
+            
+            // Cálculos
+            let resultNum, resultDen;
+            
+            switch(operation) {
+                case '+':
+                    resultDen = denominators.reduce((a, b) => a * b, 1);
+                    resultNum = numerators.reduce((acc, num, i) => 
+                        acc + num * (resultDen / denominators[i]), 0);
+                    break;
+                    
+                case '-':
+                    resultDen = denominators.reduce((a, b) => a * b, 1);
+                    resultNum = numerators.reduce((acc, num, i) => 
+                        i === 0 ? num * (resultDen / denominators[i]) : 
+                        acc - num * (resultDen / denominators[i]), 0);
+                    break;
+                    
+                case '*':
+                    resultNum = numerators.reduce((a, b) => a * b, 1);
+                    resultDen = denominators.reduce((a, b) => a * b, 1);
+                    break;
+                    
+                case '/':
+                    resultNum = numerators[0] * denominators.slice(1).reduce((a, b) => a * b, 1);
+                    resultDen = denominators[0] * numerators.slice(1).reduce((a, b) => a * b, 1);
+                    break;
+            }
+            
+            // Simplificar
+            const [simplifiedNum, simplifiedDen] = simplifyFraction(resultNum, resultDen);
+            
+            // Actualizar UI
+            document.getElementById('result-text').innerHTML = `
+                Resultado: ${resultNum}/${resultDen} 
+                ${simplifiedNum !== resultNum ? `= ${simplifiedNum}/${simplifiedDen}` : ''}
+                ${simplifiedDen === 1 ? `= ${simplifiedNum}` : ''}
+            `;
+            
+            // Dibujar visualización
+            const inputViz = document.getElementById('input-visualization');
+            inputViz.innerHTML = '';
+            
+            numerators.forEach((num, i) => {
+                const canvas = document.createElement('canvas');
+                canvas.width = 80;
+                canvas.height = 80;
+                canvas.id = `frac-${i}`;
+                inputViz.appendChild(canvas);
+                drawFraction(`frac-${i}`, num, denominators[i]);
+            });
+            
+            drawFraction('result-canvas', simplifiedNum, simplifiedDen);
+        }
+
+        function simplifyFraction(numerator, denominator) {
+            const gcd = (a, b) => b ? gcd(b, a % b) : a;
+            const divisor = gcd(numerator, denominator);
+            return [numerator / divisor, denominator / divisor];
+        }
+
+        // Inicialización
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.body.setAttribute('data-theme', savedTheme);
+            updateThemeButton();
+        }
+
+        loadTheme();
+        updateFractionInputs();
+        document.getElementById('fraction-count').value = '2';
+    </script>
+</body>
+</html>
