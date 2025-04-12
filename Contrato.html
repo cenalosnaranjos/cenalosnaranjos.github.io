@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Contratos Docentes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background: #f8f9fa;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .academic-header {
+            background: #2c3e50;
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px 15px 0 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .academic-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .academic-header::after {
+            content: "";
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: #e74c3c;
+            margin: 1rem auto;
+            border-radius: 2px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .form-content {
+            padding: 2.5rem;
+        }
+
+        .form-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.2rem;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.6rem;
+            color: #34495e;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.8rem 1.2rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        input:focus, select:focus {
+            border-color: #3498db;
+            background: white;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52,152,219,0.1);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 1.5rem;
+            padding: 0.5rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .radio-group label:hover {
+            background: rgba(52,152,219,0.1);
+        }
+
+        input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #3498db;
+        }
+
+        button {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 1.5rem auto 0;
+            box-shadow: 0 4px 6px rgba(52,152,219,0.2);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(52,152,219,0.3);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .logo-preview {
+            max-width: 200px;
+            margin: 1rem 0;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .logo-preview:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .university-seal {
+            position: absolute;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 60px;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            
+            .form-content {
+                padding: 1.5rem;
+            }
+
+            .academic-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .university-seal {
+                display: none;
+            }
+
+            .radio-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="academic-header">
+            <svg class="university-seal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+            <h1>Generador de Contrato Docente</h1>
+            <p>Sistema Académico Institucional</p>
+        </div>
+        
+        <div class="form-content">
+            <div class="form-section">
+                <div class="input-group">
+                    <label>Logo de la Institución:</label>
+                    <input type="file" id="logo" accept="image/*" required>
+                    <img id="logoPreview" class="logo-preview hidden">
+                </div>
+                
+                <div class="input-group">
+                    <label>Nombre de la Institución:</label>
+                    <input type="text" id="institucion" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Nombres y Apellidos:</label>
+                    <input type="text" id="nombre" required>
+                </div>
+                
+                <div class="input-group">
+                    <label>Cédula de Identidad:</label>
+                    <input type="text" id="cedula" required>
+                </div>
+                
+                <div class="input-group">
+                    <label>Tipo de Docente:</label>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" name="tipo" value="grado" checked> 
+                            <span>Docente de Grado</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="tipo" value="especialidad">
+                            <span>Docente de Especialidad</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="input-group hidden" id="especialidad-group">
+                    <label>Especialidad:</label>
+                    <select id="especialidad">
+                        <option value="Matemática">Matemática</option>
+                        <option value="Física">Física</option>
+                        <option value="Contabilidad">Contabilidad</option>
+                        <option value="Inglés">Inglés</option>
+                        <option value="Informática">Informática</option>
+                    </select>
+                </div>
+            </div>
+
+            <button onclick="generarPDF()">
+                <svg style="width:20px;height:20px" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M14,17H7V15H14V17M17,13H7V11H17V13M17,9H7V7H17V9M19,3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3Z"/>
+                </svg>
+                Generar Contrato
+            </button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        // Configuración APA 7ma edición
+        const MARGIN = 72;
+        const FONT_SIZE = 12;
+        const LINE_HEIGHT = 1.5;
+        
+        // Mostrar vista previa del logo
+        document.getElementById('logo').addEventListener('change', function(e) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                const preview = document.getElementById('logoPreview');
+                preview.src = reader.result;
+                preview.classList.remove('hidden');
+            }
+            reader.readAsDataURL(e.target.files[0]);
+        });
+
+        // Mostrar/ocultar especialidad
+        document.querySelectorAll('input[name="tipo"]').forEach(radio => {
+            radio.addEventListener('change', () => {
+                document.getElementById('especialidad-group').classList.toggle('hidden', radio.value !== 'especialidad');
+            });
+        });
+
+        async function generarPDF() {
+            // Validar campos
+            const requiredFields = document.querySelectorAll('[required]');
+            let isValid = true;
+            
+            requiredFields.forEach(field => {
+                if(!field.value) {
+                    isValid = false;
+                    field.classList.add('error');
+                } else {
+                    field.classList.remove('error');
+                }
+            });
+
+            if(!isValid) {
+                alert('Por favor complete todos los campos requeridos');
+                return;
+            }
+
+            // Obtener datos del formulario
+            const institucion = document.getElementById('institucion').value;
+            const nombre = document.getElementById('nombre').value;
+            const cedula = document.getElementById('cedula').value;
+            const tipo = document.querySelector('input[name="tipo"]:checked').value;
+            const especialidad = document.getElementById('especialidad').value;
+            const logo = document.getElementById('logoPreview').src;
+
+            // Crear PDF
+            const doc = new jspdf.jsPDF({
+                orientation: 'portrait',
+                unit: 'pt',
+                format: 'letter'
+            });
+
+            doc.setFontSize(FONT_SIZE);
+            doc.setFont('Helvetica', 'normal');
+            doc.setLineHeightFactor(LINE_HEIGHT);
+
+            let yPosition = MARGIN;
+            const pageWidth = doc.internal.pageSize.width;
+            const contentWidth = pageWidth - (MARGIN * 2);
+
+            const addHeader = () => {
+                doc.setFontSize(10);
+                doc.text(`Contrato Laboral - ${institucion}`, MARGIN, 40);
+                doc.text(`Página ${doc.internal.getNumberOfPages()}`, pageWidth - MARGIN - 40, 40, {align: 'right'});
+                doc.setFontSize(FONT_SIZE);
+            };
+
+            if(logo && logo !== '') {
+                const imgData = logo;
+                const imgProps = doc.getImageProperties(imgData);
+                const maxWidth = 150;
+                const imgHeight = (imgProps.height * maxWidth) / imgProps.width;
+                
+                doc.addImage(imgData, 'PNG', MARGIN, yPosition, maxWidth, imgHeight);
+                yPosition += imgHeight + 30;
+            }
+
+            addHeader();
+            doc.setFontSize(14);
+            doc.text('CONTRATO LABORAL DOCENTE', MARGIN, yPosition, {align: 'left'});
+            yPosition += 30;
+
+            doc.setFontSize(FONT_SIZE);
+            const textoContrato = [
+                `Entre la Institución Educativa "${institucion}" y el/la docente ${nombre}, `,
+                `C.I. ${cedula}, se establece el siguiente contrato:`,
+                '',
+                '1. TIPO DE DOCENTE: ' + (tipo === 'grado' ? 'Docente de Grado' : `Docente de Especialidad en ${especialidad}`),
+                '2. REMUNERACIÓN: ' + (tipo === 'grado' ? 
+                    '$25 por cada estudiante asignado' : 
+                    '$10 por cada estudiante asignado'),
+                '3. DURACIÓN: Un año lectivo',
+                '4. OBLIGACIONES: ',
+                '   - Guiar al estudiante para que complete las actividades académicas',
+                '   - Participar en actividades institucionales',
+                '   - Responsabilizarse de los estudiantes asignados',
+                '   - Mantener la disciplina en el aula',
+                '   - Mantener organizado el espacio de trabajo',
+                '',
+                '___________________________',
+                `${nombre},`,
+                `C.I. ${cedula}`,
+                `Fecha: ${new Date().toLocaleDateString()}`
+            ];
+
+            textoContrato.forEach((linea, index) => {
+                if(yPosition > doc.internal.pageSize.height - MARGIN) {
+                    doc.addPage();
+                    yPosition = MARGIN;
+                    addHeader();
+                }
+                
+                const textOptions = {
+                    maxWidth: contentWidth,
+                    align: 'justify'
+                };
+
+                const splitText = doc.splitTextToSize(linea, contentWidth);
+                splitText.forEach((textLine) => {
+                    doc.text(textLine, MARGIN, yPosition, textOptions);
+                    yPosition += FONT_SIZE * LINE_HEIGHT;
+                });
+            });
+
+            doc.save(`Contrato_${nombre.replace(/ /g, '_')}_APA.pdf`);
+        }
+    </script>
+</body>
+</html>
