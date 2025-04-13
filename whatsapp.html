@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador QR WhatsApp</title>
+    <!-- Incluir la librería QRCode.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #25d366, #128c7e);
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h1 {
+            color: #128c7e;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 500;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #25d366;
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            background: #25d366;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: #128c7e;
+        }
+
+        #qrcode {
+            margin-top: 1.5rem;
+            text-align: center;
+            padding: 1rem;
+            background: #f8f8f8;
+            border-radius: 8px;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 1.5rem;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Generador QR para WhatsApp</h1>
+        
+        <div class="input-group">
+            <label for="phone">Número de teléfono (con código de país):</label>
+            <input type="tel" id="phone" placeholder="Ej: 5491123456789">
+        </div>
+
+        <div class="input-group">
+            <label for="message">Mensaje:</label>
+            <textarea id="message" rows="4" placeholder="Escribe tu mensaje aquí..."></textarea>
+        </div>
+
+        <button onclick="generarQR()">Generar QR</button>
+        
+        <div id="qrcode"></div>
+    </div>
+
+    <script>
+        function generarQR() {
+            const phone = document.getElementById('phone').value.trim();
+            const message = document.getElementById('message').value.trim();
+            const qrContainer = document.getElementById('qrcode');
+            
+            if (!phone || !message) {
+                alert('Por favor completa todos los campos');
+                return;
+            }
+
+            // Limpiar QR anterior
+            qrContainer.innerHTML = '';
+            
+            // Formatear la URL de WhatsApp
+            const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+            
+            // Generar el QR
+            new QRCode(qrContainer, {
+                text: url,
+                width: 200,
+                height: 200,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+            
+            // Hacer scroll suave al QR
+            qrContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
