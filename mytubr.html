@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C.E.T.A Los Naranjos - Plataforma Moderna Final</title>
+    <link rel="icon" type="image/x-icon" href="icono.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        /* --- INICIO CSS --- */
+        :root {
+            /* Light Mode Palette */
+            --primary-color: #ffffff; /* Blanco para header/sidebar */
+            --secondary-color: #007bff; /* Azul primario */
+            --accent-color: #1abc9c;   /* Teal/Verde azulado como acento */
+            --bg-color: #f8f9fa;       /* Gris muy claro para fondo */
+            --text-color: #212529;     /* Negro suave */
+            --text-muted: #6c757d;    /* Gris medio */
+            --hover-bg-color: #e9ecef; /* Gris claro para hover */
+            --border-color: #dee2e6;   /* Gris claro para bordes */
+            --shadow-color: rgba(0, 0, 0, 0.08);
+            --footer-bg: #343a40;      /* Gris oscuro */
+            --footer-text: #f8f9fa;    /* Texto claro en footer */
+
+            --font-primary: 'Poppins', sans-serif;
+            --font-secondary: 'Roboto', sans-serif;
+            --header-height: 65px;
+            --sidebar-width: 250px;
+            --border-radius: 8px;
+            --rgb-secondary: 0, 123, 255; /* Para el box-shadow */
+        }
+
+        .dark-mode {
+            /* Dark Mode Palette */
+            --primary-color: #2c2c2c; /* Gris oscuro para header/sidebar */
+            --secondary-color: #3498db; /* Azul más brillante */
+            --accent-color: #1abc9c;   /* Teal se mantiene bien */
+            --bg-color: #1a1a1a;       /* Gris casi negro */
+            --text-color: #e0e0e0;     /* Gris claro */
+            --text-muted: #adb5bd;    /* Gris medio claro */
+            --hover-bg-color: #383838; /* Gris oscuro para hover */
+            --border-color: #444444;   /* Gris medio oscuro */
+            --shadow-color: rgba(0, 0, 0, 0.25);
+            --footer-bg: #1a1a1a;      /* Mismo que fondo */
+            --footer-text: #adb5bd;    /* Texto muted en footer */
+            --rgb-secondary: 52, 152, 219; /* Para el box-shadow */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-secondary); /* Fuente base para cuerpo */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-size: 16px; /* Tamaño base */
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            padding: 0 1.5rem; /* Espaciado horizontal */
+            height: var(--header-height);
+            background: var(--primary-color);
+            box-shadow: 0 2px 5px var(--shadow-color);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .menu-toggle {
+            display: none; /* Oculto por defecto, visible en mobile */
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem; /* Tamaño icono */
+            padding: 0.5rem;
+            margin-right: 1rem;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+        .menu-toggle:hover {
+            color: var(--secondary-color);
+            background-color: var(--hover-bg-color);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem; /* Espacio logo-texto */
+            text-decoration: none; /* Si es un enlace */
+            color: var(--text-color);
+            margin-right: 2rem; /* Espacio después del logo */
+        }
+        .logo {
+            height: 38px; /* Altura fija logo */
+            width: auto;
+            object-fit: contain; /* Asegura que no se deforme */
+        }
+        .logo-text {
+            font-family: var(--font-primary);
+            font-size: 1.1rem;
+            font-weight: 600;
+            white-space: nowrap; /* Evita que el texto se rompa */
+        }
+
+        .search-container {
+            margin-left: auto; /* Empuja a la derecha */
+            display: flex;
+            align-items: center;
+            background-color: var(--bg-color); /* Fondo del input */
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 0.3rem 0.8rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .search-container:focus-within { /* Estilo cuando el input tiene foco */
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 2px rgba(var(--rgb-secondary), 0.25); /* Usa color secundario */
+        }
+        .search-icon {
+            color: var(--text-muted);
+            margin-right: 0.5rem;
+        }
+        .search-input {
+            padding: 0.3rem 0; /* Ajusta padding vertical */
+            border-radius: 0; /* Quita radio del input */
+            border: none;
+            background: transparent; /* Hereda fondo del contenedor */
+            color: var(--text-color);
+            font-family: var(--font-secondary);
+            font-size: 0.95rem;
+            width: 220px; /* Ancho inicial */
+            outline: none; /* Quita borde de foco feo */
+        }
+        .search-input::placeholder {
+            color: var(--text-muted);
+            opacity: 0.8;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: var(--header-height); /* Debajo del header */
+            bottom: 0;
+            width: var(--sidebar-width);
+            padding: 1.5rem 1rem; /* Más padding vertical */
+            background: var(--primary-color);
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out, background-color 0.3s ease, border-color 0.3s ease;
+            z-index: 999;
+        }
+        .sidebar.active {
+            transform: translateX(0);
+        }
+
+        .menu-section {
+            margin-bottom: 1.5rem; /* Espacio entre secciones */
+        }
+        .menu-section:last-child {
+            margin-bottom: 0;
+        }
+        .menu-section-title {
+            font-family: var(--font-primary);
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 0 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 0.7rem 1rem; /* Padding item */
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            margin-bottom: 0.25rem; /* Espacio entre items */
+            color: var(--text-color);
+            text-decoration: none;
+            font-family: var(--font-primary);
+            font-weight: 500;
+            font-size: 0.95rem;
+            position: relative; /* Para el borde activo */
+            border-left: 3px solid transparent; /* Borde izquierdo oculto */
+            transition: background-color 0.2s ease, color 0.2s ease, border-left-color 0.2s ease;
+        }
+        .menu-item:hover {
+            background-color: var(--hover-bg-color);
+            color: var(--secondary-color); /* Color de texto al pasar el ratón */
+        }
+        .menu-item.active {
+            background-color: var(--hover-bg-color);
+            color: var(--secondary-color);
+            font-weight: 600;
+            border-left-color: var(--secondary-color); /* Muestra borde activo */
+        }
+        .menu-item i.fa-fw { /* Iconos FontAwesome */
+            width: 20px; /* Ancho fijo */
+            text-align: center; /* Centra el icono */
+            margin-right: 1rem; /* Espacio icono-texto */
+            font-size: 1.1em; /* Tamaño relativo al texto */
+            color: var(--text-muted); /* Color icono por defecto */
+            transition: color 0.2s ease;
+        }
+        .menu-item:hover i.fa-fw,
+        .menu-item.active i.fa-fw {
+            color: var(--secondary-color); /* Color icono en hover/activo */
+        }
+
+        /* Overlay for mobile sidebar */
+        .overlay {
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6); /* Más oscuro */
+            display: none;
+            z-index: 998;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .overlay.visible {
+            display: block;
+            opacity: 1;
+        }
+
+
+        /* Main Content */
+        .main-content {
+            margin-top: var(--header-height);
+            padding: 2rem; /* Más padding */
+            transition: margin-left 0.3s ease-in-out;
+            flex: 1; /* Ocupa espacio restante */
+        }
+        .main-title {
+            font-family: var(--font-primary);
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--text-color);
+        }
+
+        /* Video Grid */
+        .video-grid {
+            display: grid;
+            /* Mínimo 280px, máximo 1 fracción del espacio */
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.8rem; /* Espacio entre tarjetas */
+        }
+
+        .video-card {
+            background: var(--primary-color); /* Fondo tarjeta */
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            display: block; /* Se controla con JS */
+            text-decoration: none;
+            color: inherit;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 8px var(--shadow-color);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+        .video-card:hover {
+            transform: translateY(-6px); /* Efecto levantar */
+            box-shadow: 0 6px 16px var(--shadow-color);
+        }
+
+        .thumbnail {
+            display: block; /* Evita espacio extra */
+            width: 100%;
+            aspect-ratio: 16 / 9; /* Usa aspect-ratio */
+            object-fit: cover; /* Cubre el espacio sin deformar */
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .video-info {
+            padding: 0.8rem 1rem; /* Padding interno tarjeta */
+        }
+
+        .video-title {
+            font-family: var(--font-primary);
+            font-size: 1rem; /* Tamaño título */
+            font-weight: 600; /* Negrita */
+            line-height: 1.4; /* Interlineado */
+            margin-bottom: 0.4rem;
+            /* Truncar texto a 2 líneas */
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            min-height: 2.8em; /* Asegura espacio para 2 líneas */
+        }
+
+        .video-meta {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--footer-bg);
+            color: var(--footer-text);
+            padding: 2rem 1.5rem; /* Más padding vertical */
+            margin-top: auto; /* Empuja al fondo */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .copyright {
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 2rem; /* Espacio entre links */
+            justify-content: center;
+        }
+        .social-links a {
+            color: var(--footer-text);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem; /* Espacio icono-texto */
+            font-size: 0.95rem;
+            font-weight: 500;
+            opacity: 0.9;
+            transition: opacity 0.2s ease, color 0.2s ease;
+        }
+        .social-links a:hover {
+            opacity: 1;
+            color: var(--accent-color); /* Color acento al pasar ratón */
+        }
+        .social-links a i {
+            font-size: 1.3em; /* Iconos un poco más grandes */
+        }
+
+        /* Responsive Design */
+        @media (min-width: 768px) {
+            /* Estilos para pantallas grandes (Desktop) */
+            .sidebar {
+                transform: translateX(0);
+                z-index: auto; /* No necesita estar encima de todo */
+            }
+            .main-content {
+                margin-left: var(--sidebar-width);
+            }
+            .menu-toggle {
+                display: none; /* Ocultar botón menú */
+            }
+            .overlay {
+                display: none !important; /* Asegura que nunca se muestre */
+            }
+        }
+
+        @media (max-width: 767px) {
+            /* Estilos para pantallas pequeñas (Mobile) */
+            .header {
+                padding: 0 1rem; /* Menos padding */
+            }
+            .menu-toggle {
+                display: block; /* Mostrar botón menú */
+            }
+            .logo-container {
+                margin-right: auto; /* Empuja searchbar a la derecha */
+                 margin-left: 0.5rem; /* Pequeño espacio del botón menú */
+            }
+            .logo-text {
+                display: none; /* Ocultar texto del logo en móvil */
+            }
+            .logo {
+                height: 34px; /* Logo un poco más pequeño */
+            }
+            .search-container {
+                margin-left: 0; /* Quita margen auto */
+                max-width: 150px; /* Limita ancho */
+            }
+            .search-input {
+                width: 100%; /* Ocupa el espacio disponible */
+            }
+            .sidebar {
+                width: 85%; /* Ancho sidebar móvil */
+                max-width: 300px; /* Máximo ancho */
+                box-shadow: 4px 0 15px rgba(0, 0, 0, 0.15); /* Sombra cuando está abierta */
+            }
+            .main-content {
+                padding: 1.5rem; /* Menos padding */
+                margin-left: 0 !important; /* Asegura que no tenga margen */
+            }
+            .main-title {
+                font-size: 1.4rem;
+            }
+            .video-grid {
+                /* Mínimo ~100% (1 columna), máximo 1fr */
+                grid-template-columns: repeat(auto-fill, minmax(calc(100% - 1rem), 1fr));
+                gap: 1.2rem;
+            }
+            .footer {
+                padding: 1.5rem 1rem;
+            }
+            .social-links {
+                gap: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            /* Ajustes extra finos para pantallas muy pequeñas */
+            .search-container {
+                display: none; /* Ocultar buscador si no cabe bien */
+            }
+            .video-title {
+                font-size: 0.95rem;
+            }
+            .video-meta {
+                font-size: 0.8rem;
+            }
+        }
+        /* --- FIN CSS --- */
+    </style>
+</head>
+<body>
+    <header class="header">
+        <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="logo-container">
+             <img src="icono.png" alt="Logo CETA" class="logo">
+            <span class="logo-text">C.E.T.A Los Naranjos</span>
+        </div>
+        <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="search-input" id="searchInput" placeholder="Buscar vídeos...">
+        </div>
+    </header>
+
+    <nav class="sidebar" id="sidebar">
+        <div class="menu-section">
+            <div class="menu-item active" data-materia="todas">
+                <i class="fas fa-grip-horizontal fa-fw"></i> <span>Todas las materias</span>
+            </div>
+        </div>
+
+        <div class="menu-section">
+            <h4 class="menu-section-title">Materias Principales</h4>
+            <div class="menu-item" data-materia="matematicas">
+                <i class="fas fa-calculator fa-fw"></i>
+                <span>Matemáticas</span>
+            </div>
+            <div class="menu-item" data-materia="ingles">
+                <i class="fas fa-language fa-fw"></i>
+                <span>Inglés</span>
+            </div>
+            <div class="menu-item" data-materia="fisica">
+                <i class="fas fa-atom fa-fw"></i>
+                <span>Física</span>
+            </div>
+            <div class="menu-item" data-materia="lengua">
+                <i class="fas fa-book-open fa-fw"></i>
+                <span>Lengua y Literatura</span>
+            </div>
+            <div class="menu-item" data-materia="sociales">
+                <i class="fas fa-landmark fa-fw"></i> <span>Ciencias Sociales</span>
+            </div>
+        </div>
+
+        <div class="menu-section">
+             <h4 class="menu-section-title">Configuración</h4>
+            <div class="menu-item" id="themeMenuItem">
+                <i class="fas fa-moon fa-fw"></i>
+                <span>Modo Oscuro</span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="overlay" id="overlay"></div>
+
+    <main class="main-content">
+        <h2 class="main-title">Explora los Vídeos</h2>
+        <div class="video-grid" id="videoGrid">
+             </div>
+    </main>
+
+    <footer class="footer">
+        <div class="copyright">
+             © <span id="current-year">2025</span> C.E.T.A Los Naranjos. Todos los derechos reservados.
+        </div>
+        <div class="social-links">
+            <a href="https://www.ejemplo.com" target="_blank" rel="noopener noreferrer" aria-label="Sitio Web">
+                <i class="fas fa-globe fa-lg"></i>
+                <span>Sitio Web</span>
+            </a>
+            <a href="https://wa.me/1234567890" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+                <i class="fab fa-whatsapp fa-lg"></i>
+                <span>WhatsApp</span>
+            </a>
+        </div>
+    </footer>
+
+    <script>
+        // --- INICIO JAVASCRIPT ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('searchInput');
+            const videoGrid = document.getElementById('videoGrid');
+            const menuItems = document.querySelectorAll('.sidebar .menu-item');
+            const menuToggle = document.getElementById('menuToggle');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            const themeMenuItem = document.getElementById('themeMenuItem');
+            const body = document.body;
+            const currentYearSpan = document.getElementById('current-year');
+
+            // --- Datos de Videos (Actualiza con tus videos reales) ---
+            const videosData = [
+                { href: "mate.html", materia: "matematicas", search: "algebra introducción numeros reales", img: "https://i.ytimg.com/vi/VY2F2sn1Eis/hqdefault.jpg", title: "Introducción al Álgebra", meta: "Matemáticas • 25 min", alt: "Álgebra"},
+                { href: "https://www.youtube.com/watch?v=Kp2bYWRQylk", materia: "matematicas", search: "calculo fundamentos derivadas integrales", img: "https://i.ytimg.com/vi/Kp2bYWRQylk/hqdefault.jpg", title: "Fundamentos de Cálculo", meta: "Matemáticas • 35 min", alt: "Cálculo"},
+                { href: "https://www.youtube.com/watch?v=8Gkxt7sY_4o", materia: "matematicas", search: "geometría básica figuras planas volumen", img: "https://i.ytimg.com/vi/8Gkxt7sY_4o/hqdefault.jpg", title: "Geometría Básica", meta: "Matemáticas • 28 min", alt: "Geometría"},
+                { href: "https://www.youtube.com/watch?v=6j7qRvIoLVM", materia: "ingles", search: "verbos básicos to be present simple", img: "https://i.ytimg.com/vi/6j7qRvIoLVM/hqdefault.jpg", title: "Verbos Básicos en Inglés", meta: "Inglés • 20 min", alt: "Inglés"},
+                { href: "https://www.youtube.com/watch?v=2YJC6VxJcSI", materia: "ingles", search: "conversación práctica daily routines dialogues", img: "https://i.ytimg.com/vi/2YJC6VxJcSI/hqdefault.jpg", title: "Conversación Práctica", meta: "Inglés • 30 min", alt: "Conversación"},
+                { href: "https://www.youtube.com/watch?v=3MgSiq71NXQ", materia: "ingles", search: "gramática esencial past tense articles", img: "https://i.ytimg.com/vi/3MgSiq71NXQ/hqdefault.jpg", title: "Gramática Esencial", meta: "Inglés • 25 min", alt: "Gramática"},
+                { href: "https://www.youtube.com/watch?v=6W3nW6GkGiw", materia: "fisica", search: "cinemática básica mru mruv movimiento", img: "https://i.ytimg.com/vi/6W3nW6GkGiw/hqdefault.jpg", title: "Introducción a la Cinemática", meta: "Física • 32 min", alt: "Cinemática"},
+                { href: "https://www.youtube.com/watch?v=NYcGiFpP3u8", materia: "fisica", search: "termodinámica principios calor temperatura leyes", img: "https://i.ytimg.com/vi/NYcGiFpP3u8/hqdefault.jpg", title: "Principios de Termodinámica", meta: "Física • 40 min", alt: "Termodinámica"},
+                { href: "https://www.youtube.com/watch?v=J4Axp1JbW7g", materia: "fisica", search: "electromagnetismo fundamentos campo electrico magnetico", img: "https://i.ytimg.com/vi/J4Axp1JbW7g/hqdefault.jpg", title: "Fundamentos de Electromagnetismo", meta: "Física • 38 min", alt: "Electromagnetismo"},
+                { href: "https://www.youtube.com/watch?v=0x9Q4XHtyxU", materia: "lengua", search: "análisis literario figuras retóricas géneros", img: "https://i.ytimg.com/vi/0x9Q4XHtyxU/hqdefault.jpg", title: "Análisis Literario Básico", meta: "Lengua y Literatura • 28 min", alt: "Literatura"},
+                { href: "https://www.youtube.com/watch?v=7KXqNAKcbeU", materia: "lengua", search: "gramática española sintaxis morfología acentuación", img: "https://i.ytimg.com/vi/7KXqNAKcbeU/hqdefault.jpg", title: "Gramática Española", meta: "Lengua y Literatura • 25 min", alt: "Gramática"},
+                { href: "https://www.youtube.com/watch?v=j8IjyAPivM4", materia: "lengua", search: "redacción efectiva coherencia cohesión estructura texto", img: "https://i.ytimg.com/vi/j8IjyAPivM4/hqdefault.jpg", title: "Redacción Efectiva", meta: "Lengua y Literatura • 30 min", alt: "Redacción"},
+                { href: "https://www.youtube.com/watch?v=6E9qUc5vz7s", materia: "sociales", search: "historia universal contemporánea guerras mundiales guerra fria", img: "https://i.ytimg.com/vi/6E9qUc5vz7s/hqdefault.jpg", title: "Historia Universal Contemporánea", meta: "Sociales • 45 min", alt: "Historia"},
+                { href: "https://www.youtube.com/watch?v=3XJL6qjVfWg", materia: "sociales", search: "geografía política mundial paises capitales conflictos", img: "https://i.ytimg.com/vi/3XJL6qjVfWg/hqdefault.jpg", title: "Geografía Política Mundial", meta: "Sociales • 35 min", alt: "Geografía"},
+                { href: "https://www.youtube.com/watch?v=B43YEjBCXFQ", materia: "sociales", search: "economía básica oferta demanda mercado pib", img: "https://i.ytimg.com/vi/B43YEjBCXFQ/hqdefault.jpg", title: "Conceptos Básicos de Economía", meta: "Sociales • 30 min", alt: "Economía"},
+                // Agrega más objetos de video aquí
+            ];
+
+            // --- Renderizar Videos Iniciales ---
+            function renderVideos(videosToRender) {
+                if (!videoGrid) return; // Salir si el grid no existe
+                videoGrid.innerHTML = ''; // Limpiar grid
+                videosToRender.forEach(video => {
+                    const card = document.createElement('a');
+                    card.href = video.href;
+                    card.classList.add('video-card');
+                    card.dataset.materia = video.materia;
+                    card.dataset.search = video.search;
+                    card.target = "_blank"; // Abrir en nueva pestaña
+                    card.rel = "noopener noreferrer"; // Seguridad
+
+                    card.innerHTML = `
+                        <img src="${video.img}" class="thumbnail" alt="${video.alt || video.title}" loading="lazy"> <div class="video-info">
+                            <h3 class="video-title">${video.title}</h3>
+                            <p class="video-meta">${video.meta}</p>
+                        </div>
+                    `;
+                    videoGrid.appendChild(card);
+                });
+                // Aplicar filtro inicial (mostrar todos si "todas" está activo)
+                filterAndSearch();
+            }
+
+            // --- Función Combinada de Filtrado y Búsqueda ---
+            function filterAndSearch() {
+                if (!videoGrid) return;
+                const searchTerm = searchInput.value.toLowerCase().trim();
+                const activeFilterItem = document.querySelector('.sidebar .menu-item.active');
+                const selectedMateria = activeFilterItem ? activeFilterItem.dataset.materia : 'todas';
+                const allCards = videoGrid.querySelectorAll('.video-card'); // Seleccionar las tarjetas ya renderizadas
+
+                allCards.forEach(card => {
+                    const title = card.querySelector('.video-title').textContent.toLowerCase();
+                    const meta = card.querySelector('.video-meta').textContent.toLowerCase();
+                    const searchData = card.dataset.search ? card.dataset.search.toLowerCase() : '';
+                    const materia = card.dataset.materia;
+
+                    const materiaMatch = selectedMateria === 'todas' || materia === selectedMateria;
+                    const searchMatch = searchTerm === '' || title.includes(searchTerm) || meta.includes(searchTerm) || searchData.includes(searchTerm);
+
+                    // Usar 'display' para mostrar/ocultar como en el código original
+                    card.style.display = (materiaMatch && searchMatch) ? 'block' : 'none';
+                });
+            }
+
+            // --- Event Listeners ---
+
+            // Búsqueda (si existe el input)
+            if (searchInput) {
+                searchInput.addEventListener('input', filterAndSearch);
+            }
+
+            // Filtrado de materias
+            menuItems.forEach(item => {
+                if (item.id !== 'themeMenuItem' && item.dataset.materia) { // Asegurar que es un item de filtro
+                    item.addEventListener('click', () => {
+                        // Quitar active de todos los items de filtro
+                        menuItems.forEach(i => {
+                            if (i.dataset.materia) i.classList.remove('active');
+                        });
+                        item.classList.add('active'); // Poner active al clickeado
+                        filterAndSearch(); // Aplicar filtro
+
+                        if (window.innerWidth <= 767 && sidebar?.classList.contains('active')) {
+                            toggleSidebar();
+                        }
+                    });
+                }
+            });
+
+            // Toggle del menú móvil
+            function toggleSidebar() {
+                if (!sidebar || !overlay) return;
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('visible', sidebar.classList.contains('active'));
+                body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+            }
+
+            if (menuToggle) {
+                menuToggle.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleSidebar();
+                });
+            }
+            if (overlay) {
+                overlay.addEventListener('click', toggleSidebar);
+            }
+
+            // Cerrar con tecla Escape
+            document.addEventListener('keydown', (e) => {
+                if (e.key === "Escape" && sidebar?.classList.contains('active')) {
+                    toggleSidebar();
+                }
+            });
+
+            // Tema oscuro/claro
+            function applyTheme(theme) {
+                if (theme === 'dark') {
+                    body.classList.add('dark-mode');
+                    if (themeMenuItem) themeMenuItem.innerHTML = `<i class="fas fa-sun fa-fw"></i> <span>Modo Claro</span>`;
+                } else {
+                    body.classList.remove('dark-mode');
+                    if (themeMenuItem) themeMenuItem.innerHTML = `<i class="fas fa-moon fa-fw"></i> <span>Modo Oscuro</span>`;
+                }
+            }
+
+            if (themeMenuItem) {
+                themeMenuItem.addEventListener('click', () => {
+                    const isDarkMode = body.classList.contains('dark-mode');
+                    const newTheme = isDarkMode ? 'light' : 'dark';
+                    applyTheme(newTheme);
+                    localStorage.setItem('theme', newTheme);
+                });
+            }
+
+            // Cargar tema guardado o preferencia del sistema
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            // Da prioridad al guardado, si no existe usa preferencia del sistema, si no, default a 'light'
+            const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+            applyTheme(initialTheme);
+
+
+            // Cerrar menú al cambiar tamaño a desktop
+            window.addEventListener('resize', () => {
+                if (window.innerWidth >= 768 && sidebar?.classList.contains('active')) {
+                    toggleSidebar();
+                }
+            });
+
+            // Actualizar año en footer
+            if (currentYearSpan) {
+                currentYearSpan.textContent = new Date().getFullYear();
+            }
+
+            // Renderizar videos al cargar la página (solo si existe el grid)
+            if (videoGrid) {
+                 renderVideos(videosData);
+            } else {
+                console.error("Elemento con id 'videoGrid' no encontrado.");
+            }
+
+
+        }); // Fin DOMContentLoaded
+        // --- FIN JAVASCRIPT ---
+    </script>
+</body>
+</html>
