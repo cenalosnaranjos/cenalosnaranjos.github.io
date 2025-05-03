@@ -1,71 +1,391 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CETA - Herramientas Disponibles</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>CETA - Herramientas Digitales</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="logo.jpeg">
+    <style>
+        :root {
+            --primary: #2A5C82;
+            --secondary: #5BA4E6;
+            --light: #f8f9fa;
+            --dark: #1a1a1a;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            transition: var(--transition);
+            line-height: 1.6;
+        }
+
+        body.dark-mode {
+            background-color: var(--dark);
+            color: var(--light);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .site-header-modern {
+            background: var(--primary);
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .dark-mode .site-header-modern {
+            background: #1a3650;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .logo-round {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px solid white;
+            object-fit: cover;
+        }
+
+        .header-text h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            letter-spacing: 0.5px;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 4rem 0;
+        }
+
+        .tools-section h2 {
+            text-align: center;
+            font-size: 2.4rem;
+            margin-bottom: 3rem;
+            color: var(--primary);
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        .tools-section h2::after {
+            content: '';
+            width: 60px;
+            height: 3px;
+            background: var(--secondary);
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .dark-mode .tools-section h2 {
+            color: var(--secondary);
+        }
+
+        .tools-grid-modern {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 1rem;
+        }
+
+        .tool-card-modern {
+            background: white;
+            border-radius: 18px;
+            padding: 2rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            min-height: 380px;
+        }
+
+        .dark-mode .tool-card-modern {
+            background: #2d2d2d;
+            border-color: #404040;
+        }
+
+        .tool-card-modern:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+        }
+
+        .icon-wrapper {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .tool-icon {
+            color: white;
+            font-size: 2rem;
+        }
+
+        .tool-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .tool-description {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: auto;
+            color: #666;
+            padding: 0 1rem;
+            text-align: center;
+        }
+
+        .dark-mode .tool-description {
+            color: #ccc;
+        }
+
+        /* Botones */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: var(--transition);
+            width: fit-content;
+            margin: 1.5rem auto 0;
+        }
+
+        .primary-btn {
+            background: var(--primary);
+            color: white;
+            border: 2px solid var(--primary);
+        }
+
+        .primary-btn:hover {
+            background: #1d4562;
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        /* Modo Oscuro */
+        .theme-toggle {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--primary);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border: none;
+            z-index: 1000;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1) rotate(180deg);
+        }
+
+        /* Footer */
+        .site-footer-modern {
+            background: var(--primary);
+            color: white;
+            padding: 2.5rem 0;
+            margin-top: 4rem;
+            text-align: center;
+        }
+
+        .dark-mode .site-footer-modern {
+            background: #1a3650;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+            
+            .header-text h1 {
+                font-size: 1.8rem;
+            }
+            
+            .tools-section h2 {
+                font-size: 2rem;
+            }
+            
+            .tool-card-modern {
+                min-height: 340px;
+                padding: 1.5rem;
+            }
+            
+            .theme-toggle {
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Logo y nombre de la institución -->
-        <header>
-            <img src="logo.jpeg" alt="Logo de la Institución" class="logo">
-            <h1>Centro de Especialidades y Tutorías Académicas "Los Naranjos"</h1>
-        </header>
+    <button class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon"></i>
+    </button>
 
-        <!-- Tabla de herramientas -->
-        <section class="herramientas">
-            <h2>Herramientas Disponibles</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Acceso</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Tomar asistencia</td>
-                        <td><a href="qr.html" class="btn">Acceder</a></td>
-                    </tr>
-                    <tr>
-                        <td>EVA</td>
-                        <td><a href="EVA.html" class="btn">Acceder</a></td>
-                    </tr>
-                    <tr>
-                        <td>FrAI🧮 - Simulador de Fracciones</td>
-                        <td><a href="SimuladorFrAI.html" class="btn">Acceder</a></td>
-                    </tr>
-                    <tr>
-                        <td>Simulador de las tablas de multiplicar</td>
-                        <td><a href="tabla.html" class="btn">Acceder</a></td>
-                    </tr>
-                    <tr>
-                        <td>Simulador de los verbos en ingles</td>
-                        <td><a href="Verbs.html" class="btn">Acceder</a></td>
-                    </tr>
-                    <tr>
-                        <td>Examen de Matemática</td>
-                        <td><a href="examen.html" class="btn">Acceder</a></td>
-                    </tr>
-                    <tr>
-                        <td>Calculadora</td>
-                        <td><a href="calculadora.html" class="btn">Acceder</a></td>
-                    </tr>
-                    <tr>
-                        <td>Registro de incripción al curso de inglés</td>
-                        <td><a href="registro.html" class="btn">Acceder</a></td>
-                    </tr>
-                </tbody>
-            </table>
+    <header class="site-header-modern">
+        <div class="container header-content">
+            <img src="icono.png" alt="Logo CETA" class="logo logo-round">
+            <div class="header-text">
+                <h1>CETA - Herramientas Académicas Digitales</h1>
+                <p class="subtitle">Centro de Especialidades y Tutorías "Los Naranjos"</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="container main-content">
+        <section class="tools-section">
+            <h2>Explora y Utiliza Nuestros Recursos</h2>
+            <div class="tools-grid-modern">
+                <!-- Todas las herramientas integradas -->
+                <div class="tool-card-modern">
+                    <div class="icon-wrapper"><i class="fas fa-clipboard-check tool-icon"></i></div>
+                    <h3 class="tool-title">Tomar asistencia</h3>
+                    <p class="tool-description">Registro digital de asistencia mediante códigos QR para mayor eficiencia.</p>
+                    <a href="qr.html" class="btn primary-btn">Acceder <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="tool-card-modern">
+                    <div class="icon-wrapper"><i class="fas fa-chalkboard-teacher tool-icon"></i></div>
+                    <h3 class="tool-title">EVA</h3>
+                    <p class="tool-description">Entorno Virtual de Aprendizaje con recursos educativos integrados.</p>
+                    <a href="EVA.html" class="btn primary-btn">Acceder <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="tool-card-modern">
+                    <div class="icon-wrapper"><i class="fas fa-calculator tool-icon"></i></div>
+                    <h3 class="tool-title">FrAI🧮 - Simulador de Fracciones</h3>
+                    <p class="tool-description">Aprende operaciones con fracciones mediante simulaciones interactivas.</p>
+                    <a href="SimuladorFrAI.html" class="btn primary-btn">Acceder <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="tool-card-modern">
+                    <div class="icon-wrapper"><i class="fas fa-table tool-icon"></i></div>
+                    <h3 class="tool-title">Simulador Tablas Multiplicar</h3>
+                    <p class="tool-description">Domina las tablas de multiplicar con ejercicios dinámicos y gamificados.</p>
+                    <a href="tabla.html" class="btn primary-btn">Acceder <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="tool-card-modern">
+                    <div class="icon-wrapper"><i class="fas fa-language tool-icon"></i></div>
+                    <h3 class="tool-title">Simulador Verbos Inglés</h3>
+                    <p class="tool-description">Practica conjugación de verbos en inglés con ejercicios interactivos.</p>
+                    <a href="Verbs.html" class="btn primary-btn">Acceder <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="tool-card-modern">
+                    <div class="icon-wrapper"><i class="fas fa-file-alt tool-icon"></i></div>
+                    <h3 class="tool-title">Examen de Matemática</h3>
+                    <p class="tool-description">Evaluación interactiva con diferentes niveles de dificultad.</p>
+                    <a href="examen.html" class="btn primary-btn">Acceder <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="tool-card-modern">
+                    <div class="icon-wrapper"><i class="fas fa-calculator tool-icon"></i></div>
+                    <h3 class="tool-title">Calculadora</h3>
+                    <p class="tool-description">Herramienta científica avanzada para resolver operaciones complejas.</p>
+                    <a href="calculadora.html" class="btn primary-btn">Acceder <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="tool-card-modern">
+                    <div class="icon-wrapper"><i class="fas fa-user-plus tool-icon"></i></div>
+                    <h3 class="tool-title">Registro Curso Inglés</h3>
+                    <p class="tool-description">Inscripción digital a nuestro curso especializado de inglés.</p>
+                    <a href="registro.html" class="btn primary-btn">Acceder <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
         </section>
+    </main>
 
-        <!-- Pie de página -->
-        <footer>
-            <p>&copy; 2025 CETA. Todos los derechos reservados - Ing. Teddy Valencia.</p>
-        </footer>
-    </div>
+    <footer class="site-footer-modern">
+        <div class="container">
+            <p>&copy; 2025 CETA. Todos los derechos reservados<br>Desarrollado por Ing. Teddy Valencia</p>
+        </div>
+    </footer>
+
+    <script>
+        // Control del Modo Oscuro
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const themeIcon = themeToggle.querySelector('i');
+        let isDark = localStorage.getItem('theme') === 'dark-mode';
+
+        // Aplicar tema almacenado
+        function applyTheme() {
+            if(isDark) {
+                body.classList.add('dark-mode');
+                themeIcon.className = 'fas fa-sun';
+            } else {
+                body.classList.remove('dark-mode');
+                themeIcon.className = 'fas fa-moon';
+            }
+        }
+
+        // Cambiar tema
+        function toggleTheme() {
+            isDark = !isDark;
+            localStorage.setItem('theme', isDark ? 'dark-mode' : '');
+            applyTheme();
+            
+            // Animación del botón
+            themeToggle.style.transform = 'scale(1.2) rotate(360deg)';
+            setTimeout(() => {
+                themeToggle.style.transform = '';
+            }, 500);
+        }
+
+        // Event Listeners
+        themeToggle.addEventListener('click', toggleTheme);
+        applyTheme();
+    </script>
 </body>
 </html>
