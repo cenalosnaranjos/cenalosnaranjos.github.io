@@ -1,52 +1,338 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Evaluación de Tablas de Multiplicar</title>
-    <link rel="stylesheet" href="stylestb.css">
+    <title>Evaluador de Tablas de Multiplicar</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <link rel="icon" type="image/x-icon" href="logo.jpeg">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2A5C82;
+            --secondary: #5BA4E6;
+            --light: #f8f9fa;
+            --dark: #1a1a1a;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            min-height: 100vh;
+            transition: var(--transition);
+        }
+
+        .dark-mode {
+            background: var(--dark);
+            color: var(--light);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px solid var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-family: 'Poppins', sans-serif;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .dark-mode h1 {
+            color: var(--secondary);
+        }
+
+        .form-init {
+            background: rgba(255,255,255,0.9);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .dark-mode .form-init {
+            background: #2d2d2d;
+        }
+
+        label {
+            display: block;
+            margin: 1rem 0 0.5rem;
+            font-weight: 600;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            background: var(--light);
+            color: var(--dark);
+        }
+
+        .dark-mode input, 
+        .dark-mode select {
+            background: #333;
+            border-color: var(--secondary);
+            color: var(--light);
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            width: 100%;
+        }
+
+        button:hover {
+            background: #1d4562;
+            transform: scale(1.02);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #preguntas {
+            margin-top: 2rem;
+        }
+
+        .pregunta {
+            background: var(--light);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .dark-mode .pregunta {
+            background: #333;
+        }
+
+        .pregunta input {
+            width: 100px;
+            margin-left: 1rem;
+            padding: 0.5rem;
+        }
+
+        #resultado {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 2rem;
+            border-radius: 15px;
+            background: var(--light);
+        }
+
+        .dark-mode #resultado {
+            background: #333;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            border: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .form-init {
+                padding: 1.5rem;
+            }
+            
+            .logo {
+                width: 80px;
+                height: 80px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
+    <button class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon"></i>
+    </button>
+
     <div class="container">
-        <h1>Evaluación de Tablas de Multiplicar</h1>
-        <label for="nombre">Nombre del Estudiante:</label>
-        <input type="text" id="nombre" placeholder="Ingresa tu nombre">
-        
-        <label for="tabla">Selecciona la tabla de multiplicar:</label>
-        <select id="tabla">
-            <option value="1">Tabla del 1</option>
-            <option value="2">Tabla del 2</option>
-            <option value="3">Tabla del 3</option>
-            <option value="4">Tabla del 4</option>
-            <option value="5">Tabla del 5</option>
-            <option value="6">Tabla del 6</option>
-            <option value="7">Tabla del 7</option>
-            <option value="8">Tabla del 8</option>
-            <option value="9">Tabla del 9</option>
-            <option value="10">Tabla del 10</option>
-            <option value="11">Tabla del 11</option>
-            <option value="12">Tabla del 12</option>
-        </select>
-        
-        <button id="iniciar">Iniciar Evaluación</button>
-        <a href="index.html"><button>Regresar</button></a>
-        
+        <header class="header">
+            <img src="icono.png" alt="Logo" class="logo">
+            <h1>Evaluador de Tablas de Multiplicar</h1>
+        </header>
+
+        <div class="form-init" id="formInicio">
+            <label for="nombre">Nombre del estudiante:</label>
+            <input type="text" id="nombre" placeholder="Ej: Juan Pérez" required>
+            
+            <label for="tabla">Selecciona una tabla:</label>
+            <select id="tabla">
+                <option value="1">Tabla del 1</option>
+                <option value="2">Tabla del 2</option>
+                <option value="3">Tabla del 3</option>
+                <option value="4">Tabla del 4</option>
+                <option value="5">Tabla del 5</option>
+                <option value="6">Tabla del 6</option>
+                <option value="7">Tabla del 7</option>
+                <option value="8">Tabla del 8</option>
+                <option value="9">Tabla del 9</option>
+                <option value="10">Tabla del 10</option>
+                <option value="11">Tabla del 11</option>
+                <option value="12">Tabla del 12</option>
+            </select>
+            
+            <button id="iniciar">Iniciar Evaluación</button>
+        </div>
+
         <div id="preguntas" class="hidden">
-            <h2>Resuelve las siguientes multiplicaciones:</h2>
+            <h2>Resuelve las multiplicaciones:</h2>
             <div id="lista-preguntas"></div>
             <button id="calificar">Calificar</button>
         </div>
-        
+
         <div id="resultado" class="hidden">
-            <h2>Resultado</h2>
+            <h2>Resultados</h2>
             <p id="mensaje-resultado"></p>
-            <button id="descargar">Descargar Resultado en PDF</button>
-            <button id="volver-inicio">Volver al Inicio</button>
-            <a href="index.html"><button>Regresar</button></a>
+            <button id="descargar">Descargar PDF</button>
+            <button id="reiniciar">Nueva Evaluación</button>
         </div>
     </div>
-    <script src="scripttb.js"></script>
+
+    <script>
+        // Modo Oscuro
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        let isDark = localStorage.getItem('theme') === 'dark-mode';
+
+        function updateTheme() {
+            if(isDark) {
+                body.classList.add('dark-mode');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            } else {
+                body.classList.remove('dark-mode');
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+            }
+        }
+
+        themeToggle.addEventListener('click', () => {
+            isDark = !isDark;
+            localStorage.setItem('theme', isDark ? 'dark-mode' : '');
+            updateTheme();
+        });
+
+        updateTheme();
+
+        // Lógica de Evaluación
+        document.getElementById('iniciar').addEventListener('click', () => {
+            const nombre = document.getElementById('nombre').value;
+            if(!nombre) {
+                alert('Por favor ingresa tu nombre');
+                return;
+            }
+            
+            document.getElementById('formInicio').classList.add('hidden');
+            document.getElementById('preguntas').classList.remove('hidden');
+            generarPreguntas();
+        });
+
+        function generarPreguntas() {
+            const tabla = parseInt(document.getElementById('tabla').value);
+            const contenedor = document.getElementById('lista-preguntas');
+            contenedor.innerHTML = '';
+            
+            for(let i = 1; i <= 10; i++) {
+                const pregunta = document.createElement('div');
+                pregunta.className = 'pregunta';
+                pregunta.innerHTML = `
+                    ${tabla} × ${i} = 
+                    <input type="number" class="respuesta" data-respuesta="${tabla * i}">
+                `;
+                contenedor.appendChild(pregunta);
+            }
+        }
+
+        document.getElementById('calificar').addEventListener('click', () => {
+            const respuestas = document.querySelectorAll('.respuesta');
+            let correctas = 0;
+            
+            respuestas.forEach(input => {
+                const respuestaUsuario = parseInt(input.value);
+                const respuestaCorrecta = parseInt(input.dataset.respuesta);
+                
+                if(respuestaUsuario === respuestaCorrecta) {
+                    correctas++;
+                    input.style.borderColor = '#28a745';
+                } else {
+                    input.style.borderColor = '#dc3545';
+                }
+            });
+
+            document.getElementById('preguntas').classList.add('hidden');
+            document.getElementById('resultado').classList.remove('hidden');
+            document.getElementById('mensaje-resultado').textContent = 
+                `✅ Correctas: ${correctas}/10 | ❌ Incorrectas: ${10 - correctas}`;
+        });
+
+        document.getElementById('reiniciar').addEventListener('click', () => {
+            location.reload();
+        });
+
+        document.getElementById('descargar').addEventListener('click', () => {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            doc.setFontSize(18);
+            doc.text('Resultado de Evaluación', 20, 20);
+            doc.setFontSize(12);
+            doc.text(`Nombre: ${document.getElementById('nombre').value}`, 20, 30);
+            doc.text(`Tabla evaluada: ${document.getElementById('tabla').value}`, 20, 40);
+            doc.text(document.getElementById('mensaje-resultado').textContent, 20, 50);
+            
+            doc.save('resultado-evaluacion.pdf');
+        });
+    </script>
 </body>
 </html>
