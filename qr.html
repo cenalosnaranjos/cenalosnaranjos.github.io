@@ -5,13 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Asistencia QR</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="icon" type="image/x-icon" href="logo2.jpeg">
+    <link rel="icon" type="image/x-icon" href="icono.png">
     <style>
-        /* Define CSS variables for light and dark themes */
         :root {
             --bg-color: #ffffff;
             --text-color: #2c3e50;
-            --primary-color: #3498db; /* Blue for light mode */
+            --primary-color: #3498db;
             --secondary-color: #2c3e50;
             --card-bg: #ffffff;
             --border-color: #e0e0e0;
@@ -22,7 +21,7 @@
         [data-theme="dark"] {
             --bg-color: #1a1a1a;
             --text-color: #ecf0f1;
-            --primary-color: #2e3ecc; /* Green for dark mode */
+            --primary-color: #2e3ecc;
             --secondary-color: #34495e;
             --card-bg: #2d2d2d;
             --border-color: #404040;
@@ -30,7 +29,6 @@
             --letra-color: #0bfc67;
         }
 
-        /* Base Styles */
         * {
             margin: 0;
             padding: 0;
@@ -96,7 +94,7 @@
         .title {
             font-size: 2.5rem;
             margin-bottom: 0.5rem;
-            color: var( --letra-color);
+            color: var(--letra-color);
         }
 
         .card {
@@ -149,10 +147,6 @@
             color: white;
         }
 
-        .btn:hover {
-            opacity: 0.9;
-        }
-
         .qr-section {
             display: flex;
             flex-wrap: wrap;
@@ -169,25 +163,11 @@
             border: 1px solid var(--border-color);
         }
 
-        .qr-download {
-            margin-top: 1rem;
-            display: block;
-            width: 100%;
-        }
-
-        /* Style the QR code canvas */
-        .qr-card canvas {
-            display: block;
-            margin: 0 auto;
-            border: 1px solid var(--border-color); /* Add border to QR canvas */
-        }
-
         .camera-container {
             position: relative;
             width: 100%;
-            /* Make the camera section smaller */
-            max-width: 500px; /* Adjusted max-width */
-            margin: 0 auto; /* Center the block */
+            max-width: 500px;
+            margin: 0 auto;
             border-radius: 15px;
             overflow: hidden;
             border: 2px solid var(--border-color);
@@ -195,8 +175,7 @@
 
         #video {
             width: 100%;
-            height: auto; /* Maintain aspect ratio */
-            display: block; /* Remove extra space below video */
+            height: auto;
         }
 
         table {
@@ -211,20 +190,6 @@
             border-bottom: 2px solid var(--border-color);
         }
 
-        th {
-            background: var(--primary-color);
-            color: white;
-        }
-
-        tbody tr:nth-child(even) {
-             background-color: rgba(0, 0, 0, 0.05); /* Light shade for even rows */
-        }
-
-         [data-theme="dark"] tbody tr:nth-child(even) {
-             background-color: rgba(255, 255, 255, 0.05); /* Dark shade for even rows in dark mode */
-        }
-
-
         footer {
             text-align: center;
             padding: 2rem;
@@ -233,30 +198,9 @@
             border-top: 1px solid var(--border-color);
         }
 
-        /* Responsive adjustments */
         @media (max-width: 768px) {
-            .header-buttons {
-                position: static;
-                justify-content: center;
-                margin-bottom: 1rem;
-            }
-            .input-group {
-                flex-direction: column;
-            }
-            .input-text {
-                width: 100%;
-            }
-            .btn {
-                width: 100%;
-                justify-content: center;
-            }
-            .qr-section {
-                flex-direction: column;
-                align-items: center;
-            }
-             /* Make camera section smaller on small screens too */
             .camera-container {
-                max-width: 95%; /* Adjust for smaller screens */
+                max-width: 95%;
             }
         }
     </style>
@@ -266,12 +210,9 @@
     <div class="container">
         <header class="header">
             <div class="header-buttons">
-                <button class="header-button" onclick="toggleTheme()" aria-label="Toggle dark mode">
-                     <i class="fas fa-moon"></i> </button>
-                 <button class="header-button" onclick="toggleFullScreen()" aria-label="Toggle fullscreen">
-                    <i class="fas fa-expand"></i> </button>
+                <button class="header-button" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+                <button class="header-button" onclick="toggleFullScreen()"><i class="fas fa-expand"></i></button>
             </div>
-            <img src="icono.png" alt="Logo" class="logo">
             <h1 class="title">Control de Asistencia QR</h1>
             <p>Sistema de registro biométrico con QR</p>
         </header>
@@ -289,7 +230,6 @@
             <h2>Escanear QR</h2>
             <div class="camera-container">
                 <video id="video" autoplay playsinline></video>
-                <canvas id="canvas" style="display: none;"></canvas>
             </div>
             <p id="scan-status" style="text-align: center; margin-top: 1rem;">Iniciando cámara...</p>
         </section>
@@ -311,32 +251,22 @@
     </div>
 
     <footer>
-        <p>© 2025 CETA Todos los derechos reservados - Sistema de Asistencia QR</p>
+        <p>© 2025 Sistema de Asistencia QR</p>
     </footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
-
 
     <script>
         let mediaStream = null;
         let scanning = false;
-        // Use a Set to store recent QR data strings to avoid duplicate scans
         const qrHistory = new Set();
-        // Store attendance data for PDF generation
         const attendanceRecords = [];
 
-        // --- Theme Toggle ---
         function toggleTheme() {
-            const body = document.body;
-            const currentTheme = body.dataset.theme;
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            body.dataset.theme = newTheme;
-            localStorage.setItem('theme', newTheme);
-            // Note: QR codes are now black and white, so no need to update their color on theme change
-            // updateQrCodeColors(); // This call is commented out or removed
+            document.body.dataset.theme = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
+            localStorage.setItem('theme', document.body.dataset.theme);
         }
 
         function loadTheme() {
@@ -344,212 +274,126 @@
             document.body.dataset.theme = savedTheme;
         }
 
-        // --- Full Screen Toggle ---
         function toggleFullScreen() {
             if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(err => {
-                    console.error(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
-                });
+                document.documentElement.requestFullscreen();
             } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                }
+                document.exitFullscreen();
             }
         }
 
-        // --- Student Registration and QR Generation ---
         function registrarEstudiante() {
-            const nombreInput = document.getElementById('nombre');
-            const nombre = nombreInput.value.trim();
-            if (!nombre) {
-                alert('Por favor ingrese el nombre del estudiante.');
-                return;
-            }
+            const nombre = document.getElementById('nombre').value.trim();
+            if (!nombre) return alert('Ingrese el nombre del estudiante');
 
-            // Simple unique ID for the QR code data (name + timestamp)
             const qrData = `${nombre}|${Date.now()}`;
-
             const qrId = `qr-${Date.now()}`;
+            
             const qrContainer = document.createElement('div');
             qrContainer.className = 'qr-card';
             qrContainer.innerHTML = `
                 <p>${nombre}</p>
-                <div id="${qrId}" data-qr-data="${qrData}" style="margin: 10px auto;"></div>
-                <button onclick="downloadQR('${qrId}', '${nombre}')" class="btn btn-secondary qr-download"><i class="fas fa-download"></i> Descargar PNG</button>
+                <div id="${qrId}"></div>
+                <button onclick="downloadQR('${qrId}', '${nombre}')" class="btn btn-secondary">Descargar QR</button>
             `;
 
-            document.getElementById('qr-container').prepend(qrContainer); // Add new QR to the top
+            document.getElementById('qr-container').prepend(qrContainer);
+            
+            new QRCode(document.getElementById(qrId), {
+                text: qrData,
+                width: 160,
+                height: 160,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
 
-            // Wait a moment for the element to be in the DOM before generating QR
-            setTimeout(() => {
-                new QRCode(document.getElementById(qrId), {
-                    text: qrData,
-                    width: 160,
-                    height: 160,
-                    colorDark: "#000000", /* Set QR code color to black */
-                    colorLight: "transparent", /* Keep background transparent */
-                    correctLevel: QRCode.CorrectLevel.H
-                });
-            }, 50); // Small delay
-
-            nombreInput.value = ''; // Clear input field
+            document.getElementById('nombre').value = '';
         }
 
-         // This function is less necessary now that QR codes are black/white,
-         // but kept in case you want to add other elements that change color with theme.
-         // If QR codes need to be regenerated (e.g., if their data changed),
-         // this function would need to handle that. For simple color change, it's not needed.
-        function updateQrCodeColors() {
-             // As QR codes are now black and white, this function might not be needed
-             // unless you have other elements within qr-card that change color.
-             console.log("QR code color update not needed for black/white QRs.");
-        }
-
-
-        function downloadQR(qrId, studentName) {
+        function downloadQR(qrId, nombre) {
             const canvas = document.querySelector(`#${qrId} canvas`);
-            if (!canvas) {
-                console.error('Canvas element not found for', qrId);
-                return;
-            }
             const link = document.createElement('a');
-            link.download = `QR-${studentName.replace(/\s+/g, '-')}.png`; // Generate a filename
-            link.href = canvas.toDataURL('image/png'); // Get the image data as PNG
-            link.click(); // Trigger download
+            link.download = `QR-${nombre}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
         }
 
-        // --- QR Scanning with Camera ---
         async function iniciarCamara() {
-            const scanStatus = document.getElementById('scan-status');
-            scanStatus.textContent = 'Solicitando acceso a la cámara...';
             try {
-                // Prefer the back camera if available
-                mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }});
+                mediaStream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: "environment" } 
+                });
                 const video = document.getElementById('video');
                 video.srcObject = mediaStream;
-                video.setAttribute('playsinline', true); // Required for iOS
                 await video.play();
-                scanning = true;
-                scanStatus.textContent = 'Cámara activa, escaneando...';
-                // Start the continuous scanning loop
-                requestAnimationFrame(escanearFrame);
+                scanFrame();
             } catch (error) {
-                console.error('Error al acceder a la cámara:', error);
-                scanStatus.textContent = `Error al iniciar la cámara: ${error.message}`;
+                document.getElementById('scan-status').textContent = 'Error al acceder a la cámara';
             }
         }
 
-        // This function is called repeatedly by requestAnimationFrame to scan frames
-        function escanearFrame() {
-            if (!scanning) {
-                return; // Stop the loop if scanning is false
-            }
-
+        function scanFrame() {
+            if (!scanning) return;
+            
             const video = document.getElementById('video');
-            const canvas = document.getElementById('canvas');
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
             const ctx = canvas.getContext('2d');
-
-            // Only process if the video has data
-            if (video.readyState === video.HAVE_ENOUGH_DATA) {
-                canvas.height = video.videoHeight;
-                canvas.width = video.videoWidth;
-                ctx.drawImage(video, 0, 0, canvas.width, canvas.height); // Draw the frame to canvas
-
-                // Get image data from the canvas
-                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-
-                // Detect QR code using jsQR
-                const code = jsQR(imageData.data, imageData.width, imageData.height, {
-                    inversionAttempts: "dontInvert", // Option to improve detection
-                });
-
-                if (code) {
-                    // Check if this QR data has been scanned recently using the history Set
-                    if (!qrHistory.has(code.data)) {
-                        qrHistory.add(code.data); // Add to history
-                        console.log("QR Detectado:", code.data);
-                        registrarAsistencia(code.data); // Register attendance
-                        // Remove from history after a delay to allow rescanning later
-                        setTimeout(() => {
-                             qrHistory.delete(code.data);
-                        }, 5000); // Allow rescanning after 5 seconds
-                    }
-                }
+            ctx.drawImage(video, 0, 0);
+            
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const code = jsQR(imageData.data, imageData.width, imageData.height);
+            
+            if (code && !qrHistory.has(code.data)) {
+                qrHistory.add(code.data);
+                registrarAsistencia(code.data);
+                setTimeout(() => qrHistory.delete(code.data), 5000);
             }
-             // Request the next frame to continue the loop
-            requestAnimationFrame(escanearFrame);
+            requestAnimationFrame(scanFrame);
         }
 
-        // --- Attendance Recording ---
         function registrarAsistencia(datos) {
-            // Split the QR data into name and timestamp
-            const [nombre, timestampStr] = datos.split('|');
-            const timestamp = parseInt(timestampStr, 10); // Parse timestamp string to integer
-
-            // Validate data
-            if (!nombre || isNaN(timestamp)) {
-                console.error("Invalid QR data format:", datos);
-                return;
-            }
-
-            const fechaHora = new Date(timestamp); // Create Date object from timestamp
-            const fecha = fechaHora.toLocaleDateString(); // Format date
-            const hora = fechaHora.toLocaleTimeString(); // Format time
-
+            const [nombre, timestamp] = datos.split('|');
+            const fecha = new Date(parseInt(timestamp));
+            
             const nuevaFila = document.createElement('tr');
             nuevaFila.innerHTML = `
                 <td>${nombre}</td>
-                <td>${fecha}</td>
-                <td>${hora}</td>
+                <td>${fecha.toLocaleDateString()}</td>
+                <td>${fecha.toLocaleTimeString()}</td>
             `;
-            document.getElementById('tabla-asistencia').prepend(nuevaFila); // Add new entry to the top of the table
-
-             // Store in attendanceRecords array for PDF generation
-            attendanceRecords.push({ nombre, fecha, hora });
+            
+            document.getElementById('tabla-asistencia').prepend(nuevaFila);
+            attendanceRecords.push({
+                nombre,
+                fecha: fecha.toLocaleDateString(),
+                hora: fecha.toLocaleTimeString()
+            });
         }
 
-        // --- Generate PDF Report ---
         document.getElementById('btn-generar-pdf').addEventListener('click', () => {
-             if (attendanceRecords.length === 0) {
-                 alert("No hay datos de asistencia para generar el reporte.");
-                 return;
-             }
-            // Initialize jsPDF
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-
-            // Add title
+            
             doc.text('Reporte de Asistencia', 10, 10);
-
-            // Prepare data for autoTable (needs jspdf-autotable plugin)
-            const tableData = attendanceRecords.map(record => [record.nombre, record.fecha, record.hora]);
-
-            // Add table using autoTable plugin
             doc.autoTable({
                 head: [['Nombre', 'Fecha', 'Hora']],
-                body: tableData,
-                startY: 20, // Start the table 20 units from the top
-                styles: { fontSize: 10 },
-                headStyles: { fillColor: [52, 152, 219], textColor: [255, 255, 255] }, // Use primary color for header
-                alternateRowStyles: { fillColor: [240, 240, 240] } // Light grey for alternate rows
+                body: attendanceRecords.map(r => [r.nombre, r.fecha, r.hora]),
+                startY: 20
             });
-
-            // Save the PDF
+            
             doc.save('reporte_asistencia.pdf');
         });
 
-        // --- Initialization ---
         window.onload = () => {
-            loadTheme(); // Load saved theme first
-            iniciarCamara(); // Start the camera and scanning when the page loads
+            loadTheme();
+            iniciarCamara();
         };
 
-        // Stop camera stream when the page is closed or navigated away
         window.onbeforeunload = () => {
-            if (mediaStream) {
-                 mediaStream.getTracks().forEach(track => track.stop());
-                 scanning = false; // Ensure the scanning loop stops
-            }
+            if (mediaStream) mediaStream.getTracks().forEach(track => track.stop());
         };
     </script>
 </body>
