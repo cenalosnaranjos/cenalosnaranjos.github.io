@@ -47,14 +47,6 @@
             margin-bottom: 2rem;
         }
 
-        .logo {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            border: 3px solid var(--primary);
-            margin-bottom: 1rem;
-        }
-
         h1 {
             font-family: 'Poppins', sans-serif;
             color: var(--primary);
@@ -84,7 +76,7 @@
             font-weight: 600;
         }
 
-        input, select {
+        input {
             width: 100%;
             padding: 0.8rem;
             border: 2px solid var(--primary);
@@ -95,8 +87,7 @@
             color: var(--dark);
         }
 
-        .dark-mode input, 
-        .dark-mode select {
+        .dark-mode input {
             background: #333;
             border-color: var(--secondary);
             color: var(--light);
@@ -174,23 +165,16 @@
             border: none;
         }
 
-        @media (max-width: 768px) {
-            .container {
-                padding: 1rem;
-            }
-            
-            .form-init {
-                padding: 1.5rem;
-            }
-            
-            .logo {
-                width: 80px;
-                height: 80px;
-            }
-            
-            h1 {
-                font-size: 1.5rem;
-            }
+        .errores-lista {
+            text-align: left;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #ffe6e6;
+            border-radius: 8px;
+        }
+
+        .dark-mode .errores-lista {
+            background: #4a2d2d;
         }
     </style>
 </head>
@@ -201,35 +185,17 @@
 
     <div class="container">
         <header class="header">
-            <img src="icono.png" alt="Logo" class="logo">
             <h1>Evaluador de Tablas de Multiplicar</h1>
         </header>
 
         <div class="form-init" id="formInicio">
             <label for="nombre">Nombre del estudiante:</label>
             <input type="text" id="nombre" placeholder="Ej: Juan Pérez" required>
-            
-            <label for="tabla">Selecciona una tabla:</label>
-            <select id="tabla">
-                <option value="1">Tabla del 1</option>
-                <option value="2">Tabla del 2</option>
-                <option value="3">Tabla del 3</option>
-                <option value="4">Tabla del 4</option>
-                <option value="5">Tabla del 5</option>
-                <option value="6">Tabla del 6</option>
-                <option value="7">Tabla del 7</option>
-                <option value="8">Tabla del 8</option>
-                <option value="9">Tabla del 9</option>
-                <option value="10">Tabla del 10</option>
-                <option value="11">Tabla del 11</option>
-                <option value="12">Tabla del 12</option>
-            </select>
-            
             <button id="iniciar">Iniciar Evaluación</button>
         </div>
 
         <div id="preguntas" class="hidden">
-            <h2>Resuelve las multiplicaciones:</h2>
+            <h2 id="tabla-seleccionada"></h2>
             <div id="lista-preguntas"></div>
             <button id="calificar">Calificar</button>
         </div>
@@ -237,12 +203,16 @@
         <div id="resultado" class="hidden">
             <h2>Resultados</h2>
             <p id="mensaje-resultado"></p>
+            <div id="errores" class="errores-lista"></div>
             <button id="descargar">Descargar PDF</button>
             <button id="reiniciar">Nueva Evaluación</button>
         </div>
     </div>
 
     <script>
+        let tablaAleatoria;
+        let errores = [];
+
         // Modo Oscuro
         const themeToggle = document.getElementById('themeToggle');
         const body = document.body;
@@ -274,22 +244,23 @@
                 return;
             }
             
+            tablaAleatoria = Math.floor(Math.random() * 12) + 1;
             document.getElementById('formInicio').classList.add('hidden');
             document.getElementById('preguntas').classList.remove('hidden');
+            document.getElementById('tabla-seleccionada').textContent = `Tabla del ${tablaAleatoria}`;
             generarPreguntas();
         });
 
         function generarPreguntas() {
-            const tabla = parseInt(document.getElementById('tabla').value);
             const contenedor = document.getElementById('lista-preguntas');
             contenedor.innerHTML = '';
             
-            for(let i = 1; i <= 10; i++) {
+            for(let i = 1; i <= 12; i++) {
                 const pregunta = document.createElement('div');
                 pregunta.className = 'pregunta';
                 pregunta.innerHTML = `
-                    ${tabla} × ${i} = 
-                    <input type="number" class="respuesta" data-respuesta="${tabla * i}">
+                    ${tablaAleatoria} × ${i} = 
+                    <input type="number" class="respuesta" data-respuesta="${tablaAleatoria * i}">
                 `;
                 contenedor.appendChild(pregunta);
             }
@@ -298,24 +269,49 @@
         document.getElementById('calificar').addEventListener('click', () => {
             const respuestas = document.querySelectorAll('.respuesta');
             let correctas = 0;
-            
+            errores = [];
+
             respuestas.forEach(input => {
                 const respuestaUsuario = parseInt(input.value);
                 const respuestaCorrecta = parseInt(input.dataset.respuesta);
+                const multiplicador = input.parentElement.textContent.split('×')[1].split('=')[0].trim();
                 
                 if(respuestaUsuario === respuestaCorrecta) {
                     correctas++;
                     input.style.borderColor = '#28a745';
                 } else {
                     input.style.borderColor = '#dc3545';
+                    errores.push({
+                        pregunta: `${tablaAleatoria} × ${multiplicador}`,
+                        respuesta: isNaN(respuestaUsuario) ? 'Sin responder' : respuestaUsuario,
+                        correcta: respuestaCorrecta
+                    });
                 }
             });
 
+            mostrarResultados(correctas);
+        });
+
+        function mostrarResultados(correctas) {
+            const resultadoElement = document.getElementById('mensaje-resultado');
+            const erroresElement = document.getElementById('errores');
+            
+            resultadoElement.textContent = `Calificación: ${correctas}/10`;
+            
+            if(errores.length > 0) {
+                erroresElement.innerHTML = '<h3>Errores:</h3>';
+                errores.forEach(error => {
+                    erroresElement.innerHTML += `
+                        <p>${error.pregunta} = ${error.respuesta} (Correcto: ${error.correcta})</p>
+                    `;
+                });
+            } else {
+                erroresElement.innerHTML = '<p>¡Perfecto! No tuviste errores 🎉</p>';
+            }
+
             document.getElementById('preguntas').classList.add('hidden');
             document.getElementById('resultado').classList.remove('hidden');
-            document.getElementById('mensaje-resultado').textContent = 
-                `✅ Correctas: ${correctas}/10 | ❌ Incorrectas: ${10 - correctas}`;
-        });
+        }
 
         document.getElementById('reiniciar').addEventListener('click', () => {
             location.reload();
@@ -326,13 +322,29 @@
             const doc = new jsPDF();
             
             doc.setFontSize(18);
-            doc.text('Resultado de Evaluación', 20, 20);
+            doc.text('Reporte de Evaluación', 20, 20);
             doc.setFontSize(12);
             doc.text(`Nombre: ${document.getElementById('nombre').value}`, 20, 30);
-            doc.text(`Tabla evaluada: ${document.getElementById('tabla').value}`, 20, 40);
-            doc.text(document.getElementById('mensaje-resultado').textContent, 20, 50);
+            doc.text(`Tabla evaluada: ${tablaAleatoria}`, 20, 40);
+            doc.text(`Calificación: ${document.getElementById('mensaje-resultado').textContent}`, 20, 50);
             
-            doc.save('resultado-evaluacion.pdf');
+            let yPosition = 60;
+            if(errores.length > 0) {
+                doc.text('Errores:', 20, yPosition);
+                yPosition += 10;
+                errores.forEach((error, index) => {
+                    if(yPosition > 280) {
+                        doc.addPage();
+                        yPosition = 20;
+                    }
+                    doc.text(`${error.pregunta} = ${error.respuesta} (Correcto: ${error.correcta})`, 20, yPosition);
+                    yPosition += 10;
+                });
+            } else {
+                doc.text('¡Perfecto! No tuviste errores 🎉', 20, yPosition);
+            }
+
+            doc.save('reporte-evaluacion.pdf');
         });
     </script>
 </body>
