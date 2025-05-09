@@ -138,12 +138,12 @@
             margin-top: 1rem;
         }
 
-        button:hover:not(:disabled) { /* Hover effect only when not disabled */
+        button:hover:not(:disabled) {
             background: #1d4562;
             transform: scale(1.02);
         }
 
-        button:disabled { /* Style for disabled button */
+        button:disabled {
              opacity: 0.6;
              cursor: not-allowed;
         }
@@ -156,15 +156,31 @@
             margin-top: 2rem;
         }
 
-        #timer { /* Style for the timer */
+        #timer {
             font-size: 1.5rem;
             font-weight: bold;
             text-align: center;
             margin-bottom: 1.5rem;
-            color: var(--primary); /* Primary color for timer */
+            color: var(--primary);
         }
          .dark-mode #timer {
-             color: var(--secondary); /* Secondary color for timer in dark mode */
+             color: var(--secondary);
+         }
+
+         #video-container {
+             text-align: center;
+             margin-bottom: 2rem;
+             background: rgba(0,0,0,0.1);
+             padding: 10px;
+             border-radius: 8px;
+         }
+
+         #youtubeVideo {
+             max-width: 100%;
+             width: 560px;
+             height: 315px;
+             display: block;
+             margin: 0 auto;
          }
 
 
@@ -291,6 +307,11 @@
         </div>
 
         <div id="preguntas" class="hidden">
+             <div id="video-container" class="hidden"> <iframe id="youtubeVideo" src=""
+                         frameborder="0"
+                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                         allowfullscreen></iframe>
+             </div>
              <div id="timer">Tiempo restante: 03:00</div> <h2 id="tabla-seleccionada"></h2>
             <div id="lista-preguntas"></div>
             <button id="calificar">Calificar</button>
@@ -311,6 +332,10 @@
         let timerInterval;
         let timeLeft = 180; // 3 minutes in seconds
         let evaluationCompleted = false; // Flag to prevent double evaluation
+        // HARDCODED YOUTUBE URL requested by the user
+        const hardcodedYoutubeUrl = 'https://www.youtube.com/watch?v=0iLF_rtUbq0';
+        let youtubeVideoUrl = hardcodedYoutubeUrl; // Use the hardcoded URL
+
 
         // Modo Oscuro
         const themeToggle = document.getElementById('themeToggle');
@@ -325,6 +350,11 @@
                 body.classList.remove('dark-mode');
                 themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
             }
+            // Also update timer color based on theme
+            const timerElement = document.getElementById('timer');
+             if (timeLeft > 10 && timerElement && !evaluationCompleted) {
+                 timerElement.style.color = isDark ? 'var(--secondary)' : 'var(--primary)';
+             }
         }
 
         themeToggle.addEventListener('click', () => {
@@ -333,7 +363,7 @@
             updateTheme();
         });
 
-        updateTheme();
+        updateTheme(); // Apply theme on load
 
         // Timer functions
         function formatTime(seconds) {
@@ -346,25 +376,54 @@
 
         function updateTimer() {
             const timerElement = document.getElementById('timer');
+            if (!timerElement) return;
+
             timerElement.textContent = `Tiempo restante: ${formatTime(timeLeft)}`;
 
-            if (timeLeft <= 10) { // Change color when time is low
+            if (timeLeft <= 10) {
                  timerElement.style.color = '#dc3545'; // Red color
              } else {
-                 timerElement.style.color = isDark ? 'var(--secondary)' : 'var(--primary)';
+                 timerElement.style.color = isDark ? 'var(--secondary)' : 'var(--primary)'; // Reset color based on theme
              }
 
 
             if (timeLeft <= 0) {
                 clearInterval(timerInterval);
                 timerElement.textContent = '¡Tiempo terminado!';
-                if (!evaluationCompleted) { // Check flag before auto-califying
+                if (!evaluationCompleted) {
                      calificar(); // Auto-calificar when time runs out
                 }
             }
 
             timeLeft--;
         }
+
+        // YouTube Embed Function
+        function embedYouTubeVideo(url) {
+            const iframe = document.getElementById('youtubeVideo');
+            const videoContainer = document.getElementById('video-container');
+            let videoId = null;
+
+            // Regular expression to extract video ID from various YouTube URLs
+            const regex = /(?:https?:\/\/)?(?:www\.)?(?:m\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=|embed\/|v\/|shorts\/)?([a-zA-Z0-9_-]{11})(?:\S+)?/;
+            const match = url.match(regex);
+
+            if (match && match[1]) {
+                videoId = match[1];
+                 // Construct embed URL with autoplay and CONTROLS ENABLED
+                 // Initial volume cannot be set directly via iframe parameters with autoplay.
+                 // Controls are enabled by default when controls=0 is NOT present.
+                 const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`; // Removed mute=1, controls=0, etc.
+                iframe.src = embedUrl;
+                videoContainer.classList.remove('hidden'); // Show container
+            } else {
+                console.warn("URL de YouTube inválida o no proporcionada:", url);
+                // Hide video container and iframe if URL is invalid or empty
+                videoContainer.classList.add('hidden');
+                iframe.src = ''; // Clear src
+            }
+        }
+
 
         // Lógica de Evaluación
         document.getElementById('iniciar').addEventListener('click', () => {
@@ -379,16 +438,23 @@
             }
 
             selectedTable = tablaNumero;
+            // youtubeVideoUrl is already set to the hardcoded URL
+
             document.getElementById('formInicio').classList.add('hidden');
             document.getElementById('preguntas').classList.remove('hidden');
             document.getElementById('tabla-seleccionada').textContent = `Tabla del ${selectedTable}`;
+
+            // Embed the hardcoded YouTube video
+            embedYouTubeVideo(youtubeVideoUrl);
+
 
             // Reset timer and flag
             timeLeft = 180; // Set to 3 minutes
             evaluationCompleted = false;
              document.getElementById('calificar').disabled = false; // Enable calificar button
+             // Reset timer color based on theme
              const timerElement = document.getElementById('timer');
-             timerElement.style.color = isDark ? 'var(--secondary)' : 'var(--primary)'; // Reset timer color
+             timerElement.style.color = isDark ? 'var(--secondary)' : 'var(--primary)';
 
 
             generarPreguntas(selectedTable);
@@ -428,15 +494,17 @@
 
 
         document.getElementById('calificar').addEventListener('click', () => {
-            if (!evaluationCompleted) { // Only calificar if evaluation hasn't completed
+            if (!evaluationCompleted) {
                 clearInterval(timerInterval); // Stop the timer if button is clicked
                 calificar();
             }
         });
 
         function calificar() {
-            if (evaluationCompleted) return; // Prevent multiple evaluations
-            evaluationCompleted = true; // Set flag
+            if (evaluationCompleted) return;
+            evaluationCompleted = true;
+
+            clearInterval(timerInterval); // Ensure timer is stopped
 
             const respuestas = document.querySelectorAll('.respuesta');
             let correctas = 0;
@@ -467,6 +535,13 @@
             // Disable the calificar button
             document.getElementById('calificar').disabled = true;
 
+            // Stop the YouTube video
+             const iframe = document.getElementById('youtubeVideo');
+             if (iframe) {
+                 iframe.src = ''; // Clearing the src stops the video
+             }
+
+
             mostrarResultados(correctas);
         }
 
@@ -474,9 +549,7 @@
             const resultadoElement = document.getElementById('mensaje-resultado');
             const erroresElement = document.getElementById('errores');
 
-            // Calculate score out of 10
             const scoreOutOf10 = (correctas / 12) * 10;
-            // Display both correct count out of 12 and score out of 10
             resultadoElement.innerHTML = `Correctas: ${correctas}/12.<br>Calificación: ${scoreOutOf10.toFixed(1)}/10`;
 
 
@@ -499,6 +572,10 @@
 
         document.getElementById('reiniciar').addEventListener('click', () => {
             clearInterval(timerInterval); // Stop timer on restart
+             const iframe = document.getElementById('youtubeVideo');
+             if (iframe) {
+                 iframe.src = ''; // Stop video on restart
+             }
             location.reload();
         });
 
@@ -507,19 +584,24 @@
             const doc = new jsPDF();
 
             const nombreEstudiante = document.getElementById('nombre').value.trim();
-            const finalTimeText = document.getElementById('timer').textContent; // Get final timer text
+            const finalTimeText = document.getElementById('timer').textContent;
+            const finalResultText = document.getElementById('mensaje-resultado').textContent.replace('<br>', ' ');
+
 
             doc.setFontSize(18);
             doc.text('Reporte de Evaluación', 20, 20);
             doc.setFontSize(12);
             doc.text(`Nombre del estudiante: ${nombreEstudiante}`, 20, 30);
             doc.text(`Tabla evaluada: ${selectedTable}`, 20, 40);
-            doc.text(`Tiempo: 3 minutos`, 20, 50); // Indicate total time
-            doc.text(`Estado del tiempo: ${finalTimeText}`, 20, 60); // Indicate timer state at the end
-            doc.text(`Calificación: ${document.getElementById('mensaje-resultado').textContent.replace('<br>', ' ')}`, 20, 70); // Use the full result text, replace <br> for PDF
+            doc.text(`Tiempo total: 3 minutos`, 20, 50);
+            doc.text(`Estado del tiempo al finalizar: ${finalTimeText}`, 20, 60);
+
+            // Always include the hardcoded YouTube URL
+            doc.text(`Video de YouTube: ${youtubeVideoUrl}`, 20, 70);
+            doc.text(`Calificación: ${finalResultText}`, 20, 80);
+            yPosition = 90;
 
 
-            let yPosition = 80; // Adjust starting position
              if (errores.length > 0) {
                  doc.text('Errores:', 20, yPosition);
                  yPosition += 10;
