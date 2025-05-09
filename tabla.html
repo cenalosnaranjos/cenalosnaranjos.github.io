@@ -32,25 +32,25 @@
         }
 
         /* Estilo para el logo redondo */
-.logo-container {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    overflow: hidden;
-    margin: 0 auto 1rem;
-    border: 4px solid var(--primary);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
+        .logo-container {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto 1rem;
+            border: 4px solid var(--primary);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
 
-.instituto-logo {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
+        .instituto-logo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
-.dark-mode .logo-container {
-    border-color: var(--secondary);
-}
+        .dark-mode .logo-container {
+            border-color: var(--secondary);
+        }
 
         .dark-mode {
             background: var(--dark);
@@ -97,7 +97,8 @@
             font-weight: 600;
         }
 
-        input {
+         input[type="text"],
+         select {
             width: 100%;
             padding: 0.8rem;
             border: 2px solid var(--primary);
@@ -106,12 +107,22 @@
             margin-bottom: 1rem;
             background: var(--light);
             color: var(--dark);
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg fill="%232A5C82" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 10px top 50%;
+            background-size: 16px;
+            padding-right: 30px;
         }
 
-        .dark-mode input {
+         .dark-mode input[type="text"],
+         .dark-mode select {
             background: #333;
             border-color: var(--secondary);
             color: var(--light);
+            background-image: url('data:image/svg+xml;utf8,<svg fill="%235BA4E6" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
         }
 
         button {
@@ -124,11 +135,17 @@
             font-weight: 600;
             transition: var(--transition);
             width: 100%;
+            margin-top: 1rem;
         }
 
-        button:hover {
+        button:hover:not(:disabled) { /* Hover effect only when not disabled */
             background: #1d4562;
             transform: scale(1.02);
+        }
+
+        button:disabled { /* Style for disabled button */
+             opacity: 0.6;
+             cursor: not-allowed;
         }
 
         .hidden {
@@ -139,23 +156,54 @@
             margin-top: 2rem;
         }
 
+        #timer { /* Style for the timer */
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: var(--primary); /* Primary color for timer */
+        }
+         .dark-mode #timer {
+             color: var(--secondary); /* Secondary color for timer in dark mode */
+         }
+
+
         .pregunta {
             background: var(--light);
             padding: 1rem;
             border-radius: 8px;
             margin: 1rem 0;
             box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
         .dark-mode .pregunta {
             background: #333;
         }
 
-        .pregunta input {
-            width: 100px;
-            margin-left: 1rem;
-            padding: 0.5rem;
+        .pregunta span {
+            flex-grow: 1;
+            margin-right: 1rem;
         }
+
+        .pregunta input[type="number"] {
+            width: 100px;
+            flex-shrink: 0;
+            padding: 0.5rem;
+            text-align: center;
+            margin: 0;
+            border: 1px solid var(--primary);
+            border-radius: 4px;
+        }
+
+         .dark-mode .pregunta input[type="number"] {
+             border-color: var(--secondary);
+             background: #444;
+             color: var(--light);
+         }
+
 
         #resultado {
             text-align: center;
@@ -184,7 +232,14 @@
             cursor: pointer;
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
             border: none;
+            z-index: 1000;
+            transition: var(--transition);
         }
+
+         .theme-toggle:hover {
+             background: #1d4562;
+             transform: scale(1.1);
+         }
 
         .errores-lista {
             text-align: left;
@@ -215,11 +270,28 @@
         <div class="form-init" id="formInicio">
             <label for="nombre">Nombre del estudiante:</label>
             <input type="text" id="nombre" placeholder="Ej: Juan Pérez" required>
+
+            <label for="tabla">Selecciona la tabla a evaluar:</label>
+            <select id="tabla" required>
+                <option value="1">Tabla del 1</option>
+                <option value="2">Tabla del 2</option>
+                <option value="3">Tabla del 3</option>
+                <option value="4">Tabla del 4</option>
+                <option value="5">Tabla del 5</option>
+                <option value="6">Tabla del 6</option>
+                <option value="7">Tabla del 7</option>
+                <option value="8">Tabla del 8</option>
+                <option value="9">Tabla del 9</option>
+                <option value="10">Tabla del 10</option>
+                <option value="11">Tabla del 11</option>
+                <option value="12">Tabla del 12</option>
+            </select>
+
             <button id="iniciar">Iniciar Evaluación</button>
         </div>
 
         <div id="preguntas" class="hidden">
-            <h2 id="tabla-seleccionada"></h2>
+             <div id="timer">Tiempo restante: 03:00</div> <h2 id="tabla-seleccionada"></h2>
             <div id="lista-preguntas"></div>
             <button id="calificar">Calificar</button>
         </div>
@@ -234,8 +306,11 @@
     </div>
 
     <script>
-        let tablaAleatoria;
+        let selectedTable;
         let errores = [];
+        let timerInterval;
+        let timeLeft = 180; // 3 minutes in seconds
+        let evaluationCompleted = false; // Flag to prevent double evaluation
 
         // Modo Oscuro
         const themeToggle = document.getElementById('themeToggle');
@@ -260,77 +335,162 @@
 
         updateTheme();
 
-        // Lógica de Evaluación
-        document.getElementById('iniciar').addEventListener('click', () => {
-            const nombre = document.getElementById('nombre').value;
-            if(!nombre) {
-                alert('Por favor ingresa tu nombre');
-                return;
-            }
-            
-            tablaAleatoria = Math.floor(Math.random() * 12) + 1;
-            document.getElementById('formInicio').classList.add('hidden');
-            document.getElementById('preguntas').classList.remove('hidden');
-            document.getElementById('tabla-seleccionada').textContent = `Tabla del ${tablaAleatoria}`;
-            generarPreguntas();
-        });
-
-        function generarPreguntas() {
-            const contenedor = document.getElementById('lista-preguntas');
-            contenedor.innerHTML = '';
-            
-            for(let i = 1; i <= 12; i++) {
-                const pregunta = document.createElement('div');
-                pregunta.className = 'pregunta';
-                pregunta.innerHTML = `
-                    ${tablaAleatoria} × ${i} = 
-                    <input type="number" class="respuesta" data-respuesta="${tablaAleatoria * i}">
-                `;
-                contenedor.appendChild(pregunta);
-            }
+        // Timer functions
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            const formattedMinutes = String(minutes).padStart(2, '0');
+            const formattedSeconds = String(remainingSeconds).padStart(2, '0');
+            return `${formattedMinutes}:${formattedSeconds}`;
         }
 
+        function updateTimer() {
+            const timerElement = document.getElementById('timer');
+            timerElement.textContent = `Tiempo restante: ${formatTime(timeLeft)}`;
+
+            if (timeLeft <= 10) { // Change color when time is low
+                 timerElement.style.color = '#dc3545'; // Red color
+             } else {
+                 timerElement.style.color = isDark ? 'var(--secondary)' : 'var(--primary)';
+             }
+
+
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                timerElement.textContent = '¡Tiempo terminado!';
+                if (!evaluationCompleted) { // Check flag before auto-califying
+                     calificar(); // Auto-calificar when time runs out
+                }
+            }
+
+            timeLeft--;
+        }
+
+        // Lógica de Evaluación
+        document.getElementById('iniciar').addEventListener('click', () => {
+            const nombre = document.getElementById('nombre').value.trim();
+            const tablaSelect = document.getElementById('tabla');
+            const tablaNumero = parseInt(tablaSelect.value);
+
+            if(!nombre) {
+                alert('Por favor ingresa tu nombre.');
+                document.getElementById('nombre').focus();
+                return;
+            }
+
+            selectedTable = tablaNumero;
+            document.getElementById('formInicio').classList.add('hidden');
+            document.getElementById('preguntas').classList.remove('hidden');
+            document.getElementById('tabla-seleccionada').textContent = `Tabla del ${selectedTable}`;
+
+            // Reset timer and flag
+            timeLeft = 180; // Set to 3 minutes
+            evaluationCompleted = false;
+             document.getElementById('calificar').disabled = false; // Enable calificar button
+             const timerElement = document.getElementById('timer');
+             timerElement.style.color = isDark ? 'var(--secondary)' : 'var(--primary)'; // Reset timer color
+
+
+            generarPreguntas(selectedTable);
+
+            // Start the timer
+            updateTimer(); // Display initial time immediately
+            timerInterval = setInterval(updateTimer, 1000);
+        });
+
+        function generarPreguntas(tabla) {
+            const contenedor = document.getElementById('lista-preguntas');
+            contenedor.innerHTML = '';
+
+            const multipliers = Array.from({length: 12}, (_, i) => i + 1);
+
+            for (let i = multipliers.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [multipliers[i], multipliers[j]] = [multipliers[j], multipliers[i]];
+            }
+
+            multipliers.forEach(multiplicador => {
+                const preguntaDiv = document.createElement('div');
+                preguntaDiv.className = 'pregunta';
+                const correctAnswer = tabla * multiplicador;
+
+                preguntaDiv.innerHTML = `
+                    <span>${tabla} × ${multiplicador} =</span>
+                    <input type="number" class="respuesta"
+                           data-factor1="${tabla}"
+                           data-factor2="${multiplicador}"
+                           data-respuesta="${correctAnswer}"
+                           inputmode="numeric" pattern="[0-9]*">
+                `;
+                contenedor.appendChild(preguntaDiv);
+            });
+        }
+
+
         document.getElementById('calificar').addEventListener('click', () => {
+            if (!evaluationCompleted) { // Only calificar if evaluation hasn't completed
+                clearInterval(timerInterval); // Stop the timer if button is clicked
+                calificar();
+            }
+        });
+
+        function calificar() {
+            if (evaluationCompleted) return; // Prevent multiple evaluations
+            evaluationCompleted = true; // Set flag
+
             const respuestas = document.querySelectorAll('.respuesta');
             let correctas = 0;
             errores = [];
 
             respuestas.forEach(input => {
+                // Disable input after grading
+                input.disabled = true;
+
                 const respuestaUsuario = parseInt(input.value);
-                const respuestaCorrecta = parseInt(input.dataset.respuesta);
-                const multiplicador = input.parentElement.textContent.split('×')[1].split('=')[0].trim();
-                
-                if(respuestaUsuario === respuestaCorrecta) {
+                const correctAnswer = parseInt(input.dataset.respuesta);
+                const factor1 = parseInt(input.dataset.factor1);
+                const factor2 = parseInt(input.dataset.factor2);
+
+                if(respuestaUsuario === correctAnswer) {
                     correctas++;
                     input.style.borderColor = '#28a745';
                 } else {
                     input.style.borderColor = '#dc3545';
                     errores.push({
-                        pregunta: `${tablaAleatoria} × ${multiplicador}`,
+                        pregunta: `${factor1} × ${factor2}`,
                         respuesta: isNaN(respuestaUsuario) ? 'Sin responder' : respuestaUsuario,
-                        correcta: respuestaCorrecta
+                        correcta: correctAnswer
                     });
                 }
             });
 
+            // Disable the calificar button
+            document.getElementById('calificar').disabled = true;
+
             mostrarResultados(correctas);
-        });
+        }
 
         function mostrarResultados(correctas) {
             const resultadoElement = document.getElementById('mensaje-resultado');
             const erroresElement = document.getElementById('errores');
-            
-            resultadoElement.textContent = `Calificación: ${correctas}/10`;
-            
+
+            // Calculate score out of 10
+            const scoreOutOf10 = (correctas / 12) * 10;
+            // Display both correct count out of 12 and score out of 10
+            resultadoElement.innerHTML = `Correctas: ${correctas}/12.<br>Calificación: ${scoreOutOf10.toFixed(1)}/10`;
+
+
             if(errores.length > 0) {
                 erroresElement.innerHTML = '<h3>Errores:</h3>';
                 errores.forEach(error => {
                     erroresElement.innerHTML += `
-                        <p>${error.pregunta} = ${error.respuesta} (Correcto: ${error.correcta})</p>
+                        <p><strong>${error.pregunta}</strong> = ${error.respuesta} (Correcto: ${error.correcta})</p>
                     `;
                 });
+                 erroresElement.style.display = 'block';
             } else {
                 erroresElement.innerHTML = '<p>¡Perfecto! No tuviste errores 🎉</p>';
+                erroresElement.style.display = 'block';
             }
 
             document.getElementById('preguntas').classList.add('hidden');
@@ -338,37 +498,47 @@
         }
 
         document.getElementById('reiniciar').addEventListener('click', () => {
+            clearInterval(timerInterval); // Stop timer on restart
             location.reload();
         });
 
         document.getElementById('descargar').addEventListener('click', () => {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            
+
+            const nombreEstudiante = document.getElementById('nombre').value.trim();
+            const finalTimeText = document.getElementById('timer').textContent; // Get final timer text
+
             doc.setFontSize(18);
             doc.text('Reporte de Evaluación', 20, 20);
             doc.setFontSize(12);
-            doc.text(`Nombre: ${document.getElementById('nombre').value}`, 20, 30);
-            doc.text(`Tabla evaluada: ${tablaAleatoria}`, 20, 40);
-            doc.text(`Calificación: ${document.getElementById('mensaje-resultado').textContent}`, 20, 50);
-            
-            let yPosition = 60;
-            if(errores.length > 0) {
-                doc.text('Errores:', 20, yPosition);
-                yPosition += 10;
-                errores.forEach((error, index) => {
-                    if(yPosition > 280) {
-                        doc.addPage();
-                        yPosition = 20;
-                    }
-                    doc.text(`${error.pregunta} = ${error.respuesta} (Correcto: ${error.correcta})`, 20, yPosition);
-                    yPosition += 10;
-                });
-            } else {
-                doc.text('¡Perfecto! No tuviste errores 🎉', 20, yPosition);
-            }
+            doc.text(`Nombre del estudiante: ${nombreEstudiante}`, 20, 30);
+            doc.text(`Tabla evaluada: ${selectedTable}`, 20, 40);
+            doc.text(`Tiempo: 3 minutos`, 20, 50); // Indicate total time
+            doc.text(`Estado del tiempo: ${finalTimeText}`, 20, 60); // Indicate timer state at the end
+            doc.text(`Calificación: ${document.getElementById('mensaje-resultado').textContent.replace('<br>', ' ')}`, 20, 70); // Use the full result text, replace <br> for PDF
 
-            doc.save('reporte-evaluacion.pdf');
+
+            let yPosition = 80; // Adjust starting position
+             if (errores.length > 0) {
+                 doc.text('Errores:', 20, yPosition);
+                 yPosition += 10;
+                 errores.forEach((error, index) => {
+                     if (yPosition > 280) {
+                         doc.addPage();
+                         yPosition = 20;
+                     }
+                     doc.text(`${error.pregunta} = ${error.respuesta} (Correcto: ${error.correcta})`, 20, yPosition);
+                     yPosition += 7;
+                 });
+             } else {
+                 doc.text('¡Perfecto! No tuviste errores 🎉', 20, yPosition);
+                 yPosition += 10;
+             }
+
+            const safeStudentName = nombreEstudiante.replace(/[^a-zA-Z0-9_]/g, '_').replace(/__+/g, '_');
+
+            doc.save(`reporte-evaluacion-${safeStudentName}_tabla_${selectedTable}.pdf`);
         });
     </script>
 </body>
