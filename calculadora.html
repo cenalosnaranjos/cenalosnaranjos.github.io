@@ -1,54 +1,377 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora Científica</title>
-    <link rel="stylesheet" href="stylescl.css">
-    <link rel="icon" type="image/x-icon" href="logo.jpeg">
+    <style>
+        :root {
+            --color-bg: #ffffff;
+            --color-text: #000000;
+            --color-display-bg: #f0f0f0;
+            --color-btn-bg: #e0e0e0;
+            --color-btn-hover: #d0d0d0;
+            --color-operator: #4a4a4a;
+            --color-scientific: #2c2c2c;
+            --color-equals: #3a3a3a;
+            --color-border: #cccccc;
+            --color-desc-bg: #f8f8f8;
+        }
+
+        [data-theme="dark"] {
+            --color-bg: #1a1a1a;
+            --color-text: #ffffff;
+            --color-display-bg: #2d2d2d;
+            --color-btn-bg: #333333;
+            --color-btn-hover: #404040;
+            --color-operator: #666666;
+            --color-scientific: #4d4d4d;
+            --color-equals: #525252;
+            --color-border: #404040;
+            --color-desc-bg: #2d2d2d;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .mode-controls {
+            margin: 20px 0;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .theme-toggle, .calc-toggle {
+            background: var(--color-btn-bg);
+            color: var(--color-text);
+            border: 1px solid var(--color-border);
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .theme-toggle:hover, .calc-toggle:hover {
+            background: var(--color-btn-hover);
+        }
+
+        .calculator {
+            background: var(--color-btn-bg);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 320px;
+            margin-bottom: 20px;
+        }
+
+        .display {
+            background: var(--color-display-bg);
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+            text-align: right;
+            font-size: 2em;
+            min-height: 60px;
+            overflow-x: auto;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .btn {
+            background: var(--color-btn-bg);
+            border: 1px solid var(--color-border);
+            padding: 15px;
+            font-size: 1.2em;
+            border-radius: 5px;
+            cursor: pointer;
+            color: var(--color-text);
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: var(--color-btn-hover);
+        }
+
+        .operator {
+            background: var(--color-operator);
+            color: white;
+        }
+
+        .scientific {
+            background: var(--color-scientific);
+            color: white;
+            display: none;
+        }
+
+        .equals {
+            background: var(--color-equals);
+            color: white;
+        }
+
+        .calculator.scientific-mode .scientific {
+            display: block;
+        }
+
+        .calculator.scientific-mode .buttons {
+            grid-template-columns: repeat(5, 1fr);
+        }
+
+        .description {
+            background: var(--color-desc-bg);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            width: 320px;
+            border: 1px solid var(--color-border);
+        }
+
+        .description h3 {
+            margin-top: 0;
+        }
+
+        .description ul {
+            padding-left: 20px;
+            margin: 10px 0;
+        }
+
+        .description li {
+            margin-bottom: 5px;
+        }
+
+        @media (max-width: 480px) {
+            .calculator, .description {
+                width: 90%;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="calculator">
-    <header class="header">
-        <img src="logo.jpeg" alt="Logo de la Institución" class="logo">
-        <h1>Centro de Especialidades y Tutorías Académicas "Los Naranjos"</h1>
-    </header></div><br>
-    <a href="index.html"><button class="operator">Regresar</button></a>
-    <br>
-    <div class="calculator">
-        <input type="text" id="display" disabled>
+    <div class="mode-controls">
+        <button class="theme-toggle" onclick="toggleTheme()">Modo Oscuro</button>
+        <button class="calc-toggle" onclick="toggleCalculatorMode()">Modo Científico</button>
+    </div>
+
+    <div class="calculator" id="calculator">
+        <div class="display">
+            <div id="history"></div>
+            <div id="result">0</div>
+        </div>
+        
         <div class="buttons">
-            <!-- Botones básicos -->
-            <button class="basic" onclick="append('7')">7</button>
-            <button class="basic" onclick="append('8')">8</button>
-            <button class="basic" onclick="append('9')">9</button>
-            <button class="operator" onclick="operation('/')">÷</button>
-            <button class="basic" onclick="append('4')">4</button>
-            <button class="basic" onclick="append('5')">5</button>
-            <button class="basic" onclick="append('6')">6</button>
-            <button class="operator" onclick="operation('*')">×</button>
-            <button class="basic" onclick="append('1')">1</button>
-            <button class="basic" onclick="append('2')">2</button>
-            <button class="basic" onclick="append('3')">3</button>
-            <button class="operator" onclick="operation('-')">−</button>
-            <button class="basic" onclick="append('0')">0</button>
-            <button class="basic" onclick="append('.')">.</button>
-            <button class="clear" onclick="clearDisplay()">C</button>
-            <button class="operator" onclick="operation('+')">+</button>
-            <button class="equals" onclick="calculate()">=</button>
+            <button class="btn operator" onclick="clearAll()">AC</button>
+            <button class="btn operator" onclick="deleteLast()">DEL</button>
+            <button class="btn scientific" onclick="addOperation('%')">%</button>
+            <button class="btn operator" onclick="addOperation('/')">÷</button>
             
-            <!-- Botones científicos -->
-            <button class="scientific" onclick="scientificFunction('sqrt')">√</button>
-            <button class="scientific" onclick="scientificFunction('pow')">x²</button>
-            <button class="scientific" onclick="scientificFunction('sin')">sin</button>
-            <button class="scientific" onclick="scientificFunction('cos')">cos</button>
+            <button class="btn scientific" onclick="addFunction('sin(')">sin</button>
+            <button class="btn scientific" onclick="addFunction('cos(')">cos</button>
+            <button class="btn scientific" onclick="addFunction('tan(')">tan</button>
+            <button class="btn operator" onclick="addOperation('*')">×</button>
+            
+            <button class="btn scientific" onclick="addFunction('log(')">log</button>
+            <button class="btn scientific" onclick="addFunction('ln(')">ln</button>
+            <button class="btn scientific" onclick="addFunction('sqrt(')">√</button>
+            <button class="btn operator" onclick="addOperation('-')">-</button>
+            
+            <button class="btn" onclick="addNumber('7')">7</button>
+            <button class="btn" onclick="addNumber('8')">8</button>
+            <button class="btn" onclick="addNumber('9')">9</button>
+            <button class="btn operator" onclick="addOperation('+')">+</button>
+            
+            <button class="btn" onclick="addNumber('4')">4</button>
+            <button class="btn" onclick="addNumber('5')">5</button>
+            <button class="btn" onclick="addNumber('6')">6</button>
+            <button class="btn scientific" onclick="addOperation('^')">x^y</button>
+            
+            <button class="btn" onclick="addNumber('1')">1</button>
+            <button class="btn" onclick="addNumber('2')">2</button>
+            <button class="btn" onclick="addNumber('3')">3</button>
+            <button class="btn scientific" onclick="addOperation('!')">x!</button>
+            
+            <button class="btn" onclick="addNumber('0')">0</button>
+            <button class="btn" onclick="addNumber('.')">.</button>
+            <button class="btn scientific" onclick="addConstant('π')">π</button>
+            <button class="btn scientific" onclick="addConstant('e')">e</button>
+            <button class="btn equals" onclick="calculate()" style="grid-column: span 2;">=</button>
         </div>
     </div>
-    <footer class="footer">
-        <strong>
-        <p>© 2025 CETA - Todos los derechos reservados - Departamento Ténico.</p>
-    </strong>
-    </footer>
-    <script src="scriptcl.js"></script>
+
+    <div class="description">
+        <h3>Funcionalidades Disponibles</h3>
+        <div id="normal-desc">
+            <strong>Modo Normal:</strong>
+            <ul>
+                <li>Operaciones básicas (+, -, ×, ÷)</li>
+                <li>Números decimales</li>
+                <li>Porcentaje (%)</li>
+                <li>Borrado completo (AC)</li>
+                <li>Borrar último dígito (DEL)</li>
+                <li>Paréntesis automáticos</li>
+            </ul>
+        </div>
+        <div id="scientific-desc" style="display: none;">
+            <strong>Modo Científico:</strong>
+            <ul>
+                <li>Funciones trigonométricas (sin, cos, tan)</li>
+                <li>Logaritmos (log, ln)</li>
+                <li>Raíz cuadrada (√)</li>
+                <li>Potenciación (x^y)</li>
+                <li>Factorial (x!)</li>
+                <li>Constantes (π, e)</li>
+                <li>Operaciones complejas</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        let currentExpression = '';
+        let isScientificMode = false;
+        let isDarkMode = false;
+
+        // Manejo de teclado
+        document.addEventListener('keydown', (e) => {
+            const key = e.key.toLowerCase();
+            
+            // Prevenir acciones predeterminadas
+            if (key === 'enter') e.preventDefault();
+            
+            // Mapeo de teclas
+            const keyMap = {
+                '0': '0', '1': '1', '2': '2', '3': '3', '4': '4',
+                '5': '5', '6': '6', '7': '7', '8': '8', '9': '9',
+                '.': '.', '+': '+', '-': '-', '*': '*', '/': '/',
+                '^': '^', '!': '!', '%': '%', '(': '(', ')': ')',
+                'enter': '=',
+                'backspace': 'DEL',
+                'escape': 'AC',
+                's': 'sin(',
+                'c': 'cos(',
+                't': 'tan(',
+                'l': 'log(',
+                'n': 'ln(',
+                'q': 'sqrt(',
+                'p': 'π',
+                'e': 'e'
+            };
+
+            if (key in keyMap) {
+                e.preventDefault();
+                const value = keyMap[key];
+                
+                if (value === '=') calculate();
+                else if (value === 'DEL') deleteLast();
+                else if (value === 'AC') clearAll();
+                else if (['sin(', 'cos(', 'tan(', 'log(', 'ln(', 'sqrt('].includes(value)) {
+                    if (isScientificMode) addFunction(value);
+                }
+                else if (['π', 'e'].includes(value)) {
+                    if (isScientificMode) addConstant(value);
+                }
+                else {
+                    addNumberOrOperation(value);
+                }
+            }
+        });
+
+        function addNumberOrOperation(value) {
+            if (['+', '-', '*', '/', '^', '!', '%'].includes(value)) {
+                addOperation(value);
+            } else {
+                addNumber(value);
+            }
+        }
+
+        function updateDisplay() {
+            document.getElementById('result').textContent = currentExpression || '0';
+        }
+
+        function addNumber(num) {
+            currentExpression += num;
+            updateDisplay();
+        }
+
+        function addOperation(op) {
+            currentExpression += op;
+            updateDisplay();
+        }
+
+        function addFunction(func) {
+            currentExpression += func;
+            updateDisplay();
+        }
+
+        function addConstant(constant) {
+            currentExpression += constant === 'π' ? Math.PI : Math.E;
+            updateDisplay();
+        }
+
+        function clearAll() {
+            currentExpression = '';
+            updateDisplay();
+        }
+
+        function deleteLast() {
+            currentExpression = currentExpression.slice(0, -1);
+            updateDisplay();
+        }
+
+        function calculate() {
+            try {
+                const expr = currentExpression
+                    .replace(/π/g, Math.PI)
+                    .replace(/e/g, Math.E)
+                    .replace(/sqrt\(/g, 'Math.sqrt(')
+                    .replace(/\^/g, '**')
+                    .replace(/!/g, 'factorial');
+                
+                const result = eval(expr);
+                currentExpression = Number.isInteger(result) ? 
+                    result.toString() : 
+                    result.toFixed(8).replace(/\.?0+$/, '');
+                updateDisplay();
+            } catch (error) {
+                currentExpression = 'Error';
+                updateDisplay();
+                setTimeout(clearAll, 1000);
+            }
+        }
+
+        function factorial(n) {
+            if (n === 0 || n === 1) return 1;
+            return n * factorial(n - 1);
+        }
+
+        function toggleTheme() {
+            isDarkMode = !isDarkMode;
+            document.body.setAttribute('data-theme', isDarkMode ? 'dark' : '');
+            document.querySelector('.theme-toggle').textContent = 
+                isDarkMode ? 'Modo Claro' : 'Modo Oscuro';
+        }
+
+        function toggleCalculatorMode() {
+            isScientificMode = !isScientificMode;
+            document.getElementById('calculator').classList.toggle('scientific-mode');
+            document.querySelector('.calc-toggle').textContent = 
+                isScientificMode ? 'Modo Normal' : 'Modo Científico';
+            document.getElementById('scientific-desc').style.display = 
+                isScientificMode ? 'block' : 'none';
+            document.getElementById('normal-desc').style.display = 
+                isScientificMode ? 'none' : 'block';
+        }
+    </script>
 </body>
 </html>
