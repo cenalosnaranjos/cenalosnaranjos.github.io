@@ -38,8 +38,6 @@
 
             --color-suggestion-bg: #eaf1f8;
             --color-suggestion-hover: #d2d8e0;
-
-            --color-desc-bg: #e6eef5;
         }
 
         /* Variables CSS para Tema Oscuro */
@@ -73,8 +71,6 @@
 
             --color-suggestion-bg: #3a4048;
             --color-suggestion-hover: #4c545f;
-
-            --color-desc-bg: #2d3137;
         }
 
         /* Estilos Generales del Cuerpo */
@@ -114,6 +110,7 @@
             font-weight: 500;
             box-shadow: 0 4px 10px var(--color-shadow-light);
             outline: none;
+            flex-shrink: 0; /* Evita que se encoja */
         }
 
         .theme-toggle:hover, .calc-toggle:hover {
@@ -127,12 +124,13 @@
             box-shadow: 0 2px 5px var(--color-shadow-dark) inset;
         }
 
-        /* Contenedor Principal de la Calculadora y Descripción */
+        /* Contenedor Principal de la Calculadora */
         .main-container {
             display: flex;
-            flex-direction: row;
+            flex-direction: column; /* Cambiado a columna para un mejor apilamiento en responsive */
+            align-items: center; /* Centra la calculadora */
             gap: 30px;
-            flex-wrap: wrap;
+            flex-wrap: wrap; /* Permite que los elementos se envuelvan si se añade algo al lado */
             justify-content: center;
         }
 
@@ -144,10 +142,12 @@
             -webkit-backdrop-filter: blur(15px);
             border: 1px solid var(--color-border);
             box-shadow: 0 10px 30px var(--color-shadow-dark);
-            width: 360px; /* Ancho fijo para la calculadora */
+            min-width: 300px; /* Ancho mínimo para la calculadora */
+            max-width: 400px; /* Ancho máximo para evitar que sea demasiado grande */
+            width: 90%; /* Ocupa la mayor parte del ancho disponible */
             transition: all 0.4s ease;
-            position: relative; /* Para el efecto de "glow" */
-            overflow: hidden; /* Asegura que el contenido no se desborde */
+            position: relative;
+            overflow: hidden;
         }
 
         /* Efecto de 'Glow' sutil */
@@ -191,7 +191,7 @@
             overflow: hidden;
             border: 1px solid var(--color-border);
             position: relative;
-            z-index: 1; /* Asegura que esté sobre el 'glow' */
+            z-index: 1; 
         }
 
         #history {
@@ -206,7 +206,7 @@
         }
 
         #result {
-            font-family: 'JetBrains Mono', monospace; /* Fuente monoespaciada para el resultado */
+            font-family: 'JetBrains Mono', monospace;
             font-size: 2.8em;
             font-weight: 500;
             white-space: nowrap;
@@ -223,7 +223,7 @@
             flex-wrap: wrap;
             gap: 10px;
             margin-bottom: 20px;
-            min-height: 35px; /* Asegura espacio incluso sin predicciones */
+            min-height: 35px; 
             justify-content: center;
             position: relative;
             z-index: 1;
@@ -307,7 +307,7 @@
             background: var(--color-scientific);
             color: white;
             display: none; /* Oculto por defecto */
-            font-size: 1.1em; /* Un poco más pequeño para acomodar texto */
+            font-size: 1.1em;
         }
 
         .scientific:hover {
@@ -346,111 +346,104 @@
             grid-template-columns: repeat(5, 1fr); /* 5 columnas en modo científico */
         }
 
+        /* Re-ajuste de spanned columns en modo científico para que se vean bien */
+        .calculator.scientific-mode .btn[onclick*="clearAll"] {
+            grid-column: span 1;
+        }
         .calculator.scientific-mode .btn[onclick*="deleteLast"] {
             grid-column: span 1;
         }
-        .calculator.scientific-mode .btn[onclick*="clearAll"] {
+        .calculator.scientific-mode .btn[onclick*="addInput('0')"] {
+            grid-column: span 1; /* Reset a 1 si antes era span 2 */
+        }
+        .calculator.scientific-mode .btn[onclick*="addInput('.')"] {
             grid-column: span 1;
         }
         .calculator.scientific-mode .equals {
             grid-column: span 2;
         }
-        .calculator.scientific-mode .btn[onclick*="addNumber('0')"] {
-            grid-column: span 1;
-        }
-        .calculator.scientific-mode .btn[onclick*="addNumber('.')"] {
-            grid-column: span 1;
-        }
 
-        /* Descripción de Funcionalidades */
-        .description {
-            background: var(--color-desc-bg);
-            padding: 25px;
-            border-radius: 20px;
-            border: 1px solid var(--color-border);
-            box-shadow: 0 6px 20px var(--color-shadow-dark);
-            width: 360px; /* Ancho fijo para la descripción */
-            transition: all 0.4s ease;
-            position: relative;
-            z-index: 1;
-        }
-
-        .description h3 {
-            margin-top: 0;
-            color: var(--color-display-text);
-            font-weight: 600;
-            margin-bottom: 20px;
-            font-size: 1.4em;
-        }
-
-        .description ul {
-            padding-left: 25px;
-            margin: 0;
-            list-style-type: none;
-        }
-
-        .description li {
-            margin-bottom: 10px;
-            line-height: 1.5;
-            position: relative;
-            padding-left: 0; /* Ajustado para el ícono personalizado */
-        }
-        
-        .description li strong {
-            color: var(--color-equals); /* Resaltar las palabras clave */
-        }
-
-        .description li::before {
-            content: '›'; /* Flecha como bullet point */
-            color: var(--color-equals);
-            position: absolute;
-            left: -18px;
-            font-weight: bold;
-            font-size: 1.1em;
-        }
-
-        /* Media Queries para Responsividad */
-        @media (max-width: 850px) {
-            .main-container {
-                flex-direction: column;
-                align-items: center;
-                gap: 25px;
-            }
-            .calculator, .description {
-                width: 90%; /* Ajuste para ocupar más ancho en pantallas pequeñas */
-                max-width: 360px; /* Mantener un máximo para el diseño */
-                padding: 20px;
+        /* Media Queries para Responsividad Fina */
+        @media (max-width: 768px) {
+            .calculator {
+                max-width: 380px;
+                padding: 25px;
             }
             .display {
-                min-height: 90px;
+                min-height: 100px;
+                padding: 15px;
+            }
+            #result {
                 font-size: 2.5em;
             }
-            #history {
-                font-size: 0.85em;
-            }
             .btn {
-                padding: 16px;
-                font-size: 1.2em;
+                padding: 18px;
+                font-size: 1.3em;
+            }
+            .scientific {
+                font-size: 1em;
             }
             .equals {
-                font-size: 1.4em;
+                font-size: 1.5em;
             }
         }
 
-        @media (max-width: 420px) {
+        @media (max-width: 480px) {
             .calculator {
                 padding: 15px;
+                border-radius: 15px;
+            }
+            .display {
+                min-height: 80px;
+                padding: 12px;
+                border-radius: 12px;
+            }
+            #history {
+                font-size: 0.8em;
+            }
+            #result {
+                font-size: 2.2em;
+            }
+            .buttons {
+                gap: 10px;
+            }
+            .btn {
+                padding: 15px;
+                font-size: 1.2em;
+                border-radius: 12px;
+            }
+            .scientific {
+                font-size: 0.9em;
+            }
+            .equals {
+                font-size: 1.3em;
+            }
+            .prediction-item {
+                padding: 6px 12px;
+                font-size: 0.8em;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .calculator {
+                min-width: unset; /* Permite que se encoja más en pantallas muy pequeñas */
+                width: 95%;
             }
             .buttons {
                 gap: 8px;
             }
             .btn {
-                padding: 12px;
-                font-size: 1.1em;
+                padding: 10px;
+                font-size: 1em;
             }
-            .display {
-                font-size: 2.2em;
-                min-height: 80px;
+            #result {
+                font-size: 1.8em;
+            }
+            .scientific {
+                font-size: 0.8em;
+            }
+            .equals {
+                font-size: 1.1em;
             }
         }
     </style>
@@ -513,50 +506,13 @@
                 
             </div>
         </div>
-
-        <div class="description">
-            <h3>Funcionalidades de la Calculadora Inteligente</h3>
-            <div id="normal-desc">
-                <strong>Modo Normal:</strong>
-                <ul>
-                    <li>**Operaciones básicas:** Suma (+), Resta (-), Multiplicación (×), División (÷).</li>
-                    <li>**Números decimales:** Soporte para cálculos con puntos decimales.</li>
-                    <li>**Porcentaje (%):** Calcula porcentajes.</li>
-                    <li>**Borrado completo (AC):** Limpia toda la expresión.</li>
-                    <li>**Borrar último dígito (DEL):** Elimina el último carácter ingresado.</li>
-                    <li>**Historial visual:** Muestra la expresión actual y el resultado.</li>
-                </ul>
-            </div>
-            <div id="scientific-desc" style="display: none;">
-                <strong>Modo Científico:</strong>
-                <ul>
-                    <li>**Trigonométricas:** Seno (sin), Coseno (cos), Tangente (tan).</li>
-                    <li>**Logaritmos:** Logaritmo base 10 (log), Logaritmo natural (ln).</li>
-                    <li>**Raíz cuadrada (√):** Calcula la raíz cuadrada.</li>
-                    <li>**Potenciación (x^y):** Eleva un número a una potencia.</li>
-                    <li>**Factorial (x!):** Calcula el factorial.</li>
-                    <li>**Constantes:** Pi (π), Número de Euler (e).</li>
-                    <li>**Paréntesis:** Agrupa operaciones para prioridad.</li>
-                    <li>**Valor absoluto (|x|):** Calcula el valor absoluto.</li>
-                    <li>**Número aleatorio (rand):** Genera un número aleatorio.</li>
-                    <li>**Conversión de grados a radianes (Rad).**</li>
-                    <li>**Conversión de radianes a grados (Deg).**</li>
-                </ul>
-            </div>
-            <div id="ai-desc">
-                <strong>Funcionalidad de IA:</strong>
-                <ul>
-                    <li>**Sugerencias Predictivas:** La calculadora sugiere la siguiente operación o número basándose en su uso reciente y el historial.</li>
-                </ul>
-            </div>
-        </div>
     </div>
 
     <script>
         let currentExpression = '';
         let historyDisplay = '';
         let isScientificMode = false;
-        let isDarkMode = true; // Inicia en modo oscuro
+        let isDarkMode = true; // Inicia en modo oscuro por defecto
 
         // Historial para el algoritmo de IA (predicciones)
         let predictionHistory = []; 
@@ -569,15 +525,13 @@
         const calculatorElement = document.getElementById('calculator');
         const themeToggleButton = document.querySelector('.theme-toggle');
         const calcToggleButton = document.querySelector('.calc-toggle');
-        const normalDesc = document.getElementById('normal-desc');
-        const scientificDesc = document.getElementById('scientific-desc');
 
         // Funciones matemáticas personalizadas
         const customMath = {
             factorial: function(n) {
                 if (n < 0 || !Number.isInteger(n)) throw new Error('Input inválido para factorial');
                 if (n === 0 || n === 1) return 1;
-                if (n > 170) return Infinity; // Límite para evitar desbordamiento
+                if (n > 170) return Infinity; // Límite para evitar desbordamiento del número en JS
                 let result = 1;
                 for (let i = 2; i <= n; i++) {
                     result *= i;
@@ -605,39 +559,41 @@
             parsed = parsed.replace(/×/g, '*'); // Multiplicación
             parsed = parsed.replace(/÷/g, '/'); // División
             parsed = parsed.replace(/\^/g, '**'); // Potencia
-            parsed = parsed.replace(/√/g, 'Math.sqrt('); // Raíz cuadrada - necesita un paréntesis al final
 
-            // 2. Manejar factorial (ej. 5!)
-            // Esto es crucial para que se evalúe correctamente como una función
-            parsed = parsed.replace(/(\d+(\.\d+)?|(?:\([^)]*\))|\b(?:Math\.PI|Math\.E)\b)!/g, (match, p1) => {
-                return `customMath.factorial(${p1})`;
-            });
-
-            // 3. Manejar funciones con paréntesis de apertura (ej. sin( )
+            // 2. Manejar funciones con paréntesis de apertura (ej. sin( )
             parsed = parsed.replace(/sin\(/g, 'Math.sin(');
             parsed = parsed.replace(/cos\(/g, 'Math.cos(');
             parsed = parsed.replace(/tan\(/g, 'Math.tan(');
             parsed = parsed.replace(/log\(/g, 'Math.log10('); // log base 10
             parsed = parsed.replace(/ln\(/g, 'Math.log('); // log natural
+            parsed = parsed.replace(/sqrt\(/g, 'Math.sqrt('); // Raíz cuadrada
             parsed = parsed.replace(/abs\(/g, 'Math.abs(');
             parsed = parsed.replace(/degToRad\(/g, 'customMath.degToRad(');
             parsed = parsed.replace(/radToDeg\(/g, 'customMath.radToDeg(');
             parsed = parsed.replace(/rand/g, 'customMath.rand()'); // random sin paréntesis extra
 
+            // 3. Manejar factorial (ej. 5!)
+            // Esto es crucial para que se evalúe correctamente como una función.
+            // Considera números, constantes (π, e), y expresiones entre paréntesis antes del factorial.
+            parsed = parsed.replace(/(\d+(\.\d+)?|(?:\([^)]*\))|\b(?:Math\.PI|Math\.E)\b)!/g, (match, p1) => {
+                // p1 es el número o expresión a la que se aplica el factorial
+                return `customMath.factorial(${p1})`;
+            });
+
             // 4. Manejar porcentajes (ej. 50%, 100 * 50%)
             // Convierte "X%" a "(X/100)" y "Y * X%" a "Y * (X/100)"
-            parsed = parsed.replace(/(\d+(\.\d+)?)%/g, '($1/100)');
-            // Si el porcentaje está después de una operación, ajusta
-            parsed = parsed.replace(/([+\-*/])\s*\((\d+(\.\d+)?)\/100\)/g, '$1 $2/100');
-
+            // Asegura que no reemplace el % de forma incorrecta si ya está en una operación
+            parsed = parsed.replace(/(\d+(\.\d+)?)%([^.\d]|$)/g, '($1/100)$3'); // Captura lo que sigue para mantenerlo
 
             // 5. Manejar multiplicación implícita (ej. 2(3+4), 2π, (5)sin(30))
-            // Número seguido de paréntesis abierto o función
-            parsed = parsed.replace(/(\d+|\b(?:Math\.PI|Math\.E)\b)([a-zA-Z]+\(|\()/g, '$1*$2');
-            parsed = parsed.replace(/(\))(\d+|\b(?:Math\.PI|Math\.E)\b)/g, '$1*$2'); // Paréntesis cerrado seguido de número o constante
-            parsed = parsed.replace(/(\))([a-zA-Z]+\()/g, '$1*$2'); // Paréntesis cerrado seguido de función
+            // Número o constante seguido de paréntesis abierto o función
+            parsed = parsed.replace(/(\d+(\.\d+)?|\b(?:Math\.PI|Math\.E)\b)([a-zA-Z]+\(|\()/g, '$1*$2');
+            // Paréntesis cerrado seguido de número o constante
+            parsed = parsed.replace(/(\))(\d+(\.\d+)?|\b(?:Math\.PI|Math\.E)\b)/g, '$1*$2');
+            // Paréntesis cerrado seguido de función
+            parsed = parsed.replace(/(\))([a-zA-Z]+\()/g, '$1*$2');
             
-            // Caso especial para cuando Math.PI o Math.E están antes o después de un número o paréntesis
+            // Constante antes o después de un número o paréntesis
             parsed = parsed.replace(/([0-9.])(Math\.PI|Math\.E)/g, '$1*$2');
             parsed = parsed.replace(/(Math\.PI|Math\.E)([0-9.(])/g, '$1*$2');
 
@@ -667,10 +623,10 @@
                 addInput('^'); // Usamos el símbolo ^
             } else if (key === '%') {
                 addInput('%');
-            } else if (key === 'p' && e.altKey) { 
+            } else if (key.toLowerCase() === 'p' && e.altKey) { 
                 e.preventDefault();
                 addInput('π');
-            } else if (key === 'e' && e.altKey) { 
+            } else if (key.toLowerCase() === 'e' && e.altKey) { 
                 e.preventDefault();
                 addInput('e');
             } else if (key.toLowerCase() === 's' && e.shiftKey) { 
@@ -691,6 +647,9 @@
             } else if (key.toLowerCase() === 'r' && e.shiftKey) { 
                 e.preventDefault();
                 if (isScientificMode) addInput('rand');
+            } else if (key === '!') {
+                e.preventDefault();
+                if (isScientificMode) addInput('!');
             }
             updateSuggestions();
         });
@@ -707,36 +666,74 @@
         // Agrega una entrada (número, operador, función) a la expresión actual
         function addInput(input) {
             const lastChar = currentExpression.slice(-1);
+            // Considerar el último token para la lógica de inserción inteligente
+            const lastTokenMatch = currentExpression.match(/(\d+\.?\d*|[\+\-\*\/\%\^\!\(\)]|\b(?:sin|cos|tan|log|ln|sqrt|abs|degToRad|radToDeg|rand)\(?|\b(?:π|e)\b)$/);
+            const lastToken = lastTokenMatch ? lastTokenMatch[1] : '';
+
             const operators = ['+', '-', '*', '/', '%', '^', '!'];
             const functionsWithParen = ['sin(', 'cos(', 'tan(', 'log(', 'ln(', 'sqrt(', 'abs(', 'degToRad(', 'radToDeg('];
+            const constants = ['π', 'e'];
 
             if (input.match(/[0-9.]/)) { // Es un número o punto
                 if (currentExpression === '0' && input !== '.') {
                     currentExpression = input;
                 } else if (input === '.' && lastChar === '.') {
-                    return; // Evitar múltiples puntos
+                    return; // Evitar múltiples puntos consecutivos
                 } else if (input === '.' && currentExpression === '') {
                     currentExpression = '0.'; // Iniciar con 0. si se presiona .
+                } else if (lastToken === ')' || constants.includes(lastToken) || (lastToken.match(/\d/) && input === '(')) {
+                    // Si el último es un paréntesis cerrado, constante o un número seguido de un paréntesis abierto, insertar multiplicación implícita
+                    currentExpression += '*' + input;
+                } else {
+                    currentExpression += input;
+                }
+            } else if (operators.includes(input)) { // Es un operador
+                if (operators.includes(lastChar) && input !== '-') { 
+                    // Reemplazar operador si ya hay uno (excepto para negativos)
+                    // Ej. 2++ -> 2+, 2*+ -> 2+
+                    currentExpression = currentExpression.slice(0, -lastChar.length) + input;
+                } else if (currentExpression === '' && input !== '-') { 
+                    // No permitir operadores al inicio (excepto - para números negativos)
+                    return;
+                } else if (input === '!' && (!lastToken.match(/\d+(\.\d+)?/) && lastToken !== ')' && !constants.includes(lastToken))) {
+                    // No permitir factorial si no hay un número, paréntesis cerrado o constante antes
+                    return;
+                } else if (input === '%' && (!lastToken.match(/\d+(\.\d+)?/) && lastToken !== ')' && !constants.includes(lastToken))) {
+                     // No permitir porcentaje si no hay un número, paréntesis cerrado o constante antes
+                    return;
                 }
                 else {
                     currentExpression += input;
                 }
-            } else if (operators.includes(input)) { // Es un operador
-                if (operators.includes(lastChar) && input !== '-') { // Reemplazar operador si ya hay uno (excepto para negativos)
-                    currentExpression = currentExpression.slice(0, -lastChar.length) + input;
-                } else if (currentExpression === '' && input !== '-') { // No permitir operadores al inicio (excepto -)
-                    return;
+            } else if (functionsWithParen.includes(input)) { // Es una función que abre paréntesis
+                if (lastToken.match(/\d+(\.\d+)?/) || lastToken === ')' || constants.includes(lastToken) || currentExpression.endsWith('!')) {
+                     // Si antes hay un número, paréntesis cerrado, constante o factorial, insertar multiplicación implícita
+                    currentExpression += '*' + input;
                 } else {
                     currentExpression += input;
                 }
-            } else if (functionsWithParen.includes(input)) { // Es una función que abre paréntesis
-                currentExpression += input;
-            } else if (['π', 'e'].includes(input)) { // Es una constante
-                currentExpression += input;
-            } else if (input === '(' || input === ')') { // Es un paréntesis
+            } else if (constants.includes(input)) { // Es una constante (π, e)
+                if (lastToken.match(/\d+(\.\d+)?/) || lastToken === ')' || constants.includes(lastToken) || currentExpression.endsWith('!')) {
+                    // Si antes hay un número, paréntesis cerrado, constante o factorial, insertar multiplicación implícita
+                    currentExpression += '*' + input;
+                } else {
+                    currentExpression += input;
+                }
+            } else if (input === '(') { // Paréntesis abierto
+                if (lastToken.match(/\d+(\.\d+)?/) || lastToken === ')' || constants.includes(lastToken) || currentExpression.endsWith('!')) {
+                    currentExpression += '*' + input; // Multiplicación implícita
+                } else {
+                    currentExpression += input;
+                }
+            } else if (input === ')') { // Paréntesis cerrado
+                 // Se podría añadir lógica para verificar balance de paréntesis aquí si se quiere
                  currentExpression += input;
-            } else if (input === 'rand') { // Es la función rand
-                currentExpression += input;
+            } else if (input === 'rand') { // Es la función rand (sin paréntesis de apertura)
+                if (lastToken.match(/\d+(\.\d+)?/) || lastToken === ')' || constants.includes(lastToken) || currentExpression.endsWith('!')) {
+                    currentExpression += '*' + input;
+                } else {
+                    currentExpression += input;
+                }
             }
 
             historyDisplay = currentExpression;
@@ -769,6 +766,11 @@
                     break;
                 }
             }
+            // Manejo de factorial y porcentaje (son caracteres sueltos)
+            if (!deleted && (currentExpression.endsWith('!') || currentExpression.endsWith('%'))) {
+                currentExpression = currentExpression.slice(0, -1);
+                deleted = true;
+            }
             if (!deleted) {
                 currentExpression = currentExpression.slice(0, -1);
             }
@@ -789,6 +791,7 @@
                 let exprToEvaluate = parseExpression(currentExpression);
                 
                 // Asegurarse de que Math, customMath estén disponibles en el scope de eval
+                // Se usa 'Function' constructor para una evaluación más controlada y segura que eval() global
                 const result = Function('Math', 'customMath', `return ${exprToEvaluate}`)(Math, customMath);
                 
                 if (isNaN(result) || !isFinite(result)) {
@@ -798,10 +801,10 @@
                 historyDisplay = currentExpression + ' =';
                 currentExpression = Number.isInteger(result) ? 
                     result.toString() : 
-                    parseFloat(result.toFixed(12)).toString(); // Limitar decimales y limpiar ceros
+                    parseFloat(result.toFixed(12)).toString(); // Limitar decimales y limpiar ceros redundantes
 
                 updateDisplay();
-                addToPredictionHistory(currentExpression); // Guardar el resultado para el historial predictivo
+                addToPredictionHistory(historyDisplay); // Guardar la expresión completa para el historial predictivo
                 updateSuggestions();
 
             } catch (error) {
@@ -809,6 +812,7 @@
                 currentExpression = 'Error';
                 updateDisplay();
                 console.error("Error de cálculo:", error.message);
+                // Limpiar después de un breve tiempo para que el usuario vea el error
                 setTimeout(() => {
                     clearAll(); 
                 }, 1500); 
@@ -827,6 +831,14 @@
             predictionSuggestionsElement.innerHTML = '';
 
             const lastInput = currentExpression.slice(-1);
+            // Regex para capturar el último "token" que podría ser un número, operador, etc.
+            const lastTokenMatch = currentExpression.match(/(\d+\.?\d*|[\+\-\*\/\%\^\!\(\)]|\b(?:sin|cos|tan|log|ln|sqrt|abs|degToRad|radToDeg|rand)\(?|\b(?:π|e)\b)$/);
+            const lastToken = lastTokenMatch ? lastTokenMatch[1] : '';
+
+            const operators = ['+', '-', '*', '/', '%', '^', '!'];
+            const functionsWithParenStart = ['sin(', 'cos(', 'tan(', 'log(', 'ln(', 'sqrt(', 'abs(', 'degToRad(', 'radToDeg('];
+            const constants = ['π', 'e'];
+
             let suggestions = new Set(); 
 
             // 1. Sugerencias basadas en el último carácter/contexto
@@ -838,20 +850,21 @@
                     suggestions.add('log(');
                     suggestions.add('π');
                 }
-            } else if (lastInput.match(/[0-9.)!]$/) || ['π', 'e'].includes(lastInput) || currentExpression.endsWith('rand')) {
+            } else if (lastToken.match(/\d+(\.\d+)?/) || lastToken === ')' || constants.includes(lastToken) || currentExpression.endsWith('!') || currentExpression.endsWith('rand')) {
+                // Si el último es un número, paréntesis cerrado, constante, factorial o rand
                 suggestions.add('+');
                 suggestions.add('-');
                 suggestions.add('*');
                 suggestions.add('/');
-                suggestions.add(')');
+                suggestions.add(')'); // Sugerir cerrar paréntesis
                 if (isScientificMode) {
                     suggestions.add('^'); 
                     suggestions.add('!'); 
                     suggestions.add('%'); 
                 }
-            } else if (['+', '-', '*', '/', '^', '%', '('].includes(lastInput)) {
+            } else if (operators.includes(lastToken) || lastToken === '(' || functionsWithParenStart.includes(lastToken)) {
+                // Si el último es un operador o un paréntesis abierto, o inicio de una función
                 suggestions.add('1');
-                suggestions.add('2');
                 suggestions.add('(');
                 if (isScientificMode) {
                     suggestions.add('sin(');
@@ -859,14 +872,27 @@
                     suggestions.add('sqrt(');
                     suggestions.add('π');
                     suggestions.add('e');
+                    suggestions.add('rand');
                 }
             }
 
             // 2. Sugerencias basadas en el historial (más frecuentes/recientes)
             const recentFrequentItems = getRecentFrequentItems(5); 
             recentFrequentItems.forEach(item => {
-                if (!suggestions.has(item) && !currentExpression.endsWith(item)) {
-                    suggestions.add(item);
+                if (!suggestions.has(item) && !currentExpression.endsWith(item) && item !== '!') { // Evitar sugerir '!' a menos que sea contextualmente relevante
+                    // Evitar sugerencias de operadores si el último input ya es un operador
+                    const lastCharIsOperator = operators.includes(lastToken);
+                    const itemIsOperator = operators.includes(item) && item !== '!'; // ! se maneja aparte
+
+                    if (!(lastCharIsOperator && itemIsOperator)) {
+                        // Evitar sugerir constantes/funciones si el último input es un número/constante
+                        const lastCharIsNumOrConst = lastToken.match(/\d/) || constants.includes(lastToken) || lastToken === ')';
+                        const itemIsFunctionOrConst = functionsWithParenStart.includes(item) || constants.includes(item) || item === 'rand';
+
+                        if (!(lastCharIsNumOrConst && itemIsFunctionOrConst)) {
+                            suggestions.add(item);
+                        }
+                    }
                 }
             });
 
@@ -875,19 +901,23 @@
             });
         }
 
+        // Función auxiliar para obtener elementos frecuentes del historial de predicción
         function getRecentFrequentItems(limit) {
             const itemCounts = {};
             predictionHistory.forEach(expression => {
-                const matches = expression.match(/(\d+\.?\d*)|([+\-*/%^!()])|(sin\(|cos\(|tan\(|log\(|ln\(|sqrt\(|abs\(|rand|π|e|degToRad\(|radToDeg\()/g);
+                // Captura números, operadores, funciones con paréntesis, constantes
+                const matches = expression.match(/(\d+\.?\d*)|([\+\-\*\/\%\^\!\(\)])|(\b(?:sin|cos|tan|log|ln|sqrt|abs|degToRad|radToDeg|rand)\(?)|(\b(?:π|e)\b)/g);
                 if (matches) {
                     matches.forEach(item => {
                         itemCounts[item] = (itemCounts[item] || 0) + 1;
                     });
                 }
             });
+            // Ordena por frecuencia (descendente) y toma los primeros 'limit'
             return Object.keys(itemCounts).sort((a, b) => itemCounts[b] - itemCounts[a]).slice(0, limit);
         }
 
+        // Añade un botón de sugerencia al DOM
         function addSuggestionButton(value) {
             const button = document.createElement('button');
             button.className = 'prediction-item';
@@ -925,14 +955,13 @@
             isScientificMode = !isScientificMode;
             calculatorElement.classList.toggle('scientific-mode');
             calcToggleButton.textContent = isScientificMode ? 'Modo Normal' : 'Modo Científico';
-            normalDesc.style.display = isScientificMode ? 'none' : 'block';
-            scientificDesc.style.display = isScientificMode ? 'block' : 'none';
             updateSuggestions(); // Actualizar sugerencias al cambiar de modo
         }
 
         // Inicialización al cargar la página
         document.addEventListener('DOMContentLoaded', () => {
             updateDisplay();
+            // Establecer el texto del botón de tema inicial basado en `isDarkMode`
             themeToggleButton.textContent = isDarkMode ? 'Modo Claro' : 'Modo Oscuro';
             updateSuggestions(); 
         });
