@@ -472,44 +472,44 @@
             <div class="buttons">
                 <button class="btn operator" onclick="clearAll()">AC</button>
                 <button class="btn operator" onclick="deleteLast()">DEL</button>
-                <button class="btn scientific" onclick="addFunction('(')">(</button>
-                <button class="btn scientific" onclick="addFunction(')')">)</button>
-                <button class="btn scientific" onclick="addOperation('%')">%</button>
-                <button class="btn operator" onclick="addOperation('/')">÷</button>
+                <button class="btn scientific" onclick="addInput('(')"> ( </button>
+                <button class="btn scientific" onclick="addInput(')')"> ) </button>
+                <button class="btn scientific" onclick="addInput('%')"> % </button>
+                <button class="btn operator" onclick="addInput('/')"> ÷ </button>
                 
-                <button class="btn scientific" onclick="addFunction('Math.sin(')">sin</button>
-                <button class="btn scientific" onclick="addFunction('Math.cos(')">cos</button>
-                <button class="btn scientific" onclick="addFunction('Math.tan(')">tan</button>
-                <button class="btn scientific" onclick="addFunction('Math.PI')">π</button>
-                <button class="btn scientific" onclick="addFunction('Math.E')">e</button>
-                <button class="btn operator" onclick="addOperation('*')">×</button>
+                <button class="btn scientific" onclick="addInput('sin(')"> sin </button>
+                <button class="btn scientific" onclick="addInput('cos(')"> cos </button>
+                <button class="btn scientific" onclick="addInput('tan(')"> tan </button>
+                <button class="btn scientific" onclick="addInput('π')"> π </button>
+                <button class="btn scientific" onclick="addInput('e')"> e </button>
+                <button class="btn operator" onclick="addInput('*')"> × </button>
                 
-                <button class="btn scientific" onclick="addFunction('Math.log10(')">log</button>
-                <button class="btn scientific" onclick="addFunction('Math.log(')">ln</button>
-                <button class="btn scientific" onclick="addFunction('Math.sqrt(')">√</button>
-                <button class="btn" onclick="addNumber('7')">7</button>
-                <button class="btn" onclick="addNumber('8')">8</button>
-                <button class="btn" onclick="addNumber('9')">9</button>
-                <button class="btn operator" onclick="addOperation('-')">-</button>
+                <button class="btn scientific" onclick="addInput('log(')"> log </button>
+                <button class="btn scientific" onclick="addInput('ln(')"> ln </button>
+                <button class="btn scientific" onclick="addInput('sqrt(')"> √ </button>
+                <button class="btn" onclick="addInput('7')"> 7 </button>
+                <button class="btn" onclick="addInput('8')"> 8 </button>
+                <button class="btn" onclick="addInput('9')"> 9 </button>
+                <button class="btn operator" onclick="addInput('-')"> - </button>
                 
-                <button class="btn scientific" onclick="addFunction('Math.pow(')">x^y</button>
-                <button class="btn scientific" onclick="addFunction('factorial(')">x!</button>
-                <button class="btn" onclick="addNumber('4')">4</button>
-                <button class="btn" onclick="addNumber('5')">5</button>
-                <button class="btn" onclick="addNumber('6')">6</button>
-                <button class="btn operator" onclick="addOperation('+')">+</button>
+                <button class="btn scientific" onclick="addInput('^')"> x^y </button>
+                <button class="btn scientific" onclick="addInput('!')"> x! </button>
+                <button class="btn" onclick="addInput('4')"> 4 </button>
+                <button class="btn" onclick="addInput('5')"> 5 </button>
+                <button class="btn" onclick="addInput('6')"> 6 </button>
+                <button class="btn operator" onclick="addInput('+')"> + </button>
                 
-                <button class="btn scientific" onclick="addFunction('Math.abs(')">|x|</button>
-                <button class="btn scientific" onclick="addFunction('random()')">rand</button>
-                <button class="btn" onclick="addNumber('1')">1</button>
-                <button class="btn" onclick="addNumber('2')">2</button>
-                <button class="btn" onclick="addNumber('3')">3</button>
-                <button class="btn equals" onclick="calculate()">=</button>
+                <button class="btn scientific" onclick="addInput('abs(')"> |x| </button>
+                <button class="btn scientific" onclick="addInput('rand')"> rand </button>
+                <button class="btn" onclick="addInput('1')"> 1 </button>
+                <button class="btn" onclick="addInput('2')"> 2 </button>
+                <button class="btn" onclick="addInput('3')"> 3 </button>
+                <button class="btn equals" onclick="calculate()"> = </button>
                 
-                <button class="btn scientific" onclick="addFunction('degToRad(')">Rad</button>
-                <button class="btn scientific" onclick="addFunction('radToDeg(')">Deg</button>
-                <button class="btn" onclick="addNumber('0')">0</button>
-                <button class="btn" onclick="addNumber('.')">.</button>
+                <button class="btn scientific" onclick="addInput('degToRad(')"> Rad </button>
+                <button class="btn scientific" onclick="addInput('radToDeg(')"> Deg </button>
+                <button class="btn" onclick="addInput('0')"> 0 </button>
+                <button class="btn" onclick="addInput('.')"> . </button>
                 
             </div>
         </div>
@@ -555,12 +555,12 @@
     <script>
         let currentExpression = '';
         let historyDisplay = '';
-        let isScientificMode = false; // Se inicia en false, pero el CSS ya lo pone en modo oscuro
-        let isDarkMode = true; // Se inicia en true para que el body tenga data-theme="dark"
+        let isScientificMode = false;
+        let isDarkMode = true; // Inicia en modo oscuro
 
         // Historial para el algoritmo de IA (predicciones)
         let predictionHistory = []; 
-        const MAX_PREDICTION_HISTORY = 30; // Aumentamos un poco el tamaño del historial
+        const MAX_PREDICTION_HISTORY = 30;
 
         // Referencias a elementos del DOM
         const historyElement = document.getElementById('history');
@@ -572,24 +572,76 @@
         const normalDesc = document.getElementById('normal-desc');
         const scientificDesc = document.getElementById('scientific-desc');
 
-        // Funciones matemáticas personalizadas para 'eval'
-        function factorial(n) {
-            if (n < 0 || !Number.isInteger(n)) return NaN;
-            if (n === 0 || n === 1) return 1;
-            if (n > 170) return Infinity; // Límite para evitar desbordamiento en JS
-            let result = 1;
-            for (let i = 2; i <= n; i++) {
-                result *= i;
+        // Funciones matemáticas personalizadas
+        const customMath = {
+            factorial: function(n) {
+                if (n < 0 || !Number.isInteger(n)) throw new Error('Input inválido para factorial');
+                if (n === 0 || n === 1) return 1;
+                if (n > 170) return Infinity; // Límite para evitar desbordamiento
+                let result = 1;
+                for (let i = 2; i <= n; i++) {
+                    result *= i;
+                }
+                return result;
+            },
+            degToRad: function(degrees) {
+                return degrees * (Math.PI / 180);
+            },
+            radToDeg: function(radians) {
+                return radians * (180 / Math.PI);
+            },
+            rand: function() {
+                return Math.random();
             }
-            return result;
-        }
+        };
 
-        function degToRad(degrees) {
-            return degrees * (Math.PI / 180);
-        }
+        // --- Parser de Expresiones (¡La clave para la fiabilidad!) ---
+        function parseExpression(expression) {
+            let parsed = expression;
 
-        function radToDeg(radians) {
-            return radians * (180 / Math.PI);
+            // 1. Reemplazar constantes y operadores personalizados
+            parsed = parsed.replace(/π/g, 'Math.PI');
+            parsed = parsed.replace(/e/g, 'Math.E');
+            parsed = parsed.replace(/×/g, '*'); // Multiplicación
+            parsed = parsed.replace(/÷/g, '/'); // División
+            parsed = parsed.replace(/\^/g, '**'); // Potencia
+            parsed = parsed.replace(/√/g, 'Math.sqrt('); // Raíz cuadrada - necesita un paréntesis al final
+
+            // 2. Manejar factorial (ej. 5!)
+            // Esto es crucial para que se evalúe correctamente como una función
+            parsed = parsed.replace(/(\d+(\.\d+)?|(?:\([^)]*\))|\b(?:Math\.PI|Math\.E)\b)!/g, (match, p1) => {
+                return `customMath.factorial(${p1})`;
+            });
+
+            // 3. Manejar funciones con paréntesis de apertura (ej. sin( )
+            parsed = parsed.replace(/sin\(/g, 'Math.sin(');
+            parsed = parsed.replace(/cos\(/g, 'Math.cos(');
+            parsed = parsed.replace(/tan\(/g, 'Math.tan(');
+            parsed = parsed.replace(/log\(/g, 'Math.log10('); // log base 10
+            parsed = parsed.replace(/ln\(/g, 'Math.log('); // log natural
+            parsed = parsed.replace(/abs\(/g, 'Math.abs(');
+            parsed = parsed.replace(/degToRad\(/g, 'customMath.degToRad(');
+            parsed = parsed.replace(/radToDeg\(/g, 'customMath.radToDeg(');
+            parsed = parsed.replace(/rand/g, 'customMath.rand()'); // random sin paréntesis extra
+
+            // 4. Manejar porcentajes (ej. 50%, 100 * 50%)
+            // Convierte "X%" a "(X/100)" y "Y * X%" a "Y * (X/100)"
+            parsed = parsed.replace(/(\d+(\.\d+)?)%/g, '($1/100)');
+            // Si el porcentaje está después de una operación, ajusta
+            parsed = parsed.replace(/([+\-*/])\s*\((\d+(\.\d+)?)\/100\)/g, '$1 $2/100');
+
+
+            // 5. Manejar multiplicación implícita (ej. 2(3+4), 2π, (5)sin(30))
+            // Número seguido de paréntesis abierto o función
+            parsed = parsed.replace(/(\d+|\b(?:Math\.PI|Math\.E)\b)([a-zA-Z]+\(|\()/g, '$1*$2');
+            parsed = parsed.replace(/(\))(\d+|\b(?:Math\.PI|Math\.E)\b)/g, '$1*$2'); // Paréntesis cerrado seguido de número o constante
+            parsed = parsed.replace(/(\))([a-zA-Z]+\()/g, '$1*$2'); // Paréntesis cerrado seguido de función
+            
+            // Caso especial para cuando Math.PI o Math.E están antes o después de un número o paréntesis
+            parsed = parsed.replace(/([0-9.])(Math\.PI|Math\.E)/g, '$1*$2');
+            parsed = parsed.replace(/(Math\.PI|Math\.E)([0-9.(])/g, '$1*$2');
+
+            return parsed;
         }
 
         // Manejo de eventos del teclado
@@ -606,41 +658,41 @@
                 e.preventDefault();
                 clearAll();
             } else if (key.match(/[0-9.]/)) {
-                addNumber(key);
+                addInput(key);
             } else if (key === '+' || key === '-' || key === '*' || key === '/') {
-                addOperation(key);
+                addInput(key);
             } else if (key === '(' || key === ')') {
-                addFunction(key);
+                addInput(key);
             } else if (key === '^') {
-                addFunction('Math.pow('); // Mapea '^' a Math.pow(
+                addInput('^'); // Usamos el símbolo ^
             } else if (key === '%') {
-                addOperation('%');
-            } else if (key.toLowerCase() === 'p' && e.altKey) {
+                addInput('%');
+            } else if (key === 'p' && e.altKey) { 
                 e.preventDefault();
-                addFunction('Math.PI');
-            } else if (key.toLowerCase() === 'e' && e.altKey) {
+                addInput('π');
+            } else if (key === 'e' && e.altKey) { 
                 e.preventDefault();
-                addFunction('Math.E');
-            } else if (key.toLowerCase() === 's' && e.shiftKey) { // Shift + S para sin
+                addInput('e');
+            } else if (key.toLowerCase() === 's' && e.shiftKey) { 
                 e.preventDefault();
-                if (isScientificMode) addFunction('Math.sin(');
-            } else if (key.toLowerCase() === 'c' && e.shiftKey) { // Shift + C para cos
+                if (isScientificMode) addInput('sin(');
+            } else if (key.toLowerCase() === 'c' && e.shiftKey) { 
                 e.preventDefault();
-                if (isScientificMode) addFunction('Math.cos(');
-            } else if (key.toLowerCase() === 't' && e.shiftKey) { // Shift + T para tan
+                if (isScientificMode) addInput('cos(');
+            } else if (key.toLowerCase() === 't' && e.shiftKey) { 
                 e.preventDefault();
-                if (isScientificMode) addFunction('Math.tan(');
-            } else if (key.toLowerCase() === 'l' && e.shiftKey) { // Shift + L para log
+                if (isScientificMode) addInput('tan(');
+            } else if (key.toLowerCase() === 'l' && e.shiftKey) { 
                 e.preventDefault();
-                if (isScientificMode) addFunction('Math.log10(');
-            } else if (key.toLowerCase() === 'n' && e.shiftKey) { // Shift + N para ln
+                if (isScientificMode) addInput('log(');
+            } else if (key.toLowerCase() === 'n' && e.shiftKey) { 
                 e.preventDefault();
-                if (isScientificMode) addFunction('Math.log(');
-            } else if (key.toLowerCase() === 'r' && e.shiftKey) { // Shift + R para random
+                if (isScientificMode) addInput('ln(');
+            } else if (key.toLowerCase() === 'r' && e.shiftKey) { 
                 e.preventDefault();
-                if (isScientificMode) addFunction('random()');
+                if (isScientificMode) addInput('rand');
             }
-            updateSuggestions(); // Actualiza las sugerencias después de cada entrada
+            updateSuggestions();
         });
 
         // Actualiza el display de la calculadora
@@ -652,57 +704,41 @@
             historyElement.scrollLeft = historyElement.scrollWidth;
         }
 
-        // Agrega un número a la expresión actual
-        function addNumber(num) {
-            if (currentExpression === '0' && num !== '.') {
-                currentExpression = num;
-            } else {
-                // Prevenir múltiples puntos decimales en el mismo número
-                const lastNumMatch = currentExpression.match(/(\d+\.?\d*)$/);
-                if (num === '.' && lastNumMatch && lastNumMatch[0].includes('.')) {
-                    return; 
-                }
-                currentExpression += num;
-            }
-            historyDisplay = currentExpression;
-            updateDisplay();
-            updateSuggestions();
-        }
-
-        // Agrega un operador a la expresión actual
-        function addOperation(op) {
+        // Agrega una entrada (número, operador, función) a la expresión actual
+        function addInput(input) {
             const lastChar = currentExpression.slice(-1);
-            const operators = ['+', '-', '*', '/', '%', '**'];
+            const operators = ['+', '-', '*', '/', '%', '^', '!'];
+            const functionsWithParen = ['sin(', 'cos(', 'tan(', 'log(', 'ln(', 'sqrt(', 'abs(', 'degToRad(', 'radToDeg('];
 
-            if (operators.includes(lastChar)) {
-                // Reemplaza el último operador si se ingresa uno nuevo
-                currentExpression = currentExpression.slice(0, -lastChar.length) + op;
-            } else if (currentExpression !== '') {
-                currentExpression += op;
-            } else if (op === '-') { // Permite números negativos al inicio
-                currentExpression += op;
-            }
-            historyDisplay = currentExpression;
-            updateDisplay();
-            updateSuggestions();
-        }
-
-        // Agrega una función o constante a la expresión actual
-        function addFunction(func) {
-            // Manejo especial para factorial (postfijo)
-            if (func === 'factorial(') {
-                const lastChar = currentExpression.slice(-1);
-                // Asegurarse de que el factorial se aplique a un número o un paréntesis cerrado
-                if (lastChar.match(/[0-9)]/) || currentExpression.endsWith('Math.PI') || currentExpression.endsWith('Math.E')) {
-                    currentExpression += '!';
-                } else {
-                    return; // No agregar factorial si no hay un operando válido
+            if (input.match(/[0-9.]/)) { // Es un número o punto
+                if (currentExpression === '0' && input !== '.') {
+                    currentExpression = input;
+                } else if (input === '.' && lastChar === '.') {
+                    return; // Evitar múltiples puntos
+                } else if (input === '.' && currentExpression === '') {
+                    currentExpression = '0.'; // Iniciar con 0. si se presiona .
                 }
-            } else if (func === 'Math.pow(') {
-                currentExpression += '**'; // Para que eval lo entienda como potencia
-            } else {
-                currentExpression += func;
+                else {
+                    currentExpression += input;
+                }
+            } else if (operators.includes(input)) { // Es un operador
+                if (operators.includes(lastChar) && input !== '-') { // Reemplazar operador si ya hay uno (excepto para negativos)
+                    currentExpression = currentExpression.slice(0, -lastChar.length) + input;
+                } else if (currentExpression === '' && input !== '-') { // No permitir operadores al inicio (excepto -)
+                    return;
+                } else {
+                    currentExpression += input;
+                }
+            } else if (functionsWithParen.includes(input)) { // Es una función que abre paréntesis
+                currentExpression += input;
+            } else if (['π', 'e'].includes(input)) { // Es una constante
+                currentExpression += input;
+            } else if (input === '(' || input === ')') { // Es un paréntesis
+                 currentExpression += input;
+            } else if (input === 'rand') { // Es la función rand
+                currentExpression += input;
             }
+
             historyDisplay = currentExpression;
             updateDisplay();
             updateSuggestions();
@@ -716,21 +752,19 @@
             updateSuggestions();
         }
 
-        // Elimina el último carácter o función/constante de la expresión
+        // Elimina el último carácter o grupo de caracteres de la expresión
         function deleteLast() {
             if (currentExpression.length === 0) return;
 
-            // Manejo de funciones y constantes
-            const scientificFunctions = [
-                'Math.PI', 'Math.E', 'Math.sin(', 'Math.cos(', 'Math.tan(', 
-                'Math.log10(', 'Math.log(', 'Math.sqrt(', 'Math.pow(', 
-                'factorial(', 'Math.abs(', 'random()', 'degToRad(', 'radToDeg('
+            const scientificInputs = [
+                'sin(', 'cos(', 'tan(', 'log(', 'ln(', 'sqrt(', 'abs(', 
+                'degToRad(', 'radToDeg(', 'rand', 'π', 'e', '^'
             ];
-            
+
             let deleted = false;
-            for (const func of scientificFunctions) {
-                if (currentExpression.endsWith(func)) {
-                    currentExpression = currentExpression.slice(0, -func.length);
+            for (const item of scientificInputs) {
+                if (currentExpression.endsWith(item)) {
+                    currentExpression = currentExpression.slice(0, -item.length);
                     deleted = true;
                     break;
                 }
@@ -747,50 +781,36 @@
         // Realiza el cálculo de la expresión
         function calculate() {
             try {
-                let expr = currentExpression;
+                if (currentExpression.trim() === '') {
+                    resultElement.textContent = '0';
+                    return;
+                }
+                // Usar el parser para preparar la expresión para eval
+                let exprToEvaluate = parseExpression(currentExpression);
                 
-                // Reemplazar el signo de multiplicación (×) y división (÷) si se usaran en el input
-                expr = expr.replace(/×/g, '*').replace(/÷/g, '/');
-
-                // Manejar porcentajes (ej. 50% de 100 -> 100 * (50/100)
-                // Esto es una simplificación; para un porcentaje más flexible (ej. 50+10%), se necesitaría un parser más complejo.
-                expr = expr.replace(/(\d+(\.\d+)?)%/g, '($1/100)');
+                // Asegurarse de que Math, customMath estén disponibles en el scope de eval
+                const result = Function('Math', 'customMath', `return ${exprToEvaluate}`)(Math, customMath);
                 
-                // Manejar factorial (ej. 5!)
-                expr = expr.replace(/(\d+)!/g, 'factorial($1)');
-                // También para expresiones entre paréntesis: (2+3)!
-                expr = expr.replace(/\)(!)/g, ')!$1'); // Esto es una aproximación y puede requerir un parser más robusto.
-
-                // Asegurar la multiplicación implícita (ej. 2(3) -> 2*(3), 2π -> 2*Math.PI)
-                expr = expr.replace(/(\d+)\(/g, '$1*('); // Número antes de paréntesis
-                expr = expr.replace(/\)(\d+)/g, ')*$1'); // Paréntesis antes de número
-                expr = expr.replace(/([0-9.])(Math\.PI|Math\.E)/g, '$1*$2'); // Número antes de constantes
-                expr = expr.replace(/(Math\.PI|Math\.E)([0-9.(])/g, '$1*$2'); // Constante antes de número/paréntesis
-
-                // Evaluar la expresión de forma "segura"
-                // Se usa Function constructor para evitar eval global y acceso no deseado.
-                const evaluatedResult = Function('Math', 'factorial', 'degToRad', 'radToDeg', 'random', 'return ' + expr)(Math, factorial, degToRad, radToDeg, random);
-                
-                if (isNaN(evaluatedResult) || !isFinite(evaluatedResult)) {
+                if (isNaN(result) || !isFinite(result)) {
                     throw new Error('Cálculo inválido');
                 }
 
                 historyDisplay = currentExpression + ' =';
-                currentExpression = Number.isInteger(evaluatedResult) ? 
-                    evaluatedResult.toString() : 
-                    parseFloat(evaluatedResult.toFixed(12)).toString(); // Reducir decimales y limpiar ceros
+                currentExpression = Number.isInteger(result) ? 
+                    result.toString() : 
+                    parseFloat(result.toFixed(12)).toString(); // Limitar decimales y limpiar ceros
 
                 updateDisplay();
-                addToPredictionHistory(expr); // Guardar la expresión original para el historial predictivo
+                addToPredictionHistory(currentExpression); // Guardar el resultado para el historial predictivo
                 updateSuggestions();
 
             } catch (error) {
                 historyDisplay = currentExpression + ' =';
                 currentExpression = 'Error';
                 updateDisplay();
-                console.error("Error de cálculo:", error);
+                console.error("Error de cálculo:", error.message);
                 setTimeout(() => {
-                    clearAll(); // Limpiar la pantalla después de un error
+                    clearAll(); 
                 }, 1500); 
             }
         }
@@ -799,16 +819,15 @@
         function addToPredictionHistory(calculation) {
             predictionHistory.push(calculation);
             if (predictionHistory.length > MAX_PREDICTION_HISTORY) {
-                predictionHistory.shift(); // Elimina la entrada más antigua
+                predictionHistory.shift(); 
             }
-            // console.log("Historial de Predicción:", predictionHistory); // Para depuración
         }
 
         function updateSuggestions() {
-            predictionSuggestionsElement.innerHTML = ''; // Limpia sugerencias anteriores
+            predictionSuggestionsElement.innerHTML = '';
 
             const lastInput = currentExpression.slice(-1);
-            let suggestions = new Set(); // Usar un Set para evitar duplicados
+            let suggestions = new Set(); 
 
             // 1. Sugerencias basadas en el último carácter/contexto
             if (currentExpression === '') {
@@ -819,105 +838,80 @@
                     suggestions.add('log(');
                     suggestions.add('π');
                 }
-            } else if (lastInput.match(/[0-9.)!]$/) || currentExpression.endsWith('Math.PI') || currentExpression.endsWith('Math.E')) {
-                // Si el último es un número, constante o paréntesis/factorial
+            } else if (lastInput.match(/[0-9.)!]$/) || ['π', 'e'].includes(lastInput) || currentExpression.endsWith('rand')) {
                 suggestions.add('+');
                 suggestions.add('-');
                 suggestions.add('*');
                 suggestions.add('/');
                 suggestions.add(')');
                 if (isScientificMode) {
-                    suggestions.add('^'); // potencia
-                    suggestions.add('!'); // factorial
-                    suggestions.add('%'); // porcentaje
+                    suggestions.add('^'); 
+                    suggestions.add('!'); 
+                    suggestions.add('%'); 
                 }
-            } else if (['+', '-', '*', '/', '**', '%', '('].includes(lastInput)) {
-                // Si el último es un operador o un paréntesis abierto
+            } else if (['+', '-', '*', '/', '^', '%', '('].includes(lastInput)) {
                 suggestions.add('1');
                 suggestions.add('2');
                 suggestions.add('(');
                 if (isScientificMode) {
                     suggestions.add('sin(');
                     suggestions.add('log(');
-                    suggestions.add('√');
+                    suggestions.add('sqrt(');
                     suggestions.add('π');
                     suggestions.add('e');
                 }
             }
 
             // 2. Sugerencias basadas en el historial (más frecuentes/recientes)
-            const recentFrequentItems = getRecentFrequentItems(5); // Obtener los 5 ítems más frecuentes del historial
+            const recentFrequentItems = getRecentFrequentItems(5); 
             recentFrequentItems.forEach(item => {
                 if (!suggestions.has(item) && !currentExpression.endsWith(item)) {
                     suggestions.add(item);
                 }
             });
 
-            // Añadir los botones de sugerencia al DOM
             suggestions.forEach(value => {
                 addSuggestionButton(value);
             });
         }
 
-        // Extrae y cuenta elementos frecuentes del historial de expresiones
         function getRecentFrequentItems(limit) {
             const itemCounts = {};
-            // Parsear las expresiones para extraer números, operadores, funciones y constantes
             predictionHistory.forEach(expression => {
-                // Regex para capturar números (incluyendo decimales), operadores, paréntesis y nombres de funciones/constantes
-                const matches = expression.match(/(\d+\.?\d*)|([+\-*/%^()])|(Math\.PI|Math\.E|Math\.sin|Math\.cos|Math\.tan|Math\.log10|Math\.log|Math\.sqrt|factorial|abs|random|degToRad|radToDeg)/g);
+                const matches = expression.match(/(\d+\.?\d*)|([+\-*/%^!()])|(sin\(|cos\(|tan\(|log\(|ln\(|sqrt\(|abs\(|rand|π|e|degToRad\(|radToDeg\()/g);
                 if (matches) {
                     matches.forEach(item => {
                         itemCounts[item] = (itemCounts[item] || 0) + 1;
                     });
                 }
             });
-
-            // Convertir a array, ordenar por frecuencia y limitar
             return Object.keys(itemCounts).sort((a, b) => itemCounts[b] - itemCounts[a]).slice(0, limit);
         }
 
-        // Crea y añade un botón de sugerencia al DOM
         function addSuggestionButton(value) {
             const button = document.createElement('button');
             button.className = 'prediction-item';
             
-            // Mapeo para mostrar símbolos en lugar de nombres de funciones/constantes en los botones
             let displayValue = value;
-            if (value === 'Math.PI') displayValue = 'π';
-            else if (value === 'Math.E') displayValue = 'e';
-            else if (value === 'Math.sin(') displayValue = 'sin';
-            else if (value === 'Math.cos(') displayValue = 'cos';
-            else if (value === 'Math.tan(') displayValue = 'tan';
-            else if (value === 'Math.log10(') displayValue = 'log';
-            else if (value === 'Math.log(') displayValue = 'ln';
-            else if (value === 'Math.sqrt(') displayValue = '√';
-            else if (value === 'Math.pow(' || value === '**') displayValue = 'x^y';
-            else if (value === 'factorial(') displayValue = 'x!';
-            else if (value === 'Math.abs(') displayValue = '|x|';
-            else if (value === 'random()') displayValue = 'rand';
+            // Mapeo para mostrar símbolos amigables en los botones de sugerencia
+            if (value === 'sin(') displayValue = 'sin';
+            else if (value === 'cos(') displayValue = 'cos';
+            else if (value === 'tan(') displayValue = 'tan';
+            else if (value === 'log(') displayValue = 'log';
+            else if (value === 'ln(') displayValue = 'ln';
+            else if (value === 'sqrt(') displayValue = '√';
+            else if (value === '^') displayValue = 'x^y';
+            else if (value === '!') displayValue = 'x!';
+            else if (value === 'abs(') displayValue = '|x|';
+            else if (value === 'rand') displayValue = 'rand';
             else if (value === 'degToRad(') displayValue = 'Rad';
             else if (value === 'radToDeg(') displayValue = 'Deg';
 
             button.textContent = displayValue;
-            button.onclick = () => applySuggestion(value);
+            button.onclick = () => addInput(value); // addInput ya maneja todo
             predictionSuggestionsElement.appendChild(button);
         }
-
-        // Aplica la sugerencia al currentExpression
-        function applySuggestion(value) {
-            // Asegurarse de que las constantes y funciones se inserten correctamente
-            if (value.startsWith('Math.') || value.endsWith('(') || value.endsWith(')')) {
-                addFunction(value);
-            } else if (['+', '-', '*', '/', '%', '**', '!'].includes(value)) {
-                addOperation(value);
-            } else {
-                addNumber(value);
-            }
-            updateSuggestions();
-        }
         // --- Fin Lógica de Predicción de IA ---
-
 
         // Alternar entre modo claro y oscuro
         function toggleTheme() {
@@ -939,9 +933,8 @@
         // Inicialización al cargar la página
         document.addEventListener('DOMContentLoaded', () => {
             updateDisplay();
-            // Asegurarse de que el botón de tema refleje el estado inicial
             themeToggleButton.textContent = isDarkMode ? 'Modo Claro' : 'Modo Oscuro';
-            updateSuggestions(); // Cargar sugerencias iniciales
+            updateSuggestions(); 
         });
     </script>
 </body>
