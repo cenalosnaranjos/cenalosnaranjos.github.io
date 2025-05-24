@@ -7,7 +7,8 @@
     <link rel="icon" type="image/x-icon" href="logo.jpeg">
     <style>
         body {
-            background-color: aqua;
+            background-color: #121212; /* Dark background */
+            color: #e0e0e0; /* Light text */
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
@@ -18,36 +19,38 @@
         }
 
         button.operator {
-    background: #4caf50;
-    color: white;
-}
+            background: #0056b3; /* Darker blue for operator button */
+            color: white;
+        }
 
-button.operator:hover {
-    background: #45a049;
-}
+        button.operator:hover {
+            background: #004085;
+        }
 
         .container {
-            background-color: #fff;
+            background-color: #1e1e1e; /* Darker container */
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4); /* More pronounced shadow */
             width: 90%;
             max-width: 600px;
             text-align: center;
         }
 
         img {
-            max-width: 100%;
-            height: auto;
+            max-width: 50%;
+            height: 50%;
         }
 
         h1 {
             font-size: 1.5rem;
+            color: #ffffff; /* White headings */
         }
 
         p {
             font-size: 1rem;
             margin: 10px 0;
+            color: #c0c0c0; /* Lighter paragraphs */
         }
 
         .form-group {
@@ -59,14 +62,17 @@ button.operator:hover {
             display: block;
             margin-bottom: 5px;
             font-size: 1rem;
+            color: #e0e0e0; /* Light labels */
         }
 
         input {
             width: 100%;
             padding: 10px;
             margin-bottom: 10px;
-            border: 1px solid #ddd;
+            border: 1px solid #555; /* Darker input borders */
             border-radius: 4px;
+            background-color: #333; /* Dark input background */
+            color: #e0e0e0; /* Light input text */
         }
 
         button {
@@ -82,7 +88,7 @@ button.operator:hover {
         }
 
         button:disabled {
-            background-color: #cccccc;
+            background-color: #555555; /* Darker disabled buttons */
             cursor: not-allowed;
         }
 
@@ -91,12 +97,12 @@ button.operator:hover {
         }
 
         button:hover {
-            opacity: 0.9;
+            opacity: 0.8; /* Slightly less opacity for subtle hover */
         }
 
         a {
             text-decoration: none;
-            color: #008CBA;
+            color: #72a4f4; /* Lighter links to stand out */
             font-weight: bold;
         }
     </style>
@@ -105,8 +111,8 @@ button.operator:hover {
     <div class="container">
         <div id="header">
             <br>
-            <img src="logo.jpeg" alt="Institution Logo">
-            <h1>ACADEMIC TUTORING CENTER "LOS NARANJOS"</h1>
+            <img src="icono.png" alt="Institution Logo">
+            <h1>Center for Specialties and Academic Tutoring "LOS NARANJOS"</h1>
         </div>
 
         <p>Welcome to our English Course.</p>
@@ -114,42 +120,42 @@ button.operator:hover {
 
         <form id="registrationForm">
             <div class="form-group">
-                <label>Full Name:</label>
+                <label for="fullName">Full Name:</label>
                 <input type="text" id="fullName" required>
             </div>
             <div class="form-group">
-                <label>Age:</label>
+                <label for="age">Age:</label>
                 <input type="number" id="age" required>
             </div>
             <div class="form-group">
-                <label>Address:</label>
+                <label for="address">Address:</label>
                 <input type="text" id="address" required>
             </div>
             <div class="form-group">
-                <label>Personal Phone Number:</label>
+                <label for="personalPhone">Personal Phone Number:</label>
                 <input type="tel" id="personalPhone" required>
             </div>
             <div class="form-group">
-                <label>Representative's Phone Number:</label>
+                <label for="representativePhone">Representative's Phone Number:</label>
                 <input type="tel" id="representativePhone" required>
             </div>
             <div class="form-group">
-                <label>Representative's Name:</label>
+                <label for="representativeName">Representative's Name:</label>
                 <input type="text" id="representativeName" required>
             </div>
             <button type="button" id="saveBtn">Save Data</button>
             <button type="button" id="downloadBtn" disabled>Download PDF</button>
         </form>
 
-        <p>Thank you so much, your classes will start on Monday, March 10th, 2025.</p>
+        <p>Thank you so much.</p>
         <p>We are located in Chone-Manabí-Ecuador.</p>
         <p>
-            After registering, please send the registration proof through 
+            After registering, please send the registration proof through
             <a href="https://wa.me/+593994183892" target="_blank">WhatsApp</a>.
         </p>
-        <a href="index.html"><button class="operator">Regresar</button></a>
-    </div>
+      </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
         const registrationData = {};
         let isDataSaved = false;
@@ -171,7 +177,7 @@ button.operator:hover {
                     isValid = false;
                     field.style.border = '2px solid red';
                 } else {
-                    field.style.border = '1px solid #ddd';
+                    field.style.border = '1px solid #555'; // Normal border in dark mode
                     registrationData[key] = field.value.trim();
                 }
             });
@@ -204,7 +210,9 @@ button.operator:hover {
             doc.setFontSize(12);
             let yPosition = 45;
             Object.entries(registrationData).forEach(([key, value]) => {
-                doc.text(`${key}: ${value}`, 15, yPosition);
+                // Capitalize the first letter of the key for better presentation in the PDF
+                const formattedKey = key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1');
+                doc.text(`${formattedKey}: ${value}`, 15, yPosition);
                 yPosition += 10;
             });
 
