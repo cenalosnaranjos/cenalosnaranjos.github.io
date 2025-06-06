@@ -6,50 +6,61 @@
     <title>Evaluador de Tablas de Multiplicar</title>
     <link rel="icon" type="image/x-icon" href="icono.png">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        /* Variables CSS para modos claro y oscuro */
         :root {
-            --primary: #000000; /* Blue */
-            --secondary: #28a745; /* Green */
-            --accent: #ffc107; /* Yellow */
-            --light: #f8f9fa; /* Light Gray */
-            --dark: #212529; /* Dark Gray */
-            --background-light: #e9ecef; /* Even lighter gray */
-            --background-dark: #343a40; /* Even darker gray */
-            --text-light: #212529;
-            --text-dark: #f8f9fa;
-            --card-light: #000000; /* Card background in light mode */
-            --card-light1: #ffffff;
-            --card-negro:#ffffff;
-            --text-aqui:#000000;
-            --card-dark: #454d55; /* Card background in dark mode */
-            --border-light: #ced4da;
-            --border-dark: #6c757d;
-            --transition: all 0.3s ease;
-            --shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            /* Light Mode */
+            --bg-color: #f8f9fa; /* Light Gray */
+            --text-color: #343a40; /* Dark Gray */
+            --primary-color: #007bff; /* Blue */
+            --accent-color: #28a745; /* Green */
+            --card-bg: #ffffff;
+            --border-color: #e9ecef;
+            --shadow-light: rgba(0, 0, 0, 0.05);
+            --input-bg: #f2f4f7;
+            --input-border-focus: #007bff;
+            --button-text-color: #ffffff;
+            --error-bg: #ffebee; /* Light Red */
+            --error-text: #c62828; /* Dark Red */
+            --success-bg: #e8f5e9; /* Light Green */
+            --success-text: #2e7d32; /* Dark Green */
+            --correct-input-border: #28a745;
+            --incorrect-input-border: #dc3545;
+            --toggle-bg: #007bff;
+            --toggle-icon: #ffffff;
+            --gradient-start: #007bff;
+            --gradient-end: #0056b3;
+            --h1-shadow-color: rgba(0, 0, 0, 0.1);
         }
 
         [data-theme="dark"] {
-            --primary: #ffffff; /* Cyan */
-            --secondary: #ffc107; /* Yellow */
-            --accent: #007bff; /* Blue */
-            --light: #343a40;
-            --dark: #f8f9fa;
-            --background-light: #212529;
-            --background-dark: #e9ecef;
-            --text-light: #f8f9fa;
-            --text-dark: #212529;
-            --card-light: #ffffff;
-             --card-light1: #000000;
-             --text-aqui:#f8f9fa;
-            --card-negro:#212529;
-            --card-dark: #000000;
-            --border-light: #6c757d;
-            --border-dark: #ced4da;
+            /* Dark Mode */
+            --bg-color: #212529; /* Dark Gray */
+            --text-color: #e9ecef; /* Light Gray */
+            --primary-color: #66afe1; /* Lighter Blue */
+            --accent-color: #ffc107; /* Yellow */
+            --card-bg: #343a40;
+            --border-color: #495057;
+            --shadow-light: rgba(0, 0, 0, 0.3);
+            --input-bg: #495057;
+            --input-border-focus: #66afe1;
+            --button-text-color: #212529; /* Dark text on bright button */
+            --error-bg: #b71c1c; /* Dark Red */
+            --error-text: #ffebee; /* Light Red */
+            --success-bg: #1b5e20; /* Dark Green */
+            --success-text: #e8f5e9; /* Light Green */
+            --correct-input-border: #ffc107; /* Yellowish for dark mode */
+            --incorrect-input-border: #ef5350; /* Lighter red for dark mode */
+            --toggle-bg: #ffc107;
+            --toggle-icon: #212529;
+            --gradient-start: #ffc107;
+            --gradient-end: #ffa000;
+            --h1-shadow-color: rgba(255, 255, 255, 0.1);
         }
 
-
+        /* General Styles */
         * {
             margin: 0;
             padding: 0;
@@ -57,188 +68,202 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background: var(--background-light);
-            color: var(--text-light);
+            font-family: 'Quicksand', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             min-height: 100vh;
-            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem 100px; /* Space for the theme toggle button */
+            transition: background-color 0.4s ease, color 0.4s ease;
             line-height: 1.6;
-            padding-bottom: 80px; /* Space for the theme toggle button */
         }
-         [data-theme="dark"] body {
-            background: var(--background-dark);
-            color: var(--text-dark);
-        }
-
 
         .container {
-            max-width: 960px;
+            width: 100%;
+            max-width: 700px; /* Slightly smaller for a tighter feel */
             margin: 0 auto;
-            padding: 2rem 1rem;
+            padding: 2rem;
+            background-color: var(--card-bg);
+            border-radius: 20px; /* More rounded */
+            box-shadow: 0 10px 30px var(--shadow-light);
+            transition: background-color 0.4s ease, box-shadow 0.4s ease;
+            position: relative; /* For animations */
         }
 
+        /* Header */
         .header {
             text-align: center;
-            margin-bottom: 3rem;
+            margin-bottom: 2.5rem;
             padding-bottom: 1.5rem;
-            border-bottom: 2px solid var(--border-light);
-        }
-         [data-theme="dark"] .header {
-            border-color: var(--border-dark);
+            border-bottom: 1px solid var(--border-color);
+            transition: border-color 0.4s ease;
         }
 
         .logo-container {
-            width: 120px;
-            height: 120px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
             overflow: hidden;
             margin: 0 auto 1.5rem;
-            border: 5px solid var(--primary);
-            box-shadow: var(--shadow);
-            background-color: #ced4da; /* Background for logo container */
+            border: 4px solid var(--primary-color);
+            box-shadow: 0 5px 15px var(--shadow-light);
             display: flex;
             align-items: center;
             justify-content: center;
-             transition: var(--transition);
+            transition: all 0.3s ease;
         }
-        [data-theme="dark"] .logo-container {
-            border-color: var(--secondary);
-            background-color:#000000;
-        }
-
 
         .instituto-logo {
-            display: block;
-            max-width: 90%;
-            max-height: 90%;
-            object-fit: contain;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
         }
 
         h1 {
-            font-family: 'Roboto Slab', serif;
-            color: var(--primary);
+            font-family: 'Montserrat', sans-serif;
+            color: var(--primary-color);
             margin-bottom: 0.5rem;
-            font-size: 2.5rem;
+            font-size: 2.8rem; /* Larger */
             position: relative;
             display: inline-block;
-        }
-         [data-theme="dark"] h1 {
-            color: var(--secondary);
+            text-shadow: 2px 2px 5px var(--h1-shadow-color);
+            transition: color 0.4s ease, text-shadow 0.4s ease;
         }
 
         h1::after {
             content: '';
             display: block;
-            width: 60%;
+            width: 70%; /* Wider underline */
             height: 4px;
-            background: var(--secondary);
+            background: var(--accent-color);
             margin: 8px auto 0;
             border-radius: 2px;
-             transition: var(--transition);
-        }
-         [data-theme="dark"] h1::after {
-            background: var(--primary);
+            transition: background 0.4s ease;
         }
 
-
-        .form-init {
-            background: var(--card-negro); /* This background changes with the theme */
-            padding: 2rem;
-            border-radius: 15px;
-            box-shadow: var(--shadow);
-            max-width: 500px;
-            margin: 0 auto;
-            border: 1px solid var(--border-light);
-             transition: var(--transition);
+        .form-init h1 { /* Adjusted for the inner h1 in form-init */
+            font-size: 1.6rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-color);
+            text-shadow: none;
         }
-         /* Rule for dark mode background */
-         [data-theme="dark"] .form-init {
-            background: var(--card-dark); /* This background changes with the theme */
-             border-color: var(--border-dark);
+        .form-init h1::after {
+            display: none;
         }
-
 
         label {
             display: block;
             margin: 1rem 0 0.5rem;
             font-weight: 600;
-            color: var(--card-light);
-        }
-         [data-theme="dark"] label {
-            color: var(--card-light);
+            color: var(--text-color);
+            transition: color 0.4s ease;
         }
 
         input[type="text"],
+        input[type="number"],
         select {
             width: 100%;
-            padding: 0.9rem;
-            border: 2px solid var(--primary);
-            border-radius: 8px;
-            font-size: 1rem;
+            padding: 0.9rem 1.2rem; /* More padding */
+            border: 2px solid var(--border-color);
+            border-radius: 12px; /* More rounded */
+            font-size: 1.1rem;
             margin-bottom: 1.5rem;
-            background: var(--light);
-            color: var(--card-light);
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            transition: all 0.3s ease;
             -webkit-appearance: none;
             -moz-appearance: none;
             appearance: none;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--input-border-focus);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2); /* Focus ring */
+        }
+        [data-theme="dark"] input[type="text"]:focus,
+        [data-theme="dark"] input[type="number"]:focus,
+        [data-theme="dark"] select:focus {
+            box-shadow: 0 0 0 3px rgba(102, 175, 225, 0.2);
+        }
+
+        select {
+            background-image: url('data:image/svg+xml;utf8,<svg fill="%23888" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
             background-repeat: no-repeat;
-            background-position: right 15px top 50%;
+            background-position: right 15px center;
             background-size: 16px;
             padding-right: 40px;
-             transition: var(--transition);
-        }
-         [data-theme="dark"] input[type="text"],
-         [data-theme="dark"] select {
-            background: var(--background-dark);
-            border-color: var(--secondary);
-            color: var(--text-dark);
-        }
-
-         select {
-             background-image: url('data:image/svg+xml;utf8,<svg fill="%23007bff" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
-         }
-          [data-theme="dark"] select {
-             background-image: url('data:image/svg+xml;utf8,<svg fill="%23ffc107" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
-         }
-
-
-        button {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 0.9rem 2rem;
-            border-radius: 8px;
             cursor: pointer;
+        }
+        [data-theme="dark"] select {
+            background-image: url('data:image/svg+xml;utf8,<svg fill="%23bbb" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+        }
+
+        /* Modern Button Style */
+        button {
+            background: linear-gradient(45deg, var(--gradient-start), var(--gradient-end));
+            color: var(--button-text-color);
+            border: none;
+            padding: 1.1rem 2.5rem;
+            border-radius: 12px;
+            font-size: 1.2rem;
             font-weight: 600;
-            transition: var(--transition);
+            cursor: pointer;
+            outline: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
             width: 100%;
             margin-top: 0.5rem;
-            font-size: 1.1rem;
             letter-spacing: 0.5px;
-             text-transform: uppercase;
-        }
-         [data-theme="dark"] button {
-            background: var(--secondary);
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
         }
 
         button:hover:not(:disabled) {
-            background: #0056b3; /* Darker blue */
-            transform: translateY(-2px);
-             box-shadow: var(--shadow);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
+            filter: brightness(1.1);
         }
-         [data-theme="dark"] button:hover:not(:disabled) {
-             background: #ffa000; /* Darker yellow */
-         }
-
 
         button:active:not(:disabled) {
             transform: translateY(0);
-             box-shadow: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            filter: brightness(0.9);
         }
 
         button:disabled {
-            opacity: 0.6;
+            opacity: 0.5;
             cursor: not-allowed;
+            filter: grayscale(80%);
+            box-shadow: none;
+            transform: none;
+        }
+
+        /* Ripple Effect */
+        button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            opacity: 0;
+            transform: scale(1) translate(-50%, -50%);
+            transition: transform 0.5s, opacity 0.5s;
+        }
+        button:active::after {
+            transform: scale(200) translate(-50%, -50%);
+            opacity: 1;
+            transition: 0s;
         }
 
         .hidden {
@@ -250,230 +275,280 @@
         }
 
         #timer {
-            font-size: 1.8rem;
+            font-size: 2.2rem; /* Larger timer */
             font-weight: 700;
             text-align: center;
             margin-bottom: 2rem;
-            color: var(--primary);
+            color: var(--primary-color);
             letter-spacing: 1px;
-             transition: var(--transition);
-        }
-         [data-theme="dark"] #timer {
-            color: var(--secondary);
+            transition: color 0.4s ease;
         }
 
-        #video-container {
+        #tabla-seleccionada {
             text-align: center;
-            margin-bottom: 2.5rem;
-            background: rgba(0,0,0,0.05);
-            padding: 15px;
-            border-radius: 12px;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
-             border: 1px solid var(--border-light);
-             transition: var(--transition);
-        }
-         [data-theme="dark"] #video-container {
-            background: rgba(255,255,255,0.05);
-             border-color: var(--border-dark);
+            margin-bottom: 1.8rem; /* More space */
+            color: var(--text-color);
+            transition: color 0.4s ease;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 600;
         }
 
-
-        #youtubeVideo {
-            max-width: 100%;
-            width: 640px; /* Increased base width */
-            height: 360px; /* Adjusted height for 16:9 aspect ratio */
-            display: block;
-            margin: 0 auto;
-            border-radius: 8px;
-        }
-
-aqui
         .pregunta {
-            background: var(--card-light1); /* Background for questions */
-            padding: 1.2rem;
-            border-radius: 10px;
-            margin: 1rem 0;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            background-color: var(--input-bg); /* Use input background for questions for consistency */
+            padding: 1rem 1.5rem;
+            border-radius: 15px;
+            margin: 0.8rem 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* Subtle shadow */
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border: 1px solid var(--border-light);
-             transition: var(--transition);
+            transition: background-color 0.4s ease, box-shadow 0.3s ease;
+            border: 1px solid var(--border-color);
         }
-         [data-theme="dark"] .pregunta {
-            background: var(--card-light1); /* Background for questions in dark mode */
-             border-color: var(--border-dark);
+        .pregunta:hover {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Lift on hover */
         }
 
         .pregunta span {
             flex-grow: 1;
-            margin-right: 1.5rem;
-            font-size: 1.1rem;
-            font-weight: 600;
+            margin-right: 1rem;
+            font-size: 1.25rem; /* Larger font */
+            font-weight: 500;
+            color: var(--text-color);
         }
 
         .pregunta input[type="number"] {
-            width: 100px; /* Adjusted width */
+            width: 100px;
             flex-shrink: 0;
-            padding: 0.6rem;
+            padding: 0.7rem;
             text-align: center;
             margin: 0;
-            border: 2px solid var(--primary);
-            border-radius: 6px;
-            font-size: 1rem;
-            background: var(--light);
-            color: var(--text-light);
-             transition: var(--transition);
+            font-size: 1.1rem;
+            border-width: 2px; /* Ensure border is visible */
+            border-style: solid;
+            border-color: var(--border-color);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
         }
-         [data-theme="dark"] .pregunta input[type="number"] {
-            border-color: var(--secondary);
-            background: var(--background-dark);
-            color: var(--text-dark);
-        }
-
 
         #resultado {
             text-align: center;
             margin-top: 3rem;
-            padding: 2.5rem;
-            border-radius: 15px;
-            background: var(--card-light); /* Background for results */
-            box-shadow: var(--shadow);
-             border: 1px solid var(--border-light);
-             transition: var(--transition);
+            animation: fadeIn 0.5s ease-out; /* Fade in effect */
         }
-         [data-theme="dark"] #resultado {
-            background: var(--card-dark); /* Background for results in dark mode */
-             border-color: var(--border-dark);
-        }
-
 
         #resultado h2 {
-            font-family: 'Roboto Slab', serif;
-            color: var(--card-light1);
+            font-family: 'Montserrat', sans-serif;
+            color: var(--primary-color);
             margin-bottom: 1rem;
-             font-size: 2rem;
-             transition: var(--transition);
-        }
-         [data-theme="dark"] #resultado h2 {
-            color: var(--card-light);
+            font-size: 2.5rem;
         }
 
         #mensaje-resultado {
-            font-size: 1.4rem;
+            font-size: 1.6rem;
             font-weight: 700;
             margin-bottom: 1.5rem;
-            color: #ffffff;
+            color: var(--text-color);
         }
 
         .theme-toggle {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: var(--primary);
-            color: white;
-            width: 55px; /* Slightly larger */
-            height: 55px; /* Slightly larger */
+            bottom: 30px; /* Higher from bottom */
+            right: 30px;
+            background-color: var(--toggle-bg);
+            color: var(--toggle-icon);
+            width: 65px; /* Larger */
+            height: 65px; /* Larger */
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: var(--shadow);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
             border: none;
             z-index: 1000;
-            transition: var(--transition);
-             font-size: 1.5rem; /* Larger icon */
-        }
-         [data-theme="dark"] .theme-toggle {
-            background: var(--secondary);
+            transition: all 0.3s ease;
+            font-size: 1.8rem;
         }
 
         .theme-toggle:hover {
-            background: #0056b3; /* Darker blue */
-            transform: scale(1.1);
+            transform: translateY(-5px) rotate(15deg); /* More dynamic hover */
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
         }
-         [data-theme="dark"] .theme-toggle:hover {
-             background: #ffa000; /* Darker yellow */
-         }
 
+        .theme-toggle:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
 
         .errores-lista {
             text-align: left;
-            margin: 1.5rem 0;
+            margin: 1.5rem auto;
             padding: 1.5rem;
-            background: #f8d7da; /* Light red */
-            border-radius: 8px;
-            border: 1px solid #f5c6cb; /* Darker red border */
-             color: #721c24; /* Dark red text */
-             transition: var(--transition);
-        }
-         [data-theme="dark"] .errores-lista {
-            background: #721c24; /* Dark red */
-            border-color: #f5c6cb;
-            color: #f8d7da; /* Light red text */
+            background: var(--error-bg);
+            border-radius: 15px;
+            border: 1px solid var(--error-text);
+            color: var(--error-text);
+            transition: all 0.4s ease;
+            max-width: 550px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
-         .errores-lista h3 {
-             margin-top: 0;
-             color: #721c24;
-              transition: var(--transition);
-         }
-         [data-theme="dark"] .errores-lista h3 {
-             color: #f8d7da;
-         }
+        .errores-lista h3 {
+            margin-top: 0;
+            color: var(--error-text);
+            transition: color 0.4s ease;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
+        }
 
-         .errores-lista p {
-             margin-bottom: 0.5rem;
-             padding-left: 1rem;
-             position: relative;
-         }
+        .errores-lista p {
+            margin-bottom: 0.5rem;
+            padding-left: 1.2rem; /* More indent */
+            position: relative;
+            font-size: 1.05rem;
+        }
 
-         .errores-lista p::before {
-             content: '×';
-             position: absolute;
-             left: 0;
-             color: #dc3545; /* Red */
-             font-weight: bold;
-         }
-          [data-theme="dark"] .errores-lista p::before {
-             color: #f8d7da; /* Light red */
-         }
+        .errores-lista p::before {
+            content: '✖'; /* X symbol */
+            position: absolute;
+            left: 0;
+            color: var(--error-text);
+            font-weight: bold;
+            font-size: 1.1rem;
+            line-height: 1;
+        }
 
-         #reiniciar {
-             margin-top: 1.5rem;
-         }
+        /* Animation for timer when time is low */
+        #timer.low-time {
+            color: #dc3545 !important; /* Fixed red */
+            animation: pulse 1s infinite;
+        }
 
-          /* Animation for timer when time is low */
-         #timer.low-time {
-             color: #dc3545 !important; /* Red */
-             animation: pulse 1s infinite;
-         }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
 
-         @keyframes pulse {
-             0% { transform: scale(1); }
-             50% { transform: scale(1.05); }
-             100% { transform: scale(1); }
-         }
+        /* Correct/Incorrect input feedback */
+        .respuesta.correct {
+            border-color: var(--correct-input-border) !important;
+            background-color: var(--success-bg) !important;
+            color: var(--success-text) !important;
+        }
 
-          /* Style for correct/incorrect input feedback */
-         .respuesta.correct {
-             border-color: var(--secondary) !important;
-              background-color: rgba(40, 167, 69, 0.1); /* Light green */
-         }
-          [data-theme="dark"] .respuesta.correct {
-              background-color: rgba(40, 167, 69, 0.3);
-          }
+        .respuesta.incorrect {
+            border-color: var(--incorrect-input-border) !important;
+            background-color: var(--error-bg) !important;
+            color: var(--error-text) !important;
+        }
 
+        /* Keyframe Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-         .respuesta.incorrect {
-             border-color: #dc3545 !important; /* Red */
-              background-color: rgba(220, 53, 69, 0.1); /* Light red */
-         }
-         [data-theme="dark"] .respuesta.incorrect {
-              background-color: rgba(220, 53, 69, 0.3);
-         }
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
+        /* Apply animations */
+        .container {
+            animation: fadeIn 0.8s ease-out;
+        }
+        .form-init, #preguntas, #resultado {
+            animation: slideInUp 0.6s ease-out forwards;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 1.5rem 0.5rem 80px;
+            }
+            .container {
+                padding: 1.5rem;
+                border-radius: 15px;
+            }
+            h1 {
+                font-size: 2.2rem;
+            }
+            .form-init h1 {
+                font-size: 1.3rem;
+            }
+            .logo-container {
+                width: 80px;
+                height: 80px;
+            }
+            #timer {
+                font-size: 1.8rem;
+            }
+            #tabla-seleccionada {
+                font-size: 1.6rem;
+            }
+            .pregunta {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 0.8rem 1rem;
+            }
+            .pregunta span {
+                margin-right: 0;
+                margin-bottom: 8px;
+                font-size: 1.1rem;
+            }
+            .pregunta input[type="number"] {
+                width: 90%;
+                max-width: 120px;
+                font-size: 1rem;
+                padding: 0.6rem;
+            }
+            button {
+                padding: 0.9rem 1.5rem;
+                font-size: 1.05rem;
+            }
+            #resultado h2 {
+                font-size: 2rem;
+            }
+            #mensaje-resultado {
+                font-size: 1.3rem;
+            }
+            .theme-toggle {
+                width: 55px;
+                height: 55px;
+                font-size: 1.6rem;
+                bottom: 20px;
+                right: 20px;
+            }
+            .errores-lista {
+                padding: 1rem;
+            }
+            .errores-lista h3 {
+                font-size: 1.4rem;
+            }
+            .errores-lista p {
+                font-size: 0.95rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            .form-init h1 {
+                font-size: 1.1rem;
+            }
+            .logo-container {
+                width: 70px;
+                height: 70px;
+            }
+            button {
+                padding: 0.8rem 1rem;
+                font-size: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -491,11 +566,12 @@ aqui
         </header>
 
         <div class="form-init" id="formInicio">
- <h1>Tiene 3 minutos para resolver la evaluación</h1>
+            <h1>Tiene 3 minutos para resolver la evaluación</h1>
             <label for="nombre">Nombre del estudiante:</label>
             <input type="text" id="nombre" placeholder="Ej: Juan Pérez" required autocomplete="name">
             <label for="tabla">Selecciona la tabla a evaluar:</label>
             <select id="tabla" required>
+                <option value="random">Aleatorio</option>
                 <option value="1">Tabla del 1</option>
                 <option value="2">Tabla del 2</option>
                 <option value="3">Tabla del 3</option>
@@ -515,7 +591,7 @@ aqui
 
         <div id="preguntas" class="hidden">
             <div id="timer">Tiempo restante: 03:00</div>
-            <h2 id="tabla-seleccionada" style="text-align: center; margin-bottom: 1.5rem; color: var(--card-light);"></h2>
+            <h2 id="tabla-seleccionada"></h2>
             <div id="lista-preguntas"></div>
             <button id="calificar">Calificar</button>
         </div>
@@ -534,40 +610,38 @@ aqui
         let errores = [];
         let timerInterval;
         let timeLeft = 180; // 3 minutes in seconds
-        let evaluationCompleted = false; // Flag to prevent double evaluation
-
+        let evaluationCompleted = false;
 
         // Modo Oscuro
         const themeToggle = document.getElementById('themeToggle');
         const body = document.body;
-        // Read theme from local storage on load
         let isDark = localStorage.getItem('theme') === 'dark-mode';
 
         function applyTheme() {
             if(isDark) {
                 body.setAttribute('data-theme', 'dark');
                 themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
-                 themeToggle.setAttribute('aria-label', 'Alternar modo claro');
+                themeToggle.setAttribute('aria-label', 'Alternar modo claro');
             } else {
                 body.setAttribute('data-theme', 'light');
                 themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
-                 themeToggle.setAttribute('aria-label', 'Alternar modo oscuro');
+                themeToggle.setAttribute('aria-label', 'Alternar modo oscuro');
             }
-             // Update timer color based on theme unless it's in low time state
-             const timerElement = document.getElementById('timer');
-             if (timerElement && !timerElement.classList.contains('low-time')) {
-                timerElement.style.color = isDark ? 'var(--secondary)' : 'var(--primary)';
-             }
-             // Update the tabla seleccionada color
-             const tablaSeleccionadaElement = document.getElementById('tabla-seleccionada');
-             if (tablaSeleccionadaElement) {
-                 tablaSeleccionadaElement.style.color = isDark ? 'var(--secondary)' : 'var(--primary)';
-             }
+            // Update the main title (h1) and other elements that might have direct color properties
+            const mainTitle = document.querySelector('.header h1');
+            if (mainTitle) {
+                mainTitle.style.color = isDark ? 'var(--primary-color)' : 'var(--primary-color)';
+                mainTitle.style.textShadow = isDark ? '2px 2px 5px var(--h1-shadow-color)' : '2px 2px 5px var(--h1-shadow-color)';
+            }
+            const h1After = document.querySelector('.header h1::after');
+            if (h1After) {
+                h1After.style.backgroundColor = isDark ? 'var(--accent-color)' : 'var(--accent-color)';
+            }
         }
 
         themeToggle.addEventListener('click', () => {
             isDark = !isDark;
-            localStorage.setItem('theme', isDark ? 'dark-mode' : '');
+            localStorage.setItem('theme', isDark ? 'dark-mode' : 'light-mode');
             applyTheme();
         });
 
@@ -589,66 +663,58 @@ aqui
 
             timerElement.textContent = `Tiempo restante: ${formatTime(timeLeft)}`;
 
-            if (timeLeft <= 10) {
+            if (timeLeft <= 10 && timeLeft > 0) {
                 timerElement.classList.add('low-time');
             } else {
                 timerElement.classList.remove('low-time');
-                 // Reset color based on theme only if not low time
-                 timerElement.style.color = isDark ? 'var(--secondary)' : 'var(--primary)';
             }
-
 
             if (timeLeft <= 0) {
                 clearInterval(timerInterval);
                 timerElement.textContent = '¡Tiempo terminado!';
-                 timerElement.classList.remove('low-time'); // Remove pulsing class
-                 timerElement.style.color = '#dc3545'; // Keep red color after time is over
-
+                timerElement.classList.remove('low-time');
+                timerElement.style.color = '#dc3545'; // Keep red after time is over
                 if (!evaluationCompleted) {
-                    calificar(); // Auto-calificar when time runs out
+                    calificar();
                 }
             }
-
             timeLeft--;
         }
 
-
-        // Lógica de Evaluación
+        // Evaluation Logic
         document.getElementById('iniciar').addEventListener('click', () => {
             const nombre = document.getElementById('nombre').value.trim();
             const tablaSelect = document.getElementById('tabla');
-            const tablaNumero = parseInt(tablaSelect.value);
-
+            
             if(!nombre) {
                 alert('Por favor ingresa tu nombre.');
                 document.getElementById('nombre').focus();
                 return;
             }
 
-            selectedTable = tablaNumero;
+            selectedTable = tablaSelect.value;
 
             document.getElementById('formInicio').classList.add('hidden');
             document.getElementById('preguntas').classList.remove('hidden');
-            document.getElementById('tabla-seleccionada').textContent = `Tabla del ${selectedTable}`;
-             // Apply initial color to tabla seleccionada
-            const tablaSeleccionadaElement = document.getElementById('tabla-seleccionada');
-            tablaSeleccionadaElement.style.color = isDark ? 'var(--secondary)' : 'var(--primary)';
+            
+            let tablaDisplay;
+            if (selectedTable === 'random') {
+                tablaDisplay = 'Aleatorio';
+            } else {
+                tablaDisplay = `Tabla del ${selectedTable}`;
+            }
+            document.getElementById('tabla-seleccionada').textContent = `Evaluando: ${tablaDisplay}`;
 
-
-            // Reset timer and flag
-            timeLeft = 180; // Set to 3 minutes
+            timeLeft = 180;
             evaluationCompleted = false;
-            document.getElementById('calificar').disabled = false; // Enable calificar button
-            // Reset timer color based on theme
+            document.getElementById('calificar').disabled = false;
             const timerElement = document.getElementById('timer');
-            timerElement.classList.remove('low-time'); // Remove low-time class
-            timerElement.style.color = isDark ? 'var(--secondary)' : 'var(--primary)';
-
+            timerElement.classList.remove('low-time');
+            timerElement.style.color = 'var(--primary-color)'; // Reset timer color
 
             generarPreguntas(selectedTable);
 
-            // Start the timer
-            updateTimer(); // Display initial time immediately
+            updateTimer();
             timerInterval = setInterval(updateTimer, 1000);
         });
 
@@ -657,8 +723,6 @@ aqui
             contenedor.innerHTML = '';
 
             const multipliers = Array.from({length: 12}, (_, i) => i + 1);
-
-            // Shuffle multipliers
             for (let i = multipliers.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [multipliers[i], multipliers[j]] = [multipliers[j], multipliers[i]];
@@ -667,25 +731,32 @@ aqui
             multipliers.forEach(multiplicador => {
                 const preguntaDiv = document.createElement('div');
                 preguntaDiv.className = 'pregunta';
-                const correctAnswer = tabla * multiplicador;
+                let currentTable;
+
+                if (tabla === 'random') {
+                    currentTable = Math.floor(Math.random() * 12) + 1;
+                } else {
+                    currentTable = parseInt(tabla);
+                }
+                
+                const correctAnswer = currentTable * multiplicador;
 
                 preguntaDiv.innerHTML = `
-                    <span>${tabla} × ${multiplicador} =</span>
+                    <span>${currentTable} × ${multiplicador} =</span>
                     <input type="number" class="respuesta"
-                           data-factor1="${tabla}"
-                           data-factor2="${multiplicador}"
-                           data-respuesta="${correctAnswer}"
-                           inputmode="numeric" pattern="[0-9]*"
-                           aria-label="Respuesta para ${tabla} por ${multiplicador}">
+                            data-factor1="${currentTable}"
+                            data-factor2="${multiplicador}"
+                            data-respuesta="${correctAnswer}"
+                            inputmode="numeric" pattern="[0-9]*"
+                            aria-label="Respuesta para ${currentTable} por ${multiplicador}">
                 `;
                 contenedor.appendChild(preguntaDiv);
             });
         }
 
-
         document.getElementById('calificar').addEventListener('click', () => {
             if (!evaluationCompleted) {
-                clearInterval(timerInterval); // Stop the timer if button is clicked
+                clearInterval(timerInterval);
                 calificar();
             }
         });
@@ -694,14 +765,13 @@ aqui
             if (evaluationCompleted) return;
             evaluationCompleted = true;
 
-            clearInterval(timerInterval); // Ensure timer is stopped
+            clearInterval(timerInterval);
 
             const respuestas = document.querySelectorAll('.respuesta');
             let correctas = 0;
             errores = [];
 
             respuestas.forEach(input => {
-                // Disable input after grading
                 input.disabled = true;
 
                 const respuestaUsuario = parseInt(input.value);
@@ -724,11 +794,7 @@ aqui
                 }
             });
 
-            // Disable the calificar button
             document.getElementById('calificar').disabled = true;
-
-            // No video to stop/hide in this version
-
 
             mostrarResultados(correctas);
         }
@@ -739,7 +805,6 @@ aqui
 
             const scoreOutOf10 = (correctas / 12) * 10;
             resultadoElement.innerHTML = `Correctas: ${correctas}/12.<br>Calificación: ${scoreOutOf10.toFixed(1)}/10`;
-
 
             if(errores.length > 0) {
                 erroresElement.innerHTML = '<h3>Errores:</h3>';
@@ -759,9 +824,8 @@ aqui
         }
 
         document.getElementById('reiniciar').addEventListener('click', () => {
-            clearInterval(timerInterval); // Stop timer on restart
-            // No video to stop/hide in this version
-            location.reload(); // Easiest way to reset the state
+            clearInterval(timerInterval);
+            location.reload();
         });
 
         document.getElementById('descargar').addEventListener('click', () => {
@@ -769,54 +833,59 @@ aqui
             const doc = new jsPDF();
 
             const nombreEstudiante = document.getElementById('nombre').value.trim();
-             // Check if timer was finished or manually stopped
-             const finalTimeDisplay = document.getElementById('timer').textContent;
-             const timeStatus = finalTimeDisplay.includes('Tiempo terminado') ? 'Tiempo terminado' : `Tiempo restante al finalizar: ${finalTimeDisplay.replace('Tiempo restante: ', '')}`;
-
+            const finalTimeDisplay = document.getElementById('timer').textContent;
+            const timeStatus = finalTimeDisplay.includes('Tiempo terminado') ? 'Tiempo terminado' : `Tiempo restante al finalizar: ${finalTimeDisplay.replace('Tiempo restante: ', '')}`;
 
             const finalResultText = document.getElementById('mensaje-resultado').textContent.replace('.<br>', ', ').replace('<br>', ' ');
-
 
             doc.setFontSize(18);
             doc.text('Reporte de Evaluación', 20, 20);
             doc.setFontSize(12);
             doc.text(`Nombre del estudiante: ${nombreEstudiante}`, 20, 30);
-            doc.text(`Tabla evaluada: ${selectedTable}`, 20, 40);
-            doc.text(`Duración de la evaluación: 3 minutos`, 20, 50); // Clarify total duration
-            doc.text(`Estado del tiempo: ${timeStatus}`, 20, 60); // Use the determined time status
+            
+            let tablaEvaluadaPDF;
+            if (selectedTable === 'random') {
+                tablaEvaluadaPDF = 'Aleatorio (tablas del 1 al 12)';
+            } else {
+                tablaEvaluadaPDF = `Tabla del ${selectedTable}`;
+            }
+            doc.text(`Tabla evaluada: ${tablaEvaluadaPDF}`, 20, 40);
+            
+            doc.text(`Duración de la evaluación: 3 minutos`, 20, 50);
+            doc.text(`Estado del tiempo: ${timeStatus}`, 20, 60);
 
-
-            // Removed the YouTube video URL line
-
-
-            doc.text(`Calificación: ${finalResultText}`, 20, 70); // Adjusted Y position
-            let yPosition = 80; // Adjusted starting Y position
-
+            doc.text(`Calificación: ${finalResultText}`, 20, 70);
+            let yPosition = 80;
 
             if (errores.length > 0) {
                 doc.text('Errores:', 20, yPosition);
                 yPosition += 10;
                 errores.forEach((error, index) => {
-                    if (yPosition > 280) { // Check if page needs to be added
+                    if (yPosition > 280) {
                         doc.addPage();
-                        yPosition = 20; // Reset y position for new page
+                        yPosition = 20;
                     }
                     doc.text(`${error.pregunta} = ${error.respuesta} (Correcto: ${error.correcta})`, 20, yPosition);
                     yPosition += 7;
                 });
             } else {
-                if (yPosition > 280) { // Check if page needs to be added before "Perfecto" message
+                if (yPosition > 280) {
                     doc.addPage();
-                    yPosition = 20; // Reset y position for new page
+                    yPosition = 20;
                 }
                 doc.text('¡Perfecto! No tuviste errores 🎉', 20, yPosition);
                 yPosition += 10;
             }
 
-            // Sanitize student name for filename
-            const safeStudentName = nombreEstudiante.replace(/[^a-zA-Z0-9_\-]/g, '_').replace(/__+/g, '_'); // Allow hyphen
+            const safeStudentName = nombreEstudiante.replace(/[^a-zA-Z0-9_\-]/g, '_').replace(/__+/g, '_');
+            let filenameTablePart;
+            if (selectedTable === 'random') {
+                filenameTablePart = 'aleatorio';
+            } else {
+                filenameTablePart = `tabla_${selectedTable}`;
+            }
 
-            doc.save(`reporte-evaluacion-${safeStudentName}_tabla_${selectedTable}.pdf`);
+            doc.save(`reporte-evaluacion-${safeStudentName}_${filenameTablePart}.pdf`);
         });
     </script>
 </body>
