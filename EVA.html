@@ -107,15 +107,15 @@
         #themeToggle {
             position: absolute;
             top: 20px;
-            right: 20px;
+            right: 20px; /* Adjusted to be on the right */
             background: none;
             border: none;
             font-size: 1.8rem;
             cursor: pointer;
             color: var(--secondary-color);
             transition: color 0.3s ease, transform 0.2s ease;
-            width: 40px; /* Fixed size */
-            height: 40px; /* Fixed size */
+            width: auto; /* Fixed size */
+            height: auto; /* Fixed size */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -783,13 +783,13 @@
                         <th>Action</th>
                     </tr>
                 </thead>
-                <tbody>
+               <!-- <tbody>
                     <tr>
                         <td data-label="Date">Tuesday, March 18, 2025</td>
                         <td data-label="Time">03:45 PM - 04:45 PM</td>
                         <td data-label="Action"><button class="join-button" onclick="joinMeeting('https://us05web.zoom.us/j/83805596542?pwd=CNBzgEdZhLfGPscn79gD6YqUbOv8Ca.1')"><i class="fas fa-video"></i> Join</button></td>
                     </tr>
-                </tbody>
+                </tbody>-->
             </table>
         </div>
 
@@ -831,19 +831,29 @@
         // User Authorization Database (Client-side, for demonstration)
         const validUsers = [
             {
+                code: 'DOCENTE2025',
+                name: 'Ing. Doménica Valencia',
+                role: 'admin' // Added role for teacher
+            },
+            {
+                code: 'KAREN2025',
+                name: 'MOREIRA VÈLEZ KAREN STEFANY',
+                role: 'student' // Added role for student
+            },
+            {
                 code: 'CAMILA2025',
                 name: 'Camila Quijije',
-                access: 'full'
+                role: 'student'
             },
             {
                 code: 'AMY2025',
                 name: 'Amy Solorzano',
-                access: 'full'
+                role: 'student'
             },
             {
                 code: 'JUAN2025',
                 name: 'Juan Perez',
-                access: 'full'
+                role: 'student'
             }
         ];
 
@@ -851,38 +861,10 @@
         const videoDB = [
             {
                 id: 'video1',
-                title: 'Introduction to Algebra - Part 1',
-                thumbnail: 'https://via.placeholder.com/300x150/4A90E2/FFFFFF?text=Algebra+Week+1',
-                url: 'https://www.w3schools.com/html/mov_bbb.mp4', // Example video URL
+                title: 'Welcome to the class',
+                thumbnail: 'Welcome%20to%20the%20class%20-%20mini.jpeg',
+                url: 'Welcome%20to%20the%20class.mp4', // Example video URL
                 week: 1
-            },
-            {
-                id: 'video2',
-                title: 'Fundamentals of Geometry - Session A',
-                thumbnail: 'https://via.placeholder.com/300x150/F5A623/FFFFFF?text=Geometry+Week+1',
-                url: 'https://www.w3schools.com/tags/movie.mp4', // Another example video URL
-                week: 1
-            },
-            {
-                id: 'video3',
-                title: 'Algebra - Solving Equations',
-                thumbnail: 'https://via.placeholder.com/300x150/4A90E2/FFFFFF?text=Algebra+Week+2',
-                url: 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/720/Big_Buck_Bunny_720_10s_1MB.mp4',
-                week: 2
-            },
-            {
-                id: 'video4',
-                title: 'Geometry - Angles and Shapes',
-                thumbnail: 'https://via.placeholder.com/300x150/F5A623/FFFFFF?text=Geometry+Week+2',
-                url: 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/1080/Big_Buck_Bunny_1080_10s_1MB.mp4',
-                week: 2
-            },
-            {
-                id: 'video5',
-                title: 'Physics - Forces and Motion',
-                thumbnail: 'https://via.placeholder.com/300x150/28a745/FFFFFF?text=Physics+Week+3',
-                url: 'https://cdn.videvo.net/videvo_files/video/free/2019-09/large_preview/190828_18_Night%20Sky%20Time%20Lapse_06.mp4',
-                week: 3
             }
             // Add more videos as needed, ensure they have a 'week' property
         ];
@@ -1019,6 +1001,11 @@
             if (user) {
                 document.getElementById('userName').textContent = user.name;
                 document.getElementById('userAvatar').textContent = user.name[0].toUpperCase();
+                
+                // You can add logic here to display different content
+                // or features based on user.role (e.g., 'admin' vs 'student')
+                console.log(`User ${user.name} logged in with role: ${user.role}`);
+
                 showContent();
                 errorElement.style.display = 'none';
             } else {
