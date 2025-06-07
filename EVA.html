@@ -453,7 +453,16 @@
             font-weight: 600;
             color: var(--text-dark);
             padding: 0 10px;
+            margin-bottom: 5px; /* Spacing between title and presenter */
         }
+
+        .video-thumbnail-container .presenter-name {
+            font-size: 0.85rem;
+            color: var(--secondary-color);
+            padding: 0 10px;
+            font-weight: 500;
+        }
+
 
         /* Video Player Modal */
         .video-modal {
@@ -476,8 +485,8 @@
             background-color: #000;
             margin: auto;
             padding: 0;
-            width: 90%;
-            max-width: 800px;
+            width: 90%; /* Adaptable width */
+            max-width: 800px; /* Maximum width */
             box-shadow: 0 5px 15px rgba(0,0,0,0.5);
             animation-name: animatetop;
             animation-duration: 0.4s;
@@ -739,8 +748,7 @@
                 align-items: flex-start;
                 gap: 10px;
             }
-        }
-    </style>
+        </style>
 </head>
 <body>
     <header class="institutional-header">
@@ -783,14 +791,7 @@
                         <th>Action</th>
                     </tr>
                 </thead>
-               <!-- <tbody>
-                    <tr>
-                        <td data-label="Date">Tuesday, March 18, 2025</td>
-                        <td data-label="Time">03:45 PM - 04:45 PM</td>
-                        <td data-label="Action"><button class="join-button" onclick="joinMeeting('https://us05web.zoom.us/j/83805596542?pwd=CNBzgEdZhLfGPscn79gD6YqUbOv8Ca.1')"><i class="fas fa-video"></i> Join</button></td>
-                    </tr>
-                </tbody>-->
-            </table>
+               </table>
         </div>
 
         <div class="material-card">
@@ -857,16 +858,33 @@
             }
         ];
 
-        // Video Database with 'week' property
+        // Video Database with 'week' property and 'presenter'
         const videoDB = [
             {
                 id: 'video1',
                 title: 'Welcome to the class',
                 thumbnail: 'Welcome%20to%20the%20class%20-%20mini.jpeg',
                 url: 'Welcome%20to%20the%20class.mp4', // Example video URL
-                week: 1
+                week: 1,
+                presenter: 'Mgtr. Enny Castro'
+            },
+            {
+                id: 'video2',
+                title: 'SOON',
+                thumbnail: '',
+                url: '#',
+                week: 1,
+                presenter: 'CETA'
+            },
+            {
+                id: 'video3',
+                title: 'SOON',
+                thumbnail: '',
+                url: '#',
+                week: 1,
+                presenter: 'CETA'
             }
-            // Add more videos as needed, ensure they have a 'week' property
+            // Add more videos as needed, ensure they have a 'week' property and 'presenter'
         ];
 
         // Function to apply the theme
@@ -1078,11 +1096,18 @@
                 img.src = video.thumbnail;
                 img.alt = video.title;
 
-                const p = document.createElement('p');
-                p.textContent = video.title;
+                const titleParagraph = document.createElement('p');
+                titleParagraph.textContent = video.title;
+
+                const presenterSpan = document.createElement('span');
+                presenterSpan.classList.add('presenter-name');
+                presenterSpan.textContent = video.presenter ? `By ${video.presenter}` : ''; // Add presenter if available
 
                 thumbnailContainer.appendChild(img);
-                thumbnailContainer.appendChild(p);
+                thumbnailContainer.appendChild(titleParagraph);
+                if (video.presenter) {
+                    thumbnailContainer.appendChild(presenterSpan);
+                }
 
                 thumbnailContainer.addEventListener('click', () => openVideoModal(video.id));
                 videoGallery.appendChild(thumbnailContainer);
