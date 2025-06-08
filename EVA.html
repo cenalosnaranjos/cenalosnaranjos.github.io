@@ -18,6 +18,8 @@
             --background-white: #FFFFFF; /* White background for cards */
             --text-dark: #2C3E50; /* Primary dark text */
             --text-light: #ECF0F1; /* Light text (for buttons/footers) */
+            --text-dr: #E0E6ED;
+            --text-li: #2C3E50;
             --success-color: #28a745;
             --error-color: #E74C3C;
             --border-color: #E0E6ED;
@@ -58,7 +60,7 @@
             -webkit-user-drag: none;
             -moz-user-drag: none;
             -ms-user-drag: none;
-            user-drag: none;
+            
         }
 
         body {
@@ -285,10 +287,21 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        .user-header h2 {
+        .user-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-details h2 {
             font-size: 1.6rem;
             color: var(--primary-color);
             transition: color 0.3s ease;
+            margin-bottom: 5px;
+        }
+
+        .user-details p {
+            font-size: 0.95rem;
+            color: var(--secondary-color);
         }
 
         /* Section Titles */
@@ -551,7 +564,7 @@
             bottom: 0;
             width: 100%;
             background: var(--primary-color);
-            color: var(--text-light);
+            color: var(--text-li);
             padding: 18px;
             text-align: center;
             font-size: 0.9rem;
@@ -563,6 +576,37 @@
 
         footer p {
             margin: 5px 0;
+        }
+
+        /* Floating Help Button */
+        #helpButton {
+            position: fixed;
+            bottom: 100px; /* Adjust based on footer height */
+            right: 20px;
+            background: var(--accent-color);
+            color: var(--text-light);
+            border: none;
+            border-radius: 50%; /* Make it round */
+            width: 60px; /* Size of the button */
+            height: 60px; /* Size of the button */
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1001; /* Ensure it's above other content */
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        }
+
+        #helpButton:hover {
+            background: #D8931F;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        #helpButton:active {
+            transform: translateY(0);
         }
 
         /* Animations */
@@ -599,8 +643,11 @@
                 gap: 1rem;
             }
 
-            .user-header h2 {
+            .user-details h2 {
                 font-size: 1.4rem;
+            }
+            .user-details p {
+                font-size: 0.85rem;
             }
 
             .user-avatar {
@@ -688,8 +735,11 @@
                 gap: 0.8rem;
             }
 
-            .user-header h2 {
+            .user-details h2 {
                 font-size: 1.2rem;
+            }
+            .user-details p {
+                font-size: 0.8rem;
             }
 
             .user-avatar {
@@ -748,7 +798,16 @@
                 align-items: flex-start;
                 gap: 10px;
             }
-        </style>
+
+            #helpButton {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+                bottom: 80px; /* Adjust for smaller footer */
+                right: 15px;
+            }
+        }
+    </style>
 </head>
 <body>
     <header class="institutional-header">
@@ -776,14 +835,16 @@
         <div class="user-header">
             <div class="user-info">
                 <div class="user-avatar" id="userAvatar"></div>
-                <h2 id="userName"></h2>
+                <div class="user-details">
+                    <h2 id="userName"></h2>
+                    <p id="userLevelInfo"></p> </div>
             </div>
             <button onclick="logout()" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
         </div>
 
         <div class="connectivity-section">
             <h3 class="section-title"><i class="fas fa-calendar-alt"></i> Connectivity - Scheduled Virtual Meeting</h3>
-            <table class="schedule-table">
+            <table class="schedule-table" id="scheduleTable">
                 <thead>
                     <tr>
                         <th>Date</th>
@@ -791,6 +852,8 @@
                         <th>Action</th>
                     </tr>
                 </thead>
+                <tbody>
+                    </tbody>
                </table>
         </div>
 
@@ -807,10 +870,10 @@
 
         <div class="material-card">
             <h3 class="section-title"><i class="fas fa-book-open"></i> Study Material</h3>
-            <iframe id="pdfViewer" class="pdf-viewer" src="https://vadimdez.github.io/ng2-pdf-viewer/assets/pdf-sample.pdf" 
+            <iframe id="pdfViewer" class="pdf-viewer" src="" 
                     frameborder="0" 
                     sandbox="allow-scripts allow-same-origin"></iframe>
-            <div class="coming-soon-message" style="display: none;">
+            <div class="coming-soon-message" id="pdfComingSoon" style="display: none;">
                 <p>Class material will be uploaded to the system very soon. Thank you for your patience!</p>
             </div>
         </div>
@@ -823,69 +886,169 @@
         </div>
     </div>
 
+    <button id="helpButton" onclick="openHelpChat()">
+        <i class="fas fa-headset"></i>
+    </button>
+
     <footer>
+        <strong>
         <p>© 2025 "Los Naranjos" Academic Specialties and Tutoring Center</p>
-        <p>Contact: cnalosnaranjos@gmail.com | Phone: (593) 99 418 3892</p>
+        <p>Contact: "cnalosnaranjos@gmail.com" | Phone: (593) 99 418 3892</p></strong>
     </footer>
 
     <script>
-        // User Authorization Database (Client-side, for demonstration)
+        // User Authorization Database with 'level' property
         const validUsers = [
             {
                 code: 'DOCENTE2025',
                 name: 'Ing. Doménica Valencia',
-                role: 'admin' // Added role for teacher
+                role: 'admin',
+                level: 'N/A' 
             },
             {
                 code: 'KAREN2025',
                 name: 'MOREIRA VÈLEZ KAREN STEFANY',
-                role: 'student' // Added role for student
+                role: 'student',
+                level: 'A1' 
             },
             {
                 code: 'CAMILA2025',
                 name: 'Camila Quijije',
-                role: 'student'
+                role: 'student',
+                level: 'A2'
             },
             {
                 code: 'AMY2025',
                 name: 'Amy Solorzano',
-                role: 'student'
+                role: 'student',
+                level: 'B1'
             },
             {
                 code: 'JUAN2025',
                 name: 'Juan Perez',
-                role: 'student'
+                role: 'student',
+                level: 'A1'
             }
         ];
 
-        // Video Database with 'week' property and 'presenter'
+        const levelTeachers = {
+            'A1': 'Ing. Doménica Valencia',
+            'A2': 'Ing. Doménica Valencia',
+            'B1': 'Ing. Doménica Valencia'
+        };
+
+        // Video Database with 'week' property and 'presenter', now with 'level'
         const videoDB = [
+            // A1 Level Videos
             {
-                id: 'video1',
-                title: 'Welcome to the class',
+                id: 'a1_video1',
+                title: 'A1 - Welcome to the class',
                 thumbnail: 'Welcome%20to%20the%20class%20-%20mini.jpeg',
-                url: 'Welcome%20to%20the%20class.mp4', // Example video URL
+                url: 'Welcome%20to%20the%20class.mp4', 
                 week: 1,
-                presenter: 'Mgtr. Enny Castro'
+                presenter: 'Mgtr. Enny Castro',
+                level: 'A1'
             },
             {
-                id: 'video2',
-                title: 'SOON',
-                thumbnail: '',
-                url: '#',
+                id: 'a1_video2',
+                title: 'A1 - Basic Greetings',
+                thumbnail: 'Welcome%20to%20the%20class%20-%20mini.jpeg', // Placeholder thumbnail
+                url: 'Welcome%20to%20the%20class.mp4', // Placeholder video
+                week: 2,
+                presenter: 'Mgtr. Enny Castro',
+                level: 'A1'
+            },
+            // A2 Level Videos
+            {
+                id: 'a2_video1',
+                title: 'A2 - Intermediate Grammar',
+                thumbnail: 'Welcome%20to%20the%20class%20-%20mini.jpeg', // Placeholder thumbnail
+                url: 'Welcome%20to%20the%20class.mp4', // Placeholder video
                 week: 1,
-                presenter: 'CETA'
+                presenter: 'Ing. Doménica Valencia',
+                level: 'A2'
             },
             {
-                id: 'video3',
-                title: 'SOON',
-                thumbnail: '',
-                url: '#',
+                id: 'a2_video2',
+                title: 'SOOS',
+                thumbnail: 'SOOS', // Placeholder thumbnail
+                url: 'SOOS', // Placeholder video
+                week: 3,
+                presenter: 'Ing. Doménica Valencia',
+                level: 'A2'
+            },
+            // B1 Level Videos
+            {
+                id: 'b1_video1',
+                title: 'B1 - Advanced Pronunciation',
+                thumbnail: 'Welcome%20to%20the%20class%20-%20mini.jpeg', // Placeholder thumbnail
+                url: 'Welcome%20to%20the%20class.mp4', // Placeholder video
                 week: 1,
-                presenter: 'CETA'
+                presenter: 'Mgtr. Enny Castro',
+                level: 'B1'
+            },
+            {
+                id: 'b1_video2',
+                title: 'B1 - Business Communication',
+                thumbnail: 'Welcome%20to%20the%20class%20-%20mini.jpeg', // Placeholder thumbnail
+                url: 'Welcome%20to%20the%20class.mp4', // Placeholder video
+                week: 4,
+                presenter: 'Ing. Doménica Valencia',
+                level: 'B1'
             }
-            // Add more videos as needed, ensure they have a 'week' property and 'presenter'
         ];
+
+        // PDF Database with 'level'
+        const pdfDB = {
+            'A1': 'https://vadimdez.github.io/ng2-pdf-viewer/assets/pdf-sample.pdf', // Sample PDF
+            'A2': 'https://www.africau.edu/images/default/sample.pdf', // Another sample PDF
+            'B1': 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' // Yet another sample PDF
+        };
+
+        // Scheduled meetings database with 'level'
+        const scheduleDB = [
+            // A1 Level Meetings
+            {
+                date: '2025',
+                time: '',
+                url: '',
+                level: 'A1'
+            },
+            {
+                date: '2025',
+                time: '',
+                url: '',
+                level: 'A1'
+            },
+            // A2 Level Meetings
+            {
+                date: '2025',
+                time: '',
+                url: '',
+                level: 'A2'
+            },
+            {
+                date: '2025',
+                time: '',
+                url: '',
+                level: 'A2'
+            },
+            // B1 Level Meetings
+            {
+                date: '2025',
+                time: '',
+                url: '',
+                level: 'B1'
+            },
+            {
+                date: '2025',
+                time: '',
+                url: '',
+                level: 'B1'
+            }
+        ];
+
+        let currentUserLevel = null; // To store the logged-in user's level
 
         // Function to apply the theme
         function applyTheme(theme) {
@@ -925,8 +1088,6 @@
             }
 
             document.getElementById('inputCode').focus();
-            populateWeekFilter(); // Populate week filter dropdown
-            filterVideosByWeek(); // Load videos for the initial week (e.g., 'All' or first week)
             initializeSecurityMeasures(); // Apply all security measures
         });
 
@@ -1017,15 +1178,21 @@
             const user = validUsers.find(u => u.code === input);
 
             if (user) {
+                currentUserLevel = user.level; // Set the current user's level
+
                 document.getElementById('userName').textContent = user.name;
                 document.getElementById('userAvatar').textContent = user.name[0].toUpperCase();
                 
-                // You can add logic here to display different content
-                // or features based on user.role (e.g., 'admin' vs 'student')
-                console.log(`User ${user.name} logged in with role: ${user.role}`);
+                if (user.role === 'student') {
+                    const teacherName = levelTeachers[user.level] || 'N/A';
+                    document.getElementById('userLevelInfo').textContent = `Level: ${user.level} | Teacher: ${teacherName}`;
+                } else if (user.role === 'admin') {
+                    document.getElementById('userLevelInfo').textContent = `Role: Admin`;
+                }
 
-                showContent();
+                showContent(user.role);
                 errorElement.style.display = 'none';
+                loadLevelContent(currentUserLevel); // Load content specific to the user's level
             } else {
                 errorElement.style.display = 'flex';
                 document.getElementById('errorText').textContent = 
@@ -1033,16 +1200,55 @@
             }
         }
 
-        function showContent() {
+        function showContent(role) {
             document.getElementById('loginContainer').style.display = 'none';
             document.getElementById('contentContainer').style.display = 'flex';
-            // Re-initialize security measures after content is shown if needed,
-            // though most listeners are on `document` and persist.
-            initializeSecurityMeasures();
+            initializeSecurityMeasures(); // Re-initialize security measures if needed
+        }
+
+        function loadLevelContent(level) {
+            // Load scheduled meetings for the level
+            const scheduleTableBody = document.querySelector('#scheduleTable tbody');
+            scheduleTableBody.innerHTML = ''; // Clear existing
+            const filteredSchedule = scheduleDB.filter(s => s.level === level);
+
+            if (filteredSchedule.length > 0) {
+                filteredSchedule.forEach(meeting => {
+                    const row = scheduleTableBody.insertRow();
+                    row.innerHTML = `
+                        <td data-label="Date">${meeting.date}</td>
+                        <td data-label="Connection Time">${meeting.time}</td>
+                        <td data-label="Action">
+                            <button class="join-button" onclick="joinMeeting('${meeting.url}')">Join Meeting</button>
+                        </td>
+                    `;
+                });
+            } else {
+                const row = scheduleTableBody.insertRow();
+                row.innerHTML = `<td colspan="3" class="coming-soon-message" style="display: table-cell;">No scheduled meetings for this level yet.</td>`;
+            }
+
+            // Populate week filter and videos for the level
+            populateWeekFilter(level); 
+            filterVideosByWeek(level); // Load videos for the initial week (e.g., 'All' or first week) for the specific level
+
+            // Load PDF for the level
+            const pdfViewer = document.getElementById('pdfViewer');
+            const pdfComingSoon = document.getElementById('pdfComingSoon');
+            const pdfUrl = pdfDB[level];
+
+            if (pdfUrl) {
+                pdfViewer.src = pdfUrl;
+                pdfViewer.style.display = 'block';
+                pdfComingSoon.style.display = 'none';
+            } else {
+                pdfViewer.src = ''; // Clear source
+                pdfViewer.style.display = 'none';
+                pdfComingSoon.style.display = 'block';
+            }
         }
 
         function joinMeeting(url) {
-            // Open in new window/tab, explicitly with noopener/noreferrer for security
             window.open(url, '_blank', 'noopener,noreferrer');
         }
 
@@ -1052,12 +1258,19 @@
             document.getElementById('inputCode').value = '';
             document.getElementById('errorMessage').style.display = 'none';
             closeVideoModal(); // Close any open video modal on logout
+            currentUserLevel = null; // Clear the current user's level
+            document.getElementById('pdfViewer').src = ''; // Clear PDF viewer
+            document.querySelector('#scheduleTable tbody').innerHTML = ''; // Clear schedule
+            document.getElementById('videoGallery').innerHTML = ''; // Clear video gallery
         }
 
         // Video Gallery Functions
-        function populateWeekFilter() {
+        function populateWeekFilter(level) {
             const weekSelect = document.getElementById('weekSelect');
-            const uniqueWeeks = [...new Set(videoDB.map(video => video.week))].sort((a, b) => a - b);
+            weekSelect.innerHTML = ''; // Clear previous options
+
+            const videosForLevel = videoDB.filter(video => video.level === level);
+            const uniqueWeeks = [...new Set(videosForLevel.map(video => video.week))].sort((a, b) => a - b);
 
             // Add "All Weeks" option
             let allOption = document.createElement('option');
@@ -1078,7 +1291,9 @@
             const videoGallery = document.getElementById('videoGallery');
             videoGallery.innerHTML = ''; // Clear existing thumbnails
 
-            const filteredVideos = videoDB.filter(video => 
+            const videosForCurrentLevel = videoDB.filter(video => video.level === currentUserLevel);
+
+            const filteredVideos = videosForCurrentLevel.filter(video => 
                 selectedWeek === 'all' || video.week === parseInt(selectedWeek)
             );
 
@@ -1101,7 +1316,7 @@
 
                 const presenterSpan = document.createElement('span');
                 presenterSpan.classList.add('presenter-name');
-                presenterSpan.textContent = video.presenter ? `By ${video.presenter}` : ''; // Add presenter if available
+                presenterSpan.textContent = video.presenter ? `By ${video.presenter}` : ''; 
 
                 thumbnailContainer.appendChild(img);
                 thumbnailContainer.appendChild(titleParagraph);
@@ -1115,23 +1330,23 @@
         }
 
         function openVideoModal(videoId) {
-            const video = videoDB.find(v => v.id === videoId);
+            const video = videoDB.find(v => v.id === videoId && v.level === currentUserLevel); // Ensure video belongs to current level
             if (video) {
                 const modal = document.getElementById('videoModal');
                 const videoPlayer = document.getElementById('modalVideoPlayer');
                 videoPlayer.src = video.url;
-                modal.style.display = 'flex'; // Use flex to center the modal content
-                videoPlayer.load(); // Load the video
-                videoPlayer.play(); // Auto-play the video
+                modal.style.display = 'flex'; 
+                videoPlayer.load(); 
+                videoPlayer.play(); 
             }
         }
 
         function closeVideoModal() {
             const modal = document.getElementById('videoModal');
             const videoPlayer = document.getElementById('modalVideoPlayer');
-            videoPlayer.pause(); // Pause the video
-            videoPlayer.currentTime = 0; // Reset video to start
-            videoPlayer.src = ''; // Clear the video source to prevent buffering in background
+            videoPlayer.pause(); 
+            videoPlayer.currentTime = 0; 
+            videoPlayer.src = ''; 
             modal.style.display = 'none';
         }
 
@@ -1141,6 +1356,14 @@
             if (event.target == modal) {
                 closeVideoModal();
             }
+        }
+
+        // Function to open WhatsApp chat for technical support
+        function openHelpChat() {
+            const phoneNumber = '593994183892'; // Replace with the actual phone number for technical support
+            const message = encodeURIComponent('Hello, I need technical assistance with the EVA system. My access code is: [Please provide your access code here].');
+            const whatsappUrl = `https://wa.me/+593967879068?text=Deseo%20ayuda%20con%20mi%20codigo`;
+            window.open(whatsappUrl, '_blank');
         }
     </script>
 </body>
