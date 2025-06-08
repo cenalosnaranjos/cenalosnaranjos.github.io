@@ -1,393 +1,630 @@
 <!DOCTYPE html>
-<html lang="es" data-theme="light">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CETA - Herramientas Digitales</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/x-icon" href="logo2.jpeg">
+    <title>Centro de Especialidades y Tutorías Académicas "Los Naranjos"</title>
+    <link rel="icon" type="image/x-icon" href="icono.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cantata+One&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #2A5C82;
-            --secondary: #5BA4E6;
-            --light: #f8f9fa;
-            --dark: #1a1a1a;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            /* Modo claro */
+            --primary-color: #ffffff;
+            --background-color: #f8f9fa;
+            --card-color: #ffffff;
+            --text-color: #2A5C82;
+            --secondary-color: #F5A623;
+            --accent-color: #27AE60;
+            --border-color: #dee2e6;
+            --footer-color: #1a3658;
+            
+            /* Modo oscuro */
+            --dark-primary: #1a1a1a;
+            --dark-background: #2d2d2d;
+            --dark-card: #343a40;
+            --dark-text: #e9ecef;
+            --dark-border: #495057;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            transition: background-color 0.3s, color 0.2s;
         }
 
         body {
-            font-family: 'Lato', sans-serif;
-            background-color: var(--light);
-            color: var(--dark);
-            transition: var(--transition);
-            line-height: 1.6;
+            background: var(--background-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', sans-serif;
+            scroll-behavior: smooth;
         }
 
-        body.dark-mode {
-            background-color: var(--dark);
-            color: var(--light);
+        body[data-theme="dark"] {
+            --primary-color: var(--dark-primary);
+            --background-color: var(--dark-background);
+            --card-color: var(--dark-card);
+            --text-color: var(--dark-text);
+            --border-color: var(--dark-border);
+            --footer-color: #0d1a2d;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* Header */
-        .site-header-modern {
-            background: var(--primary);
-            color: white;
-            padding: 1.5rem 0;
+        /* Header y navegación */
+        header {
+            background: var(--primary-color);
+            padding: 1rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
-        .dark-mode .site-header-modern {
-            background: #1a3650;
+        .contacto-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            align-items: center;
         }
 
-        .header-content {
+        .qr-container {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1rem;
+            background: var(--card-color);
+            border-radius: 15px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .qr-code {
+            max-width: 250px;
+            width: 100%;
+            height: auto;
+            border-radius: 15px;
+            padding: 10px;
+            background: white;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            /* Nuevo estilo para separar el logo del menú */
+            margin-right: 6rem; /* Ajusta este valor para más o menos separación */
+        }
+
+        .logo img {
+            height: 60px;
+            transition: transform 0.3s;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: all 0.3s;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-menu a:hover {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-color);
+            font-size: 1.3rem;
+            padding: 0.5rem;
+            margin-left: 1rem;
+        }
+
+        .hamburger {
+            display: none;
+            color: var(--text-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        /* Banner principal */
+        #inicio {
+            margin-top: 80px;
+            min-height: calc(100vh - 80px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .banner-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            border-radius: 15px;
+            background: rgba(245, 166, 35, 0.1);
+        }
+
+        .banner-logo {
+            max-width: 200px;
+            height: auto;
+            margin: 0 auto 2rem;
+            filter: drop-shadow(0 0 10px rgba(0,0,0,0.1));
+        }
+
+        .banner-title {
+            font-family: 'Cantata One', serif;
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            color: var(--text-color);
+            line-height: 1.3;
+        }
+
+        .banner-title span {
+            color: var(--secondary-color);
+            display: block;
+            font-size: 1.2em;
+            margin-top: 1rem;
+        }
+
+        /* Secciones generales */
+        section {
+            padding: 6rem 2rem;
+            scroll-margin-top: 80px;
+        }
+
+        h2 {
+            color: var(--text-color);
+            margin-bottom: 3rem;
+            text-align: center;
+            font-size: 2.2rem;
+            position: relative;
+        }
+
+        h2::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background: var(--secondary-color);
+            margin: 1rem auto;
+        }
+
+        /* Sección Historia */
+        #historia {
+            background: var(--card-color);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        #historia p {
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+            text-align: justify;
+        }
+
+        /* Sección Directora */
+        .directora-container {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: var(--card-color);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+        }
+
+        .directora-img {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            aspect-ratio: 1/1;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid var(--secondary-color);
+        }
+
+        .presentacion h3 {
+            color: var(--text-color);
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+
+        .presentacion p {
+            line-height: 1.6;
+            color: var(--text-color);
+            opacity: 0.9;
+        }
+
+        /* Especialidades */
+        .especialidades-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .materia-card {
+            background: var(--card-color);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .materia-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .materia-card .icon {
+            font-size: 3rem;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+
+        .materia-card h3 {
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+
+        .materia-card p {
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        /* Contacto */
+        .contacto-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .contacto-item {
             display: flex;
             align-items: center;
             gap: 1.5rem;
-            flex-wrap: wrap;
+            padding: 1.5rem;
+            background: var(--card-color);
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            border: 1px solid var(--border-color);
         }
 
-        .logo-round {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            border: 3px solid white;
-            object-fit: cover;
+        .contacto-item:hover {
+            transform: translateX(10px);
         }
 
-        .header-text h1 {
-            font-family: 'Poppins', sans-serif;
-            font-size: 2.2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .subtitle {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            letter-spacing: 0.5px;
-        }
-
-        /* Main Content */
-        .main-content {
-            padding: 4rem 0;
-        }
-
-        .tools-section h2 {
-            text-align: center;
-            font-size: 2.4rem;
-            margin-bottom: 3rem;
-            color: var(--primary);
-            position: relative;
-            padding-bottom: 1rem;
-        }
-
-        .tools-section h2::after {
-            content: '';
-            width: 60px;
-            height: 3px;
-            background: var(--secondary);
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .dark-mode .tools-section h2 {
-            color: var(--secondary);
-        }
-
-        .tools-grid-modern {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            padding: 1rem;
-        }
-
-        .tool-card-modern {
-            background: white;
-            border-radius: 18px;
-            padding: 2rem;
-            transition: var(--transition);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            border: 1px solid rgba(0,0,0,0.1);
-            display: flex;
-            flex-direction: column;
-            min-height: 380px;
-        }
-
-        .dark-mode .tool-card-modern {
-            background: #2d2d2d;
-            border-color: #404040;
-        }
-
-        .tool-card-modern:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.15);
-        }
-
-        .icon-wrapper {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1.5rem;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-
-        .tool-icon {
-            color: white;
-            font-size: 2rem;
-        }
-
-        .tool-title {
-            font-family: 'Poppins', sans-serif;
+        .contacto-item i {
+            color: var(--secondary-color);
             font-size: 1.5rem;
-            margin-bottom: 1rem;
-            text-align: center;
-        }
-
-        .tool-description {
-            font-size: 1.05rem;
-            line-height: 1.6;
-            margin-bottom: auto;
-            color: #666;
-            padding: 0 1rem;
-            text-align: center;
-        }
-
-        .dark-mode .tool-description {
-            color: #ccc;
-        }
-
-        /* Botones */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.8rem;
-            padding: 1rem 2rem;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: 700;
-            transition: var(--transition);
-            width: fit-content;
-            margin: 1.5rem auto 0;
-        }
-
-        .primary-btn {
-            background: var(--primary);
-            color: white;
-            border: 2px solid var(--primary);
-        }
-
-        .primary-btn:hover {
-            background: #1d4562;
-            transform: scale(1.05);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
-
-        /* Modo Oscuro */
-        .theme-toggle {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: var(--primary);
-            color: white;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            border: none;
-            z-index: 1000;
-            transition: var(--transition);
-        }
-
-        .theme-toggle:hover {
-            transform: scale(1.1) rotate(180deg);
+            min-width: 30px;
         }
 
         /* Footer */
-        .site-footer-modern {
-            background: var(--primary);
+        footer {
+            background: var(--footer-color);
             color: white;
-            padding: 2.5rem 0;
-            margin-top: 4rem;
+            padding: 3rem 2rem;
             text-align: center;
+            margin-top: 4rem;
         }
 
-        .dark-mode .site-footer-modern {
-            background: #1a3650;
+        .social-container {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .social-link {
+        color: white;
+        font-size: 1.5rem;
+        transition: transform 0.3s ease, color 0.3s ease;
+    }
+
+    .social-link:hover {
+        color: var(--secondary-color);
+        transform: translateY(-3px);
+    }
+
+    @media (max-width: 480px) {
+        .social-container {
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+    }
+
+        /* WhatsApp flotante */
+        .whatsapp-float {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            bottom: 40px;
+            right: 40px;
+            background-color: #25d366;
+            color: #FFF;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 30px;
+            box-shadow: 2px 2px 3px #999;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+            background-color: #1DA851;
         }
 
         @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                text-align: center;
-                gap: 1rem;
-            }
-            
-            .header-text h1 {
-                font-size: 1.8rem;
-            }
-            
-            .tools-section h2 {
-                font-size: 2rem;
-            }
-            
-            .tool-card-modern {
-                min-height: 340px;
-                padding: 1.5rem;
-            }
-            
-            .theme-toggle {
-                bottom: 20px;
-                right: 20px;
+            .whatsapp-float {
                 width: 50px;
                 height: 50px;
+                bottom: 20px;
+                right: 20px;
+                font-size: 25px;
             }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hamburger {
+                display: block;
+            }
+
+            .nav-menu {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--primary-color);
+                flex-direction: column;
+                padding: 1rem;
+                text-align: center;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                border: 1px solid var(--border-color);
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+
+            .logo img {
+                height: 50px;
+            }
+
+            .directora-container {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            section {
+                padding: 4rem 1rem;
+            }
+        }
+
+        /* Protección de imágenes */
+        img {
+            pointer-events: none;
+            user-select: none;
+            -webkit-user-drag: none;
         }
     </style>
 </head>
 <body>
-    <button class="theme-toggle" id="themeToggle">
-        <i class="fas fa-moon"></i>
-    </button>
-
-    <header class="site-header-modern">
-        <div class="container header-content">
-            <img src="icono.png" alt="Logo CETA" class="logo logo-round">
-            <div class="header-text">
-                <h1>CETA - Herramientas Académicas Digitales</h1>
-                <p class="subtitle">Centro de Especialidades y Tutorías "Los Naranjos"</p>
+    <header>
+        <nav class="nav-container">
+            <div class="logo">
+                <img src="icono.png" alt="Logo" draggable="false">
             </div>
-        </div>
+            <ul class="nav-menu">
+                <li><a href="#inicio"><i class="fas fa-home"></i> Inicio</a></li>
+                <li><a href="#historia"><i class="fas fa-book"></i> Historia</a></li>
+                <li><a href="#directora"><i class="fas fa-user-tie"></i> Directora</a></li>
+                <li><a href="#especialidades"><i class="fas fa-graduation-cap"></i> Especialidades</a></li>
+                <li><a href="#contacto"><i class="fas fa-address-book"></i> Contacto</a></li>
+                <li><a href="Herramientas.html"><i class="fas fa-tools"></i> Herramientas</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <div class="hamburger">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </div>
+        </nav>
     </header>
 
-    <main class="container main-content">
-        <section class="tools-section">
-            <h2>Explora y Utiliza Nuestros Recursos</h2>
-            <div class="tools-grid-modern">
-                <!-- Todas las herramientas integradas -->
-                <div class="tool-card-modern">
-                    <div class="icon-wrapper"><i class="fas fa-clipboard-check tool-icon"></i></div>
-                    <h3 class="tool-title">Tomar asistencia</h3>
-                    <p class="tool-description">Registro digital de asistencia mediante códigos QR para mayor eficiencia.</p>
-                    <a href="qr.html" class="btn primary-btn">Acceder <i class="fas fa-arrow-right"></i></a>
-                </div>
-<!--
-                <div class="tool-card-modern">
-                    <div class="icon-wrapper"><i class="fas fa-chalkboard-teacher tool-icon"></i></div>
-                    <h3 class="tool-title">EVA</h3>
-                    <p class="tool-description">Entorno Virtual de Aprendizaje con recursos educativos integrados.</p>
-                    <a href="EVA.html" class="btn primary-btn">Acceder <i class="fas fa-arrow-right"></i></a>
-                </div>
--->
-                <div class="tool-card-modern">
-                    <div class="icon-wrapper"><i class="fas fa-calculator tool-icon"></i></div>
-                    <h3 class="tool-title">FrAI🧮 - Simulador de Fracciones</h3>
-                    <p class="tool-description">Aprende operaciones con fracciones mediante simulaciones interactivas.</p>
-                    <a href="SimuladorFrAI.html" class="btn primary-btn">Acceder <i class="fas fa-arrow-right"></i></a>
-                </div>
-
-                <div class="tool-card-modern">
-                    <div class="icon-wrapper"><i class="fas fa-table tool-icon"></i></div>
-                    <h3 class="tool-title">Simulador Tablas Multiplicar</h3>
-                    <p class="tool-description">Domina las tablas de multiplicar con ejercicios dinámicos y gamificados.</p>
-                    <a href="tabla.html" class="btn primary-btn">Acceder <i class="fas fa-arrow-right"></i></a>
-                </div>
-<!--
-                <div class="tool-card-modern">
-                    <div class="icon-wrapper"><i class="fas fa-language tool-icon"></i></div>
-                    <h3 class="tool-title">Simulador Verbos Inglés</h3>
-                    <p class="tool-description">Practica conjugación de verbos en inglés con ejercicios interactivos.</p>
-                    <a href="Verbs.html" class="btn primary-btn">Acceder <i class="fas fa-arrow-right"></i></a>
-                </div>
-                -->
-<!--
-                <div class="tool-card-modern">
-                    <div class="icon-wrapper"><i class="fas fa-file-alt tool-icon"></i></div>
-                    <h3 class="tool-title">Examen de Matemática</h3>
-                    <p class="tool-description">Evaluación interactiva con diferentes niveles de dificultad.</p>
-                    <a href="examen.html" class="btn primary-btn">Acceder <i class="fas fa-arrow-right"></i></a>
-                </div>
--->
-                <div class="tool-card-modern">
-                    <div class="icon-wrapper"><i class="fas fa-calculator tool-icon"></i></div>
-                    <h3 class="tool-title">Calculadora</h3>
-                    <p class="tool-description">Herramienta científica avanzada para resolver operaciones complejas.</p>
-                    <a href="calculadora.html" class="btn primary-btn">Acceder <i class="fas fa-arrow-right"></i></a>
-                </div>
-<!--
-                <div class="tool-card-modern">
-                    <div class="icon-wrapper"><i class="fas fa-user-plus tool-icon"></i></div>
-                    <h3 class="tool-title">Registro Curso Inglés</h3>
-                    <p class="tool-description">Inscripción digital a nuestro curso especializado de inglés.</p>
-                    <a href="registro.html" class="btn primary-btn">Acceder <i class="fas fa-arrow-right"></i></a>
-                </div>
-                -->
-            </div>
-        </section>
-    </main>
-
-    <footer class="site-footer-modern">
-        <div class="container">
-            <p>&copy; 2025 CETA. Todos los derechos reservados<br>Desarrollado por Ing. Teddy Valencia</p>
+    <section id="inicio">
+        <div class="banner-content">
+            <img src="icono.png" alt="Logo" class="banner-logo" draggable="false">
+            <h1 class="banner-title">
+                Centro de Especialidades y Tutorías Académicas
+                <span>"LOS NARANJOS"</span>
+            </h1>
         </div>
+    </section>
+
+    <section id="historia">
+        <h2>Nuestra Historia</h2>
+        <p>El Centro de Especialidades y Tutorías Académicas "Los Naranjos" nació de una profunda necesidad y una problemática evidente en la comunidad de Chone: la ausencia de un centro integral que ofreciera apoyo académico especializado. Observamos la creciente demanda de refuerzo en diversas materias y la dificultad de los estudiantes para acceder a tutorías de calidad fuera del horario escolar. Con la visión de llenar este vacío y proporcionar un espacio donde el aprendizaje fuera accesible y efectivo, decidimos fundar "Los Naranjos". Desde nuestros inicios, nos hemos comprometido a ser un pilar fundamental en la formación académica de nuestros estudiantes, brindando las herramientas y el conocimiento necesario para que alcancen su máximo potencial.</p>
+    </section>
+
+    <section id="directora">
+        <h2>Directora Institucional</h2>
+        <div class="directora-container">
+            <img src="directora.jpg" alt="Directora" class="directora-img" draggable="false">
+            <div class="presentacion">
+                <h3>Lic. Ácnabel Castro. Mgtr</h3>
+                <p>La Licenciada Ácnabel Castro, Magíster en Educación, es el corazón de "Los Naranjos". Con una impresionante trayectoria de 38 años de experiencia como docente, su pasión por la enseñanza y su compromiso con la excelencia académica la han convertido en una figura respetada y querida en el ámbito educativo. Su vasta experiencia le ha permitido comprender a fondo las necesidades de los estudiantes y desarrollar metodologías pedagógicas innovadoras que garantizan un aprendizaje significativo y duradero. Bajo su liderazgo, "Los Naranjos" se consolida como un espacio de crecimiento y éxito para todos sus alumnos.</p> 
+            </div>
+        </div>
+    </section>
+
+    <section id="especialidades">
+        <h2>Especialidades</h2>
+        <div class="especialidades-grid">
+            <div class="materia-card">
+                <i class="fas fa-language icon"></i>
+                <h3>Inglés</h3>
+                <p>Nuestras tutorías de inglés están diseñadas para mejorar la gramática, la comprensión lectora, la escritura y la fluidez verbal, desde niveles básicos hasta avanzados.</p>
+            </div>
+            <div class="materia-card">
+                <i class="fas fa-calculator icon"></i>
+                <h3>Matemáticas</h3>
+                <p>Ofrecemos apoyo en todas las ramas de las matemáticas, incluyendo álgebra, geometría, trigonometría y cálculo, ayudando a los estudiantes a resolver problemas complejos.</p>
+            </div>
+            <div class="materia-card">
+                <i class="fas fa-atom icon"></i>
+                <h3>Física</h3>
+                <p>Desarrollamos el entendimiento de los principios físicos, desde la mecánica clásica hasta la termodinámica y el electromagnetismo, con explicaciones claras y ejemplos prácticos.</p>
+            </div>
+            <div class="materia-card">
+                <i class="fas fa-flask icon"></i>
+                <h3>Química</h3>
+                <p>Exploramos los fundamentos de la química orgánica e inorgánica, reacciones, estequiometría y más, haciendo que conceptos abstractos sean fáciles de entender.</p>
+            </div>
+            <div class="materia-card">
+                <i class="fas fa-file-invoice-dollar icon"></i>
+                <h3>Contabilidad</h3>
+                <p>Brindamos tutorías para comprender los principios contables, elaboración de estados financieros, auditoría y análisis financiero, fundamentales para estudiantes de economía y negocios.</p>
+            </div>
+            <div class="materia-card">
+                <i class="fas fa-laptop-code icon"></i>
+                <h3>Informática</h3>
+                <p>Desde programación básica y manejo de software hasta conceptos avanzados de redes y bases de datos, nuestras clases de informática preparan a los estudiantes para el mundo digital.</p>
+            </div>
+            <div class="materia-card">
+                <i class="fas fa-pencil-alt icon"></i>
+                <h3>Tareas Dirigidas</h3>
+                <p>Ofrecemos un espacio de apoyo y supervisión para la realización de tareas y deberes escolares, cubriendo todas las asignaturas para estudiantes desde los 4 años hasta bachillerato.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="contacto">
+        <h2>Contacto</h2>
+        <div class="contacto-info">
+            <div class="contacto-item">
+                <i class="fab fa-whatsapp"></i>
+                <span>+593 99 418 3892</span>
+            </div>
+            <div class="contacto-item">
+                <i class="fas fa-envelope"></i>
+                <span>cnalosnaranjos@gmail.com</span>
+            </div>
+            
+            <div class="qr-container"><br>
+                <h3>Escanea nuestro QR</h3>
+                <img src="qr centro.png" alt="Código QR de contacto" class="qr-code" draggable="false"><br>
+                <p>¡Escanea para contactarnos directamente!</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="social-container">
+            <a href="https://w.app/+593994183892" target="_blank" class="social-link">
+                <i class="fab fa-whatsapp"></i>
+            </a>
+            <a href="mailto:cnalosnaranjos@gmail.com" class="social-link">
+                <i class="fas fa-envelope"></i>
+            </a>
+            <a href="#inicio" class="social-link"><i class="fas fa-home"></i></a>
+        </div>
+        <p>© 2025 Centro de Especialidades y Tutorías Académicas "Los Naranjos"</p>
     </footer>
 
+    <a href="https://wa.me/+593994183892" class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
     <script>
-        // Control del Modo Oscuro
+        // Modo oscuro
         const themeToggle = document.getElementById('themeToggle');
         const body = document.body;
-        const themeIcon = themeToggle.querySelector('i');
-        let isDark = localStorage.getItem('theme') === 'dark-mode';
+        const savedTheme = localStorage.getItem('theme');
 
-        // Aplicar tema almacenado
-        function applyTheme() {
-            if(isDark) {
-                body.classList.add('dark-mode');
-                themeIcon.className = 'fas fa-sun';
-            } else {
-                body.classList.remove('dark-mode');
-                themeIcon.className = 'fas fa-moon';
-            }
+        if (savedTheme) {
+            body.setAttribute('data-theme', savedTheme);
+            themeToggle.innerHTML = savedTheme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
         }
 
-        // Cambiar tema
-        function toggleTheme() {
-            isDark = !isDark;
-            localStorage.setItem('theme', isDark ? 'dark-mode' : '');
-            applyTheme();
-            
-            // Animación del botón
-            themeToggle.style.transform = 'scale(1.2) rotate(360deg)';
-            setTimeout(() => {
-                themeToggle.style.transform = '';
-            }, 500);
-        }
+        themeToggle.addEventListener('click', () => {
+            const isDark = body.getAttribute('data-theme') === 'dark';
+            body.setAttribute('data-theme', isDark ? '' : 'dark');
+            localStorage.setItem('theme', isDark ? 'light' : 'dark');
+            themeToggle.innerHTML = isDark ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+        });
 
-        // Event Listeners
-        themeToggle.addEventListener('click', toggleTheme);
-        applyTheme();
+        // Menú hamburguesa
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.nav-menu');
+
+        hamburger.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        });
+
+        // Cerrar menú al hacer click
+        document.querySelectorAll('.nav-menu a').forEach(item => {
+            item.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+                hamburger.classList.remove('active');
+            });
+        });
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            });
+        });
+
+        // Protección de imágenes
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('dragstart', e => {
+            if (e.target.tagName === 'IMG') e.preventDefault();
+        });
     </script>
 </body>
 </html>
