@@ -558,6 +558,28 @@
             transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
         }
 
+        /* New styles for A1 Activities Platform */
+        .platform-card {
+            background: var(--background-white);
+            border-radius: 0.75rem;
+            box-shadow: 0 5px 15px var(--shadow-light);
+            padding: 2rem;
+            margin-top: 2rem;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+        }
+
+        .platform-card .section-title {
+            margin-bottom: 1.5rem;
+            justify-content: center;
+        }
+
+        .platform-card button {
+            max-width: 300px;
+            margin: 0 auto; /* Center the button */
+        }
+
+
         /* Footer */
         footer {
             position: fixed;
@@ -857,6 +879,12 @@
                </table>
         </div>
 
+        <div id="a1PlatformSection" class="platform-card" style="display: none;">
+            <h3 class="section-title"><i class="fas fa-laptop-code"></i> Activities Platform - A1</h3>
+            <p style="margin-bottom: 20px; color: var(--secondary-color);">Access additional interactive activities and exercises for your A1 level.</p>
+            <a href="https://edpuzzle.com/discover" target="_blank"><button><i class="fas fa-external-link-alt"></i> Go to Platform</button></a>
+        </div>
+
         <div class="material-card">
             <h3 class="section-title"><i class="fas fa-play-circle"></i> Educational Content - Class Recordings</h3>
             <div class="video-controls">
@@ -1011,7 +1039,8 @@
         const pdfDB = {
             'A1': 'https://vadimdez.github.io/ng2-pdf-viewer/assets/pdf-sample.pdf', // Sample PDF
             'A2': 'https://www.africau.edu/images/default/sample.pdf', // Another sample PDF
-            'B1': 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' // Yet another sample PDF
+            'B1': 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf', // Yet another sample PDF
+            'A1_Platform': 'https://www.example.com/a1-activities-platform' // Placeholder for A1 activities platform
         };
 
         // Scheduled meetings database with 'level'
@@ -1255,10 +1284,27 @@
                 pdfViewer.style.display = 'none';
                 pdfComingSoon.style.display = 'block';
             }
+
+            // Show/hide A1 Platform section based on user level
+            const a1PlatformSection = document.getElementById('a1PlatformSection');
+            if (level === 'A1') {
+                a1PlatformSection.style.display = 'block';
+            } else {
+                a1PlatformSection.style.display = 'none';
+            }
         }
 
         function joinMeeting(url) {
             window.open(url, '_blank', 'noopener,noreferrer');
+        }
+
+        function accessA1Platform() {
+            const platformUrl = pdfDB['A1_Platform']; // Get the URL for the A1 platform
+            if (platformUrl) {
+                window.open(platformUrl, '_blank', 'noopener,noreferrer');
+            } else {
+                alert('A1 Activities Platform URL is not configured.'); // Fallback message
+            }
         }
 
         function logout() {
@@ -1271,6 +1317,7 @@
             document.getElementById('pdfViewer').src = ''; // Clear PDF viewer
             document.querySelector('#scheduleTable tbody').innerHTML = ''; // Clear schedule
             document.getElementById('videoGallery').innerHTML = ''; // Clear video gallery
+            document.getElementById('a1PlatformSection').style.display = 'none'; // Hide A1 platform section
         }
 
         // Video Gallery Functions
