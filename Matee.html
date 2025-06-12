@@ -1,0 +1,1533 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aprende Matemáticas Interactivas</title>
+    <link rel="icon" type="image/x-icon" href="icono.png">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Variables para colores (Dark Mode por defecto) */
+        :root {
+            --bg-color-dark: #1a1a2e;
+            --text-color-dark: #e0e0e0;
+            --primary-color-dark: #0f3460;
+            --secondary-color-dark: #16213e;
+            --border-color-dark: #0a1128;
+            --button-bg-dark: #e94560;
+            --button-text-dark: #ffffff;
+            --input-bg-dark: #2c394b;
+            --input-border-dark: #0a1128;
+            --link-color-dark: #5c7fec;
+            --select-bg-dark: #2c394b;
+            --select-border-dark: #0a1128;
+            --info-bg-dark: #0f3460;
+            --info-text-dark: #e0e0e0;
+            --correct-answer-display-bg: #4CAF50;
+            --correct-answer-display-text: #ffffff;
+        }
+
+        /* Variables para colores (Light Mode) */
+        body.light-mode {
+            --bg-color-dark: #ffffff;
+            --text-color-dark: #333333;
+            --primary-color-dark: #f0f0f0;
+            --secondary-color-dark: #e0e0e0;
+            --border-color-dark: #cccccc;
+            --button-bg-dark: #4CAF50;
+            --button-text-dark: #ffffff;
+            --input-bg-dark: #ffffff;
+            --input-border-dark: #999999;
+            --link-color-dark: #007bff;
+            --select-bg-dark: #ffffff;
+            --select-border-dark: #999999;
+            --info-bg-dark: #d0e0f0;
+            --info-text-dark: #333333;
+            --correct-answer-display-bg: #28a745;
+            --correct-answer-display-text: #ffffff;
+        }
+
+        /* Estilos Generales */
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color-dark);
+            color: var(--text-color-dark);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        header {
+            background-color: var(--primary-color-dark);
+            color: var(--button-text-dark);
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+
+        .dark-mode-toggle {
+            background-color: var(--button-bg-dark);
+            color: var(--button-text-dark);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .dark-mode-toggle:hover {
+            opacity: 0.9;
+        }
+
+        nav {
+            background-color: var(--secondary-color-dark);
+            padding: 10px 0;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        nav ul li {
+            margin: 5px 15px;
+        }
+
+        nav ul li a {
+            color: var(--link-color-dark);
+            text-decoration: none;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        nav ul li a:hover,
+        nav ul li a.active {
+            background-color: var(--primary-color-dark);
+            color: var(--button-text-dark);
+        }
+
+        main {
+            padding: 20px;
+            max-width: 900px;
+            margin: 20px auto;
+            background-color: var(--primary-color-dark);
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .operation-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: var(--secondary-color-dark);
+            border-radius: 8px;
+            border: 1px solid var(--border-color-dark);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .operation-section h2 {
+            color: var(--text-color-dark);
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 2em;
+            border-bottom: 2px solid var(--button-bg-dark);
+            padding-bottom: 10px;
+        }
+
+        /* Contenedor principal de problemas (para operaciones numéricas) */
+        .problem-container {
+            text-align: center;
+            padding: 20px;
+            border: 1px solid var(--border-color-dark);
+            border-radius: 5px;
+            background-color: var(--input-bg-dark);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .problem-container p {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 0;
+            color: var(--text-color-dark);
+        }
+
+        /* Estilos de entrada de números y selección */
+        input[type="number"],
+        input[type="text"],
+        select {
+            padding: 10px;
+            font-size: 1.2em;
+            width: 80%;
+            max-width: 250px;
+            border: 1px solid var(--input-border-dark);
+            border-radius: 5px;
+            background-color: var(--input-bg-dark);
+            color: var(--text-color-dark);
+            box-sizing: border-box;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20256%20512%22%3E%3Cpath%20fill%3D%22%23e0e0e0%22%20d%3D%22M192%20256L64%20128v256l128-128z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 12px;
+            cursor: pointer;
+        }
+        body.light-mode input[type="number"],
+        body.light-mode input[type="text"],
+        body.light-mode select {
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20256%20512%22%3E%3Cpath%20fill%3D%22%23333333%22%20d%3D%22M192%20256L64%20128v256l128-128z%22%2F%3E%3C%2Fsvg%3E');
+        }
+        select option {
+            background-color: var(--select-bg-dark);
+            color: var(--text-color-dark);
+        }
+
+        button {
+            background-color: var(--button-bg-dark);
+            color: var(--button-text-dark);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: background-color 0.3s, transform 0.1s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .result-message {
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .result-message.correct {
+            color: #4CAF50;
+        }
+
+        .result-message.incorrect {
+            color: #f44336;
+        }
+
+        /* Estilos para el Selector de Operaciones */
+        #operationSelector, #numOperandsSelector {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #operationSelector label, #numOperandsSelector label {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        /* Contenedor de Información/Explicación */
+        .info-container {
+            background-color: var(--info-bg-dark);
+            border: 1px solid var(--border-color-dark);
+            border-radius: 5px;
+            padding: 20px;
+            margin-top: 20px;
+            margin-bottom: 30px;
+            text-align: left;
+            color: var(--info-text-dark);
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .info-container h3 {
+            color: var(--button-text-dark);
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--button-bg-dark);
+            padding-bottom: 8px;
+            font-size: 1.5em;
+        }
+
+        .info-container ol, .info-container ul {
+            padding-left: 25px;
+            margin-bottom: 10px;
+        }
+        .info-container li {
+            margin-bottom: 8px;
+        }
+        .info-container strong {
+            color: var(--button-bg-dark);
+        }
+
+        /* Contenedor para la entrada de números del usuario */
+        .user-input-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .user-input-container input {
+            width: 70%;
+            max-width: 200px;
+        }
+        .user-input-container button {
+            margin-top: 0;
+        }
+
+        /* Contenedor de inputs dinámicos */
+        #dynamicInputs {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        #dynamicInputs input {
+            width: 150px;
+            max-width: 150px;
+        }
+
+
+        /* Estilos para el Ordenamiento de Números (Drag and Drop) */
+        .sortable-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            min-height: 80px;
+            border: 1px dashed var(--border-color-dark);
+            padding: 15px;
+            border-radius: 5px;
+            background-color: var(--input-bg-dark);
+        }
+
+        .sortable-item {
+            background-color: var(--primary-color-dark);
+            color: var(--text-color-dark);
+            padding: 10px 15px;
+            border: 1px solid var(--border-color-dark);
+            border-radius: 5px;
+            cursor: grab;
+            font-size: 1.3em;
+            font-weight: bold;
+            transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
+        }
+
+        .sortable-item:active {
+            cursor: grabbing;
+            transform: scale(1.05);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Feedback para el drag and drop (opcional) */
+        .sortable-item.dragging {
+            opacity: 0.6;
+            border: 2px dashed var(--button-bg-dark);
+        }
+
+        /* Style for displaying correct answer (always visible after problem generation) */
+        #calculatedAnswerDisplay, #ordenamientoCorrectAnswer {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: var(--correct-answer-display-bg);
+            color: var(--correct-answer-display-text);
+            font-weight: bold;
+            font-size: 1.2em;
+            text-align: center;
+        }
+        #ordenamientoCorrectAnswer {
+            display: none; /* Hidden by default for ordering */
+        }
+
+        /* Styles for Fraction Section */
+        .fraction-input-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+        .fraction-input-group label {
+            font-size: 1em;
+            margin-bottom: 5px;
+        }
+        .fraction-input-group input {
+            width: 100px;
+            max-width: 100px;
+        }
+        .fraction-input-group .whole-number {
+            width: 80px;
+            max-width: 80px;
+        }
+        .fraction-input-group .numerator, .fraction-input-group .denominator {
+            width: 80px;
+            max-width: 80px;
+            font-size: 1.1em;
+        }
+        .fraction-separator {
+            font-size: 2em;
+            font-weight: bold;
+            margin: 0 5px;
+        }
+        .fraction-mixed-display {
+            display: flex;
+            align-items: baseline;
+            gap: 5px;
+        }
+        .fraction-mixed-display .whole {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+        .fraction-mixed-display .fraction {
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+            font-size: 1.2em;
+        }
+        .fraction-mixed-display .fraction span {
+            border-bottom: 1px solid var(--text-color-dark);
+            padding-bottom: 2px;
+            margin-bottom: 2px;
+            line-height: 1; /* Adjust line height for fraction bar */
+        }
+        .operator-display {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin: 0 10px;
+        }
+
+        #mixedFractionInputs {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px; /* Space between fraction input groups */
+            margin-top: 15px;
+        }
+        .fraction-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .fraction-mixed-format {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .fraction-mixed-format .fraction-inputs {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .fraction-mixed-format .fraction-inputs input {
+            width: 60px; /* Smaller inputs for fraction parts */
+        }
+        .fraction-mixed-format .fraction-line {
+            border-bottom: 1px solid var(--text-color-dark);
+            width: 80px; /* Width of the fraction line */
+            margin: -2px 0; /* Adjust to align with fraction parts */
+        }
+        .frac-label {
+            font-size: 0.9em;
+            margin-top: 5px;
+            color: var(--text-color-dark);
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            background-color: var(--primary-color-dark);
+            color: var(--text-color-dark);
+            border-top: 1px solid var(--border-color-dark);
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Responsividad */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2em;
+            }
+
+            .dark-mode-toggle {
+                position: static;
+                margin-top: 10px;
+            }
+
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            nav ul li {
+                margin: 5px 0;
+            }
+
+            main {
+                margin: 10px;
+                padding: 15px;
+            }
+
+            .operation-section h2 {
+                font-size: 1.8em;
+            }
+
+            input[type="number"],
+            input[type="text"],
+            select {
+                width: 90%;
+            }
+
+            button {
+                padding: 10px 20px;
+                font-size: 1em;
+            }
+            #dynamicInputs input {
+                width: 80%;
+                max-width: 250px;
+            }
+            #mixedFractionInputs {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 15px;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .operation-section {
+                padding: 15px;
+            }
+
+            .operation-section h2 {
+                font-size: 1.5em;
+            }
+
+            .problem-container p {
+                font-size: 1.3em;
+            }
+        }
+    </style>
+</head>
+<body class="dark-mode">
+    <header>
+        <h1>Aprende Matemáticas</h1>
+        <button id="darkModeToggle" class="dark-mode-toggle">Modo Claro</button>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#operaciones">Operaciones</a></li>
+            <li><a href="#ordenamiento">Ordenamiento</a></li>
+            <li><a href="#fracciones">Fracciones</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="operaciones" class="operation-section">
+            <h2>Operaciones Básicas</h2>
+            <div id="operationSelector">
+                <label for="selectOperation">Selecciona una operación:</label>
+                <select id="selectOperation">
+                    <option value="suma">Suma</option>
+                    <option value="resta">Resta</option>
+                    <option value="multiplicacion">Multiplicación</option>
+                    <option value="division">División</option>
+                </select>
+            </div>
+
+            <div id="operationInfo" class="info-container">
+            </div>
+
+            <div id="numOperandsSelector">
+                <label for="numOperands">Cantidad de números a operar (2-15):</label>
+                <input type="number" id="numOperands" min="2" max="15" value="2">
+                <button onclick="generateOperandInputs()">Actualizar Números</button>
+            </div>
+
+            <div class="user-input-container">
+                <p>Ingresa tus números decimales:</p>
+                <div id="dynamicInputs">
+                </div>
+                <button onclick="displayUserProblemAndAnswer()">Generar Problema y Ver Respuesta</button>
+            </div>
+
+            <div class="problem-container">
+                <p id="mathProblem"></p>
+                <p id="calculatedAnswerDisplay"></p>
+                <button onclick="checkSelectedOperationAnswer()">Comprobar Respuesta Mostrada</button>
+                <p id="mathResult" class="result-message"></p>
+                <button onclick="clearOperationSection()">Reiniciar Operación</button>
+            </div>
+        </section>
+
+        <section id="ordenamiento" class="operation-section">
+            <h2>Ordenamiento de Números</h2>
+            <div class="problem-container">
+                <p>Ingresa los números a ordenar, separados por comas o espacios (ej: 3.5, 10, 2.1, 7):</p>
+                <input type="text" id="orderInput" placeholder="Ej: 5.2, 10, 1.8, 7" style="max-width: 400px; width: 90%;">
+                <button onclick="prepareOrderProblem()">Preparar Ordenamiento</button>
+                <p>Arrastra los números para ordenarlos de menor a mayor.</p>
+                <div id="ordenamientoNumbers" class="sortable-list"></div>
+                <p id="ordenamientoCorrectAnswer"></p> <button onclick="checkOrder()">Comprobar Orden</button>
+                <p id="ordenamientoResult" class="result-message"></p>
+                <button onclick="clearOrderSection()">Reiniciar Ordenamiento</button>
+            </div>
+        </section>
+
+        <section id="fracciones" class="operation-section">
+            <h2>Operaciones con Fracciones</h2>
+            <div class="problem-container">
+                <div id="fractionTypeSelector">
+                    <label for="selectFractionType">Selecciona el tipo de operación:</label>
+                    <select id="selectFractionType">
+                        <option value="fraccionAMixta">Fracción Impropia a Mixta</option>
+                        <option value="mixtaAFraccion">Mixta a Fracción Impropia / Operaciones</option>
+                    </select>
+                </div>
+
+                <div id="fraccionAMixtaInputs" class="fraction-input-group">
+                    <p>Ingresa una fracción impropia (ej. 7/3):</p>
+                    <input type="text" id="fraccionNumerator" placeholder="Numerador">
+                    <input type="text" id="fraccionDenominator" placeholder="Denominador">
+                    <button onclick="convertFraction()">Convertir</button>
+                </div>
+
+                <div id="mixtaAFraccionOptions" style="display: none;">
+                    <div id="fractionOperationSelector" style="margin-bottom: 20px;">
+                        <label for="selectFractionOperation">Selecciona una operación:</label>
+                        <select id="selectFractionOperation">
+                            <option value="toImproper">Solo Convertir a Impropia</option>
+                            <option value="suma">Suma</option>
+                            <option value="resta">Resta</option>
+                            <option value="multiplicacion">Multiplicación</option>
+                            <option value="division">División</option>
+                        </select>
+                    </div>
+
+                    <div id="numFractionOperandsSelector" style="margin-bottom: 20px;">
+                        <label for="numFractionOperands">Cantidad de fracciones a operar (2-15):</label>
+                        <input type="number" id="numFractionOperands" min="2" max="15" value="2">
+                        <button onclick="generateFractionOperandInputs()">Actualizar Fracciones</button>
+                    </div>
+
+                    <div id="mixedFractionInputs">
+                        </div>
+                    <button onclick="performFractionOperation()">Resolver Operación</button>
+                </div>
+
+                <div id="fraccionInfo" class="info-container" style="display:none;">
+                    </div>
+
+                <p id="fraccionResult" class="result-message"></p>
+                <p id="fraccionSteps" class="info-container" style="display:none;"></p> <button onclick="clearFractionSection()">Reiniciar Fracciones</button>
+            </div>
+        </section>
+    </main>
+
+
+    <script>
+        // --- Dark Mode Toggle ---
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const body = document.body;
+
+        darkModeToggle.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            if (body.classList.contains('light-mode')) {
+                darkModeToggle.textContent = 'Modo Oscuro';
+                localStorage.setItem('theme', 'light');
+            } else {
+                darkModeToggle.textContent = 'Modo Claro';
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+
+        // Set initial theme based on localStorage
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            body.classList.add('light-mode');
+            darkModeToggle.textContent = 'Modo Oscuro';
+        } else {
+            body.classList.remove('light-mode');
+            darkModeToggle.textContent = 'Modo Claro';
+        }
+
+        // --- Global Variables for Math Problems ---
+        let currentProblem = {}; // Stores the current problem details (numbers, correct answer)
+
+        // --- Helper Function to Round Decimals ---
+        function roundToTwoDecimals(num) {
+            return parseFloat(num.toFixed(2));
+        }
+
+        // --- Operations Selection & Display Logic ---
+        const selectOperation = document.getElementById('selectOperation');
+        const numOperandsInput = document.getElementById('numOperands');
+        const dynamicInputsContainer = document.getElementById('dynamicInputs');
+        const operationInfo = document.getElementById('operationInfo');
+        const mathProblemElement = document.getElementById('mathProblem');
+        const mathResultElement = document.getElementById('mathResult');
+        const calculatedAnswerDisplay = document.getElementById('calculatedAnswerDisplay');
+
+        selectOperation.addEventListener('change', displayOperationInfo);
+        numOperandsInput.addEventListener('change', () => {
+            generateOperandInputs();
+            clearOperationProblemDisplay();
+        });
+
+
+        // Generates the appropriate number of input fields for operands
+        function generateOperandInputs() {
+            const num = parseInt(numOperandsInput.value);
+            dynamicInputsContainer.innerHTML = ''; // Clear existing inputs
+
+            if (isNaN(num) || num < 2 || num > 15) {
+                numOperandsInput.value = 2; // Reset to default if invalid
+                generateOperandInputs(); // Regenerate for default
+                return;
+            }
+
+            for (let i = 0; i < num; i++) {
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.placeholder = `Número ${i + 1}`;
+                input.step = 'any'; // Allow decimal input
+                input.classList.add('operand-input'); // Add a class for easy selection
+                input.addEventListener('input', clearOperationProblemDisplay); // Clear problem on input change
+                dynamicInputsContainer.appendChild(input);
+            }
+        }
+
+        // Displays the problem and the correct answer immediately
+        function displayUserProblemAndAnswer() {
+            const operandInputs = Array.from(dynamicInputsContainer.querySelectorAll('.operand-input'));
+            const numbers = operandInputs.map(input => parseFloat(input.value));
+            const type = selectOperation.value;
+
+            if (numbers.some(isNaN) || numbers.length === 0) {
+                mathResultElement.textContent = 'Por favor, ingresa números válidos en todos los campos.';
+                mathResultElement.className = 'result-message incorrect';
+                mathProblemElement.textContent = ''; // Clear problem display
+                calculatedAnswerDisplay.textContent = ''; // Clear answer display
+                return;
+            }
+
+            let problemText = '';
+            let correctAnswer;
+
+            switch (type) {
+                case 'suma':
+                    problemText = `¿Cuánto es ${numbers.join(' + ')}?`;
+                    correctAnswer = numbers.reduce((sum, num) => sum + num, 0);
+                    break;
+                case 'resta':
+                    problemText = `¿Cuánto es ${numbers.join(' - ')}?`;
+                    correctAnswer = numbers.reduce((diff, num, index) => index === 0 ? num : diff - num);
+                    break;
+                case 'multiplicacion':
+                    problemText = `¿Cuánto es ${numbers.join(' × ')}?`;
+                    correctAnswer = numbers.reduce((prod, num) => prod * num, 1);
+                    break;
+                case 'division':
+                    if (numbers.slice(1).some(num => num === 0)) { // Check if any subsequent number is zero
+                        mathResultElement.textContent = '¡No se puede dividir por cero!';
+                        mathResultElement.className = 'result-message incorrect';
+                        mathProblemElement.textContent = '';
+                        calculatedAnswerDisplay.textContent = ''; // Clear answer display
+                        return;
+                    }
+                    problemText = `¿Cuánto es ${numbers.join(' ÷ ')}? (Redondea a 2 decimales)`;
+                    correctAnswer = numbers.reduce((quot, num, index) => index === 0 ? num : quot / num);
+                    break;
+            }
+
+            currentProblem.userOperation = { operands: numbers, answer: roundToTwoDecimals(correctAnswer) };
+            mathProblemElement.textContent = problemText;
+
+            // Display the correct answer immediately in the designated paragraph
+            calculatedAnswerDisplay.textContent = `La respuesta es: ${currentProblem.userOperation.answer}`;
+            calculatedAnswerDisplay.className = 'result-message correct'; // Apply correct style
+
+            // Clear previous user input (now this display area) and result message
+            mathResultElement.textContent = '';
+        }
+
+
+        // Checks the answer (which is now always the correct one)
+        function checkSelectedOperationAnswer() {
+            const resultElement = mathResultElement;
+
+            const problemData = currentProblem.userOperation;
+            if (!problemData) {
+                resultElement.textContent = 'Genera un problema primero ingresando tus números.';
+                resultElement.className = 'result-message incorrect';
+                return;
+            }
+
+            // Since the answer is now automatically displayed, checking always confirms it.
+            resultElement.textContent = '¡La respuesta mostrada es correcta! 🎉';
+            resultElement.className = 'result-message correct';
+        }
+
+        // Function to clear all inputs and results in the operations section
+        function clearOperationSection() {
+            const operandInputs = Array.from(dynamicInputsContainer.querySelectorAll('.operand-input'));
+            operandInputs.forEach(input => input.value = '');
+            clearOperationProblemDisplay();
+        }
+
+        // Helper to clear just the problem display and result
+        function clearOperationProblemDisplay() {
+            mathProblemElement.textContent = '';
+            mathResultElement.textContent = '';
+            calculatedAnswerDisplay.textContent = ''; // Clear calculated answer text
+            calculatedAnswerDisplay.className = ''; // Remove styles
+            currentProblem.userOperation = null; // Clear current problem data
+        }
+
+
+        // Displays the explanation for the selected operation
+        function displayOperationInfo() {
+            const type = selectOperation.value;
+            let infoHtml = '';
+
+            switch (type) {
+                case 'suma':
+                    infoHtml = `
+                        <h3>Suma de Números Decimales</h3>
+                        <p>Para sumar números decimales, sigue estos pasos:</p>
+                        <ol>
+                            <li><strong>Alinear puntos decimales:</strong> Escribe los números uno debajo del otro, asegurándote de que los puntos decimales estén perfectamente alineados verticalmente.</li>
+                            <li><strong>Añadir ceros si es necesario:</strong> Si un número tiene menos dígitos decimales que otro, puedes añadir ceros al final para que tengan la misma cantidad de dígitos después del punto.</li>
+                            <li><strong>Sumar como números enteros:</strong> Suma los números como si fueran enteros, columna por columna, de derecha a izquierda.</li>
+                            <li><strong>Colocar el punto decimal:</strong> Baja el punto decimal en la respuesta directamente debajo de los puntos decimales alineados en los números que sumaste.</li>
+                        </ol>
+                        <p><strong>Ejemplo:</strong> 3.25 + 1.4 + 2.05</p>
+                        <pre>  3.25
++ 1.40
++ 2.05
+-----
+  6.70</pre>
+                    `;
+                    break;
+                case 'resta':
+                    infoHtml = `
+                        <h3>Resta de Números Decimales</h3>
+                        <p>Para restar números decimales (cadena de restas), considera el orden de operación de izquierda a derecha:</p>
+                        <ol>
+                            <li><strong>Alinear puntos decimales:</strong> Escribe los números uno debajo del otro, asegurándote de que los puntos decimales estén perfectamente alineados verticalmente.</li>
+                            <li><strong>Añadir ceros si es necesario:</strong> Si un número tiene menos dígitos decimales que otro, añade ceros al final.</li>
+                            <li><strong>Restar de izquierda a derecha:</strong> Realiza las restas en el orden en que aparecen. Primero el primer número menos el segundo, luego el resultado menos el tercero, y así sucesivamente.</li>
+                            <li><strong>Colocar el punto decimal:</strong> Baja el punto decimal en el resultado directamente debajo de los puntos decimales alineados.</li>
+                        </ol>
+                        <p><strong>Ejemplo:</strong> 5.75 - 2.3 - 0.5</p>
+                        <pre>  5.75
+- 2.30
+-----
+  3.45  (Resultado de 5.75 - 2.3)
+- 0.50
+-----
+  2.95</pre>
+                    `;
+                    break;
+                case 'multiplicacion':
+                    infoHtml = `
+                        <h3>Multiplicación de Números Decimales</h3>
+                        <p>Para multiplicar varios números decimales, multiplica dos a la vez y luego multiplica el resultado por el siguiente número:</p>
+                        <ol>
+                            <li><strong>Multiplicar los dos primeros:</strong> Multiplica los dos primeros números como si no tuvieran puntos decimales.</li>
+                            <li><strong>Contar decimales de los dos primeros:</strong> Cuenta el número total de dígitos después del punto decimal en esos dos números. Coloca el punto decimal en el resultado.</li>
+                            <li><strong>Continuar con el siguiente número:</strong> Toma este resultado y multiplícalo por el tercer número, repitiendo el proceso de contar y colocar decimales.</li>
+                            <li><strong>Repetir:</strong> Continúa este proceso hasta que hayas multiplicado todos los números.</li>
+                        </ol>
+                        <p><strong>Ejemplo:</strong> 2.5 × 1.3 × 0.4</p>
+                        <pre>  2.5  (1 decimal)
+× 1.3  (1 decimal)
+-----
+  3.25 (2 decimales)
+
+  3.25 (2 decimales)
+× 0.4  (1 decimal)
+-----
+  1.300 (3 decimales en total)</pre>
+                    `;
+                    break;
+                case 'division':
+                    infoHtml = `
+                        <h3>División de Números Decimales</h3>
+                        <p>Para dividir números decimales en cadena, realiza las divisiones de izquierda a derecha, como con números enteros:</p>
+                        <ol>
+                            <li><strong>Preparar la primera división:</strong> Para la primera división (Primer Número ÷ Segundo Número), haz que el divisor sea un número entero moviendo el punto decimal. Mueve el punto decimal en el dividendo la misma cantidad de lugares.</li>
+                            <li><strong>Dividir y obtener resultado:</strong> Realiza la división.</li>
+                            <li><strong>Continuar con el siguiente número:</strong> Toma el resultado de la primera división y utilízalo como el nuevo dividendo para dividirlo por el tercer número (ajusta los decimales si es necesario para el divisor).</li>
+                            <li><strong>Redondeo:</strong> Para la práctica, redondearemos la respuesta final a dos decimales si es necesario.</li>
+                        </ol>
+                        <p><strong>Ejemplo:</strong> 6.25 ÷ 0.5 ÷ 2.5</p>
+                        <pre>  6.25 ÷ 0.5  =>  62.5 ÷ 5 = 12.5
+
+  12.5 ÷ 2.5  =>  125 ÷ 25 = 5</pre>
+                    `;
+                    break;
+                default:
+                    infoHtml = '<p>Selecciona una operación para ver cómo se resuelve.</p>';
+            }
+            operationInfo.innerHTML = infoHtml;
+            clearOperationSection(); // Clear inputs and problem display when changing operation
+            generateOperandInputs(); // Regenerate inputs based on current count
+        }
+
+
+        // --- Number Ordering (Manual Input and Drag and Drop) ---
+        const orderInput = document.getElementById('orderInput');
+        const sortableList = document.getElementById('ordenamientoNumbers');
+        const ordenamientoResult = document.getElementById('ordenamientoResult');
+        const ordenamientoCorrectAnswerDisplay = document.getElementById('ordenamientoCorrectAnswer');
+        let numbersToOrder = [];
+        let draggingItem = null;
+
+        function prepareOrderProblem() {
+            sortableList.innerHTML = ''; // Clear previous numbers
+            ordenamientoResult.textContent = ''; // Clear result
+            ordenamientoCorrectAnswerDisplay.textContent = ''; // Clear correct answer
+            ordenamientoCorrectAnswerDisplay.style.display = 'none'; // Hide answer initially
+
+            const inputString = orderInput.value.trim();
+            if (inputString === '') {
+                ordenamientoResult.textContent = 'Por favor, ingresa números para ordenar.';
+                ordenamientoResult.className = 'result-message incorrect';
+                return;
+            }
+
+            const parsedNumbers = inputString.split(/[, ]+/).filter(s => s !== '').map(s => parseFloat(s.trim()));
+
+            if (parsedNumbers.some(isNaN) || parsedNumbers.length === 0) {
+                ordenamientoResult.textContent = 'Error: Ingresa solo números válidos (enteros o decimales).';
+                ordenamientoResult.className = 'result-message incorrect';
+                return;
+            }
+
+            numbersToOrder = parsedNumbers;
+
+            const shuffledNumbers = [...numbersToOrder].sort(() => Math.random() - 0.5);
+
+            shuffledNumbers.forEach(num => {
+                const item = document.createElement('div');
+                item.classList.add('sortable-item');
+                item.textContent = num;
+                item.draggable = true;
+
+                item.addEventListener('dragstart', () => {
+                    draggingItem = item;
+                    setTimeout(() => item.classList.add('dragging'), 0);
+                });
+
+                item.addEventListener('dragend', () => {
+                    draggingItem.classList.remove('dragging');
+                    draggingItem = null;
+                });
+
+                sortableList.appendChild(item);
+            });
+
+            // Display the correct answer immediately
+            const sortedOriginalNumbers = [...numbersToOrder].sort((a, b) => a - b);
+            ordenamientoCorrectAnswerDisplay.textContent = `Orden correcto: ${sortedOriginalNumbers.join(', ')}`;
+            ordenamientoCorrectAnswerDisplay.className = 'result-message correct';
+            ordenamientoCorrectAnswerDisplay.style.display = 'block'; // Show the answer
+        }
+
+
+        sortableList.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            const afterElement = getDragAfterElement(sortableList, e.clientY);
+            const currentItem = document.querySelector('.dragging');
+            if (currentItem) {
+                if (afterElement == null) {
+                    sortableList.appendChild(currentItem);
+                } else {
+                    sortableList.insertBefore(currentItem, afterElement);
+                }
+            }
+        });
+
+        sortableList.addEventListener('drop', (e) => {
+            e.preventDefault();
+        });
+
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('.sortable-item:not(.dragging)')];
+
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: -Infinity }).element;
+        }
+
+        function checkOrder() {
+            const currentOrderElements = Array.from(sortableList.children);
+            const currentOrder = currentOrderElements.map(item => parseFloat(item.textContent));
+
+            const sortedOriginalNumbers = [...numbersToOrder].sort((a, b) => a - b);
+
+            if (currentOrder.length === 0) {
+                ordenamientoResult.textContent = 'Por favor, arrastra los números para ordenarlos.';
+                ordenamientoResult.className = 'result-message incorrect';
+                return;
+            }
+
+            let isCorrect = true;
+            for (let i = 0; i < currentOrder.length; i++) {
+                if (currentOrder[i] !== sortedOriginalNumbers[i]) {
+                    isCorrect = false;
+                    break;
+                }
+            }
+
+            if (isCorrect) {
+                ordenamientoResult.textContent = '¡Tu orden es Correcto! 🎉';
+                ordenamientoResult.className = 'result-message correct';
+            } else {
+                ordenamientoResult.textContent = `Tu orden es incorrecto. El orden correcto ya se mostró.`;
+                ordenamientoResult.className = 'result-message incorrect';
+            }
+        }
+
+        function clearOrderSection() {
+            orderInput.value = '';
+            sortableList.innerHTML = '';
+            ordenamientoResult.textContent = '';
+            ordenamientoCorrectAnswerDisplay.textContent = '';
+            ordenamientoCorrectAnswerDisplay.style.display = 'none';
+            numbersToOrder = [];
+        }
+
+
+        // --- Fraction Operations ---
+        const selectFractionType = document.getElementById('selectFractionType');
+        const fraccionAMixtaInputs = document.getElementById('fraccionAMixtaInputs');
+        const mixtaAFraccionOptions = document.getElementById('mixtaAFraccionOptions');
+        const selectFractionOperation = document.getElementById('selectFractionOperation');
+        const numFractionOperandsInput = document.getElementById('numFractionOperands');
+        const mixedFractionInputsContainer = document.getElementById('mixedFractionInputs');
+        const fraccionResultElement = document.getElementById('fraccionResult');
+        const fraccionInfo = document.getElementById('fraccionInfo');
+        const fraccionSteps = document.getElementById('fraccionSteps');
+
+
+        // Event listeners for fraction section
+        selectFractionType.addEventListener('change', toggleFractionSection);
+        selectFractionOperation.addEventListener('change', displayFractionOperationInfo);
+        numFractionOperandsInput.addEventListener('change', generateFractionOperandInputs);
+
+        // Helper function for Greatest Common Divisor (GCD)
+        function gcd(a, b) {
+            return b === 0 ? a : gcd(b, a % b);
+        }
+
+        // Helper function for Least Common Multiple (LCM)
+        function lcm(a, b) {
+            if (a === 0 || b === 0) return 0;
+            return Math.abs(a * b) / gcd(a, b);
+        }
+
+        // Function to simplify a fraction
+        function simplifyFraction(numerator, denominator) {
+            if (denominator === 0) {
+                return { num: numerator, den: 0 }; // Handle division by zero case
+            }
+            if (numerator === 0) {
+                return { num: 0, den: 1 };
+            }
+            const commonDivisor = gcd(Math.abs(numerator), Math.abs(denominator));
+            let simplifiedNum = numerator / commonDivisor;
+            let simplifiedDen = denominator / commonDivisor;
+
+            // Ensure denominator is positive
+            if (simplifiedDen < 0) {
+                simplifiedNum *= -1;
+                simplifiedDen *= -1;
+            }
+            return { num: simplifiedNum, den: simplifiedDen };
+        }
+
+        // Function to format a fraction (improper or mixed) for display
+        function formatFractionForDisplay(num, den) {
+            if (den === 0) return "Indefinido";
+            if (num === 0) return "0";
+
+            const simplified = simplifyFraction(num, den);
+            const sNum = simplified.num;
+            const sDen = simplified.den;
+
+            if (sNum === 0) return "0";
+            if (sDen === 1) return `${sNum}`; // Whole number
+
+            if (Math.abs(sNum) >= Math.abs(sDen)) {
+                const whole = Math.floor(sNum / sDen);
+                const remainder = sNum % sDen;
+                if (remainder === 0) {
+                    return `${whole}`;
+                } else {
+                    return `${whole} ${Math.abs(remainder)}/${sDen}`;
+                }
+            } else {
+                return `${sNum}/${sDen}`;
+            }
+        }
+
+        // Convert improper fraction to mixed number
+        function convertFraction() {
+            fraccionResultElement.textContent = '';
+            fraccionSteps.textContent = '';
+            fraccionSteps.style.display = 'none';
+
+            const numerator = parseInt(document.getElementById('fraccionNumerator').value);
+            const denominator = parseInt(document.getElementById('fraccionDenominator').value);
+
+            if (isNaN(numerator) || isNaN(denominator) || denominator === 0) {
+                fraccionResultElement.textContent = 'Por favor, ingresa números válidos para el numerador y denominador (denominador no puede ser 0).';
+                fraccionResultElement.className = 'result-message incorrect';
+                return;
+            }
+
+            if (numerator < denominator) {
+                fraccionResultElement.textContent = 'Esta es una fracción propia. Necesitas una fracción impropia (numerador mayor o igual que el denominador).';
+                fraccionResultElement.className = 'result-message incorrect';
+                return;
+            }
+
+            const wholeNumber = Math.floor(numerator / denominator);
+            const remainder = numerator % denominator;
+
+            let resultString;
+            if (remainder === 0) {
+                resultString = `${wholeNumber}`;
+            } else {
+                resultString = `${wholeNumber} ${remainder}/${denominator}`;
+            }
+            fraccionResultElement.textContent = `La fracción mixta es: ${resultString}`;
+            fraccionResultElement.className = 'result-message correct';
+
+            fraccionSteps.innerHTML = `<h3>Pasos para la Conversión:</h3>
+                <ol>
+                    <li>Divide el numerador (${numerator}) por el denominador (${denominator}).</li>
+                    <li>El cociente (${wholeNumber}) es el número entero de la fracción mixta.</li>
+                    <li>El resto (${remainder}) es el nuevo numerador.</li>
+                    <li>El denominador original (${denominator}) permanece igual.</li>
+                    ${remainder === 0 ? `<li>Como el resto es 0, el resultado es un número entero.</li>` : ''}
+                </ol>`;
+            fraccionSteps.style.display = 'block';
+            fraccionSteps.className = 'info-container';
+        }
+
+        // Convert mixed number to improper fraction
+        function convertMixedToImproper(whole, num, den) {
+            if (den === 0) return { num: 0, den: 0 }; // Indicate invalid fraction
+            // Handle negative mixed numbers: convert whole part to improper as if positive, then apply sign to numerator
+            if (whole < 0) {
+                return { num: (Math.abs(whole) * den + num) * -1, den: den };
+            }
+            return { num: whole * den + num, den: den };
+        }
+
+        // Generates input fields for mixed fractions
+        function generateFractionOperandInputs() {
+            const num = parseInt(numFractionOperandsInput.value);
+            mixedFractionInputsContainer.innerHTML = '';
+            fraccionResultElement.textContent = '';
+            fraccionSteps.textContent = '';
+            fraccionSteps.style.display = 'none';
+            fraccionInfo.style.display = 'none'; // Hide info when inputs change
+
+            if (isNaN(num) || num < 2 || num > 15) {
+                numFractionOperandsInput.value = 2;
+                generateFractionOperandInputs();
+                return;
+            }
+
+            const operationType = selectFractionOperation.value;
+
+            for (let i = 0; i < num; i++) {
+                const inputGroup = document.createElement('div');
+                inputGroup.classList.add('fraction-input-wrapper');
+
+                if (i > 0 && operationType !== 'toImproper') {
+                    const operatorSpan = document.createElement('span');
+                    operatorSpan.classList.add('operator-display');
+                    switch(operationType) {
+                        case 'suma': operatorSpan.textContent = '+'; break;
+                        case 'resta': operatorSpan.textContent = '-'; break;
+                        case 'multiplicacion': operatorSpan.textContent = '×'; break;
+                        case 'division': operatorSpan.textContent = '÷'; break;
+                    }
+                    inputGroup.appendChild(operatorSpan);
+                }
+
+                const fractionFormatDiv = document.createElement('div');
+                fractionFormatDiv.classList.add('fraction-mixed-format');
+
+                const wholeInput = document.createElement('input');
+                wholeInput.type = 'number';
+                wholeInput.placeholder = 'Ent.';
+                wholeInput.classList.add('whole-number');
+                wholeInput.classList.add('operand-whole');
+                wholeInput.setAttribute('data-index', i);
+                wholeInput.addEventListener('input', clearFractionResult); // Clear result on input change
+                fractionFormatDiv.appendChild(wholeInput);
+
+                const fractionInputsDiv = document.createElement('div');
+                fractionInputsDiv.classList.add('fraction-inputs');
+
+                const numInput = document.createElement('input');
+                numInput.type = 'number';
+                numInput.placeholder = 'Num.';
+                numInput.classList.add('numerator');
+                numInput.classList.add('operand-numerator');
+                numInput.setAttribute('data-index', i);
+                numInput.addEventListener('input', clearFractionResult);
+                fractionInputsDiv.appendChild(numInput);
+
+                const fractionLine = document.createElement('div');
+                fractionLine.classList.add('fraction-line');
+                fractionInputsDiv.appendChild(fractionLine);
+
+                const denInput = document.createElement('input');
+                denInput.type = 'number';
+                denInput.placeholder = 'Den.';
+                denInput.classList.add('denominator');
+                denInput.classList.add('operand-denominator');
+                denInput.setAttribute('data-index', i);
+                denInput.addEventListener('input', clearFractionResult);
+                fractionInputsDiv.appendChild(denInput);
+
+                fractionFormatDiv.appendChild(fractionInputsDiv);
+                inputGroup.appendChild(fractionFormatDiv);
+                mixedFractionInputsContainer.appendChild(inputGroup);
+            }
+            displayFractionOperationInfo(); // Update info based on operation
+        }
+
+        // Toggles visibility of fraction sections
+        function toggleFractionSection() {
+            const selectedType = selectFractionType.value;
+            clearFractionSection(); // Clear all inputs and results when type changes
+
+            if (selectedType === 'fraccionAMixta') {
+                fraccionAMixtaInputs.style.display = 'block';
+                mixtaAFraccionOptions.style.display = 'none';
+            } else { // mixtaAFraccion
+                fraccionAMixtaInputs.style.display = 'none';
+                mixtaAFraccionOptions.style.display = 'block';
+                generateFractionOperandInputs(); // Generate inputs for mixed fractions
+            }
+        }
+
+        // Displays info for mixed fraction operations
+        function displayFractionOperationInfo() {
+            const type = selectFractionOperation.value;
+            let infoHtml = '';
+
+            switch (type) {
+                case 'toImproper':
+                    fraccionInfo.style.display = 'block';
+                    infoHtml = `
+                        <h3>Convertir Fracción Mixta a Impropia</h3>
+                        <p>Para convertir una fracción mixta ($E \\frac{N}{D}$) a una fracción impropia ($ \\frac{N_{imp}}{D} $), sigue estos pasos:</p>
+                        <ol>
+                            <li><strong>Multiplicar y sumar:</strong> Multiplica el número entero ($E$) por el denominador ($D$), y luego suma el numerador ($N$) de la fracción. Este será tu nuevo numerador ($N_{imp} = E \times D + N$).</li>
+                            <li><strong>Mantener el denominador:</strong> El denominador de la fracción impropia será el mismo que el de la fracción original ($D$).</li>
+                            <li><strong>Signo:</strong> Si el número mixto es negativo, el numerador impropio también será negativo.</li>
+                        </ol>
+                        <p><strong>Fórmula:</strong> $ E \\frac{N}{D} = \\frac{(E \\times D) + N}{D} $</p>
+                        <p><strong>Ejemplo:</strong> Convertir $3 \\frac{1}{4}$</p>
+                        <pre>  (3 × 4) + 1 = 12 + 1 = 13
+  Denominador es 4
+  Resultado: 13/4</pre>
+                    `;
+                    break;
+                case 'suma':
+                    fraccionInfo.style.display = 'block';
+                    infoHtml = `
+                        <h3>Suma de Fracciones Mixtas</h3>
+                        <p>Para sumar fracciones mixtas, generalmente es más fácil convertirlas a fracciones impropias primero:</p>
+                        <ol>
+                            <li><strong>Convertir a impropias:</strong> Convierte cada fracción mixta a su forma impropia.</li>
+                            <li><strong>Buscar denominador común:</strong> Encuentra el mínimo común múltiplo (MCM) de los denominadores.</li>
+                            <li><strong>Reescribir fracciones:</strong> Ajusta cada fracción para que tenga el denominador común.</li>
+                            <li><strong>Sumar numeradores:</strong> Suma los numeradores de las fracciones.</li>
+                            <li><strong>Simplificar y convertir:</strong> Simplifica la fracción resultante (si es posible) y conviértela de nuevo a fracción mixta si es una fracción impropia.</li>
+                        </ol>
+                        <p><strong>Ejemplo:</strong> $2 \\frac{1}{2} + 1 \\frac{1}{3}$</p>
+                        <pre>  1. Convertir: 5/2 + 4/3
+  2. MCM de 2 y 3 es 6
+  3. Reescribir: (5*3)/(2*3) + (4*2)/(3*2) = 15/6 + 8/6
+  4. Sumar: (15+8)/6 = 23/6
+  5. Convertir a mixta: 3 5/6</pre>
+                    `;
+                    break;
+                case 'resta':
+                    fraccionInfo.style.display = 'block';
+                    infoHtml = `
+                        <h3>Resta de Fracciones Mixtas</h3>
+                        <p>Para restar fracciones mixtas, es recomendable convertirlas a fracciones impropias:</p>
+                        <ol>
+                            <li><strong>Convertir a impropias:</strong> Convierte cada fracción mixta a su forma impropia.</li>
+                            <li><strong>Buscar denominador común:</strong> Encuentra el MCM de los denominadores.</li>
+                            <li><strong>Reescribir fracciones:</strong> Ajusta cada fracción para que tenga el denominador común.</li>
+                            <li><strong>Restar numeradores:</strong> Resta los numeradores de las fracciones.</li>
+                            <li><strong>Simplificar y convertir:</strong> Simplifica la fracción resultante (si es posible) y conviértela de nuevo a fracción mixta si es una fracción impropia.</li>
+                        </ol>
+                        <p><strong>Ejemplo:</strong> $3 \\frac{1}{2} - 1 \\frac{3}{4}$</p>
+                        <pre>  1. Convertir: 7/2 - 7/4
+  2. MCM de 2 y 4 es 4
+  3. Reescribir: (7*2)/(2*2) - 7/4 = 14/4 - 7/4
+  4. Restar: (14-7)/4 = 7/4
+  5. Convertir a mixta: 1 3/4</pre>
+                    `;
+                    break;
+                case 'multiplicacion':
+                    fraccionInfo.style.display = 'block';
+                    infoHtml = `
+                        <h3>Multiplicación de Fracciones Mixtas</h3>
+                        <p>Para multiplicar fracciones mixtas, conviértelas a fracciones impropias y luego multiplica:</p>
+                        <ol>
+                            <li><strong>Convertir a impropias:</strong> Convierte cada fracción mixta a su forma impropia.</li>
+                            <li><strong>Multiplicar numeradores:</strong> Multiplica todos los numeradores entre sí.</li>
+                            <li><strong>Multiplicar denominadores:</strong> Multiplica todos los denominadores entre sí.</li>
+                            <li><strong>Simplificar y convertir:</strong> Simplifica la fracción resultante (si es posible) y conviértela de nuevo a fracción mixta si es una fracción impropia.</li>
+                        </ol>
+                        <p><strong>Ejemplo:</strong> $1 \\frac{1}{2} \\times 2 \\frac{1}{3}$</p>
+                        <pre>  1. Convertir: 3/2 × 7/3
+  2. Multiplicar numeradores: 3 × 7 = 21
+  3. Multiplicar denominadores: 2 × 3 = 6
+  4. Resultado: 21/6
+  5. Simplificar: 7/2
+  6. Convertir a mixta: 3 1/2</pre>
+                    `;
+                    break;
+                case 'division':
+                    fraccionInfo.style.display = 'block';
+                    infoHtml = `
+                        <h3>División de Fracciones Mixtas</h3>
+                        <p>Para dividir fracciones mixtas, conviértelas a fracciones impropias y luego usa el "método de voltear y multiplicar":</p>
+                        <ol>
+                            <li><strong>Convertir a impropias:</strong> Convierte cada fracción mixta a su forma impropia.</li>
+                            <li><strong>Voltear y multiplicar:</strong> Para dividir por una fracción, se multiplica por su recíproco (volteando la segunda fracción). Si tienes más de dos, hazlo de izquierda a derecha.</li>
+                            <li><strong>Multiplicar numeradores y denominadores:</strong> Multiplica los numeradores y los denominadores.</li>
+                            <li><strong>Simplificar y convertir:</strong> Simplifica la fracción resultante (si es posible) y conviértela de nuevo a fracción mixta si es una fracción impropia.</li>
+                        </ol>
+                        <p><strong>Ejemplo:</strong> $3 \\frac{1}{2} \\div 1 \\frac{1}{4}$</p>
+                        <pre>  1. Convertir: 7/2 ÷ 5/4
+  2. Voltear y Multiplicar: 7/2 × 4/5
+  3. Multiplicar: (7×4)/(2×5) = 28/10
+  4. Simplificar: 14/5
+  5. Convertir a mixta: 2 4/5</pre>
+                    `;
+                    break;
+                default:
+                    fraccionInfo.style.display = 'none';
+                    infoHtml = '';
+                    break;
+            }
+            fraccionInfo.innerHTML = infoHtml;
+        }
+
+        // Performs the fraction operation
+        function performFractionOperation() {
+            fraccionResultElement.textContent = '';
+            fraccionSteps.textContent = '';
+            fraccionSteps.style.display = 'none';
+            fraccionInfo.style.display = 'block'; // Ensure info is visible during calculation
+
+            const operationType = selectFractionOperation.value;
+            const wholeInputs = Array.from(mixedFractionInputsContainer.querySelectorAll('.operand-whole'));
+            const numInputs = Array.from(mixedFractionInputsContainer.querySelectorAll('.operand-numerator'));
+            const denInputs = Array.from(mixedFractionInputsContainer.querySelectorAll('.operand-denominator'));
+
+            let fractions = [];
+            let stepsHtml = `<h3>Pasos para la Resolución:</h3><ol>`;
+
+            for (let i = 0; i < wholeInputs.length; i++) {
+                const whole = parseInt(wholeInputs[i].value || '0');
+                const num = parseInt(numInputs[i].value);
+                const den = parseInt(denInputs[i].value);
+
+                if (isNaN(num) || isNaN(den) || den === 0) {
+                    fraccionResultElement.textContent = `Error: Fracción ${i + 1} inválida. Asegúrate de ingresar números válidos para numerador y denominador (denominador no puede ser 0).`;
+                    fraccionResultElement.className = 'result-message incorrect';
+                    return;
+                }
+                if (num < 0) {
+                    fraccionResultElement.textContent = `Error: El numerador de la fracción no puede ser negativo en una fracción mixta ($E \\frac{N}{D}$). El signo se aplica al entero.`;
+                    fraccionResultElement.className = 'result-message incorrect';
+                    return;
+                }
+                if (Math.abs(num) >= Math.abs(den) && den !== 0) {
+                     fraccionResultElement.textContent = `Error: La parte fraccionaria de una fracción mixta debe ser una fracción propia (numerador menor que denominador). Por favor, revisa la fracción ${i+1}.`;
+                     fraccionResultElement.className = 'result-message incorrect';
+                     return;
+                }
+
+                const improper = convertMixedToImproper(whole, num, den);
+                fractions.push(improper);
+                stepsHtml += `<li>Fracción ${i + 1}: Convertir ${whole === 0 ? '' : whole} ${num}/${den} a impropia: $ \\frac{(${whole} \\times ${den}) + ${num}}{${den}} = \\frac{${improper.num}}{${improper.den}} $</li>`;
+            }
+
+            if (fractions.length === 0) {
+                fraccionResultElement.textContent = 'No hay fracciones para operar.';
+                fraccionResultElement.className = 'result-message incorrect';
+                return;
+            }
+
+            let resultFraction;
+            let currentNumerator;
+            let currentDenominator;
+
+            if (operationType === 'toImproper') {
+                if (fractions.length > 1) {
+                    fraccionResultElement.textContent = 'Para "Solo Convertir a Impropia", solo se necesita una fracción.';
+                    fraccionResultElement.className = 'result-message incorrect';
+                    return;
+                }
+                resultFraction = fractions[0];
+                stepsHtml += `<li>La fracción impropia final es: $ \\frac{${resultFraction.num}}{${resultFraction.den}} $</li>`;
+            } else {
+                currentNumerator = fractions[0].num;
+                currentDenominator = fractions[0].den;
+                let currentProblemDisplay = formatFractionForDisplay(currentNumerator, currentDenominator);
+
+                for (let i = 1; i < fractions.length; i++) {
+                    const nextFraction = fractions[i];
+                    stepsHtml += `<li>Operación ${i}: ${currentProblemDisplay} ${getOperatorSymbol(operationType)} ${formatFractionForDisplay(nextFraction.num, nextFraction.den)}`;
+
+                    switch (operationType) {
+                        case 'suma':
+                            const lcmSum = lcm(currentDenominator, nextFraction.den);
+                            currentNumerator = (currentNumerator * (lcmSum / currentDenominator)) + (nextFraction.num * (lcmSum / nextFraction.den));
+                            currentDenominator = lcmSum;
+                            stepsHtml += `<br>Encontrar MCM(${currentDenominator}, ${nextFraction.den}) = ${lcmSum}.`;
+                            stepsHtml += `<br>Reescribir fracciones: $ \\frac{${fractions[i-1].num} \\times (${lcmSum / fractions[i-1].den})}{${fractions[i-1].den} \\times (${lcmSum / fractions[i-1].den})} $ y $ \\frac{${nextFraction.num} \\times (${lcmSum / nextFraction.den})}{${nextFraction.den} \\times (${lcmSum / nextFraction.den})} $`;
+                            stepsHtml += `<br>Sumar numeradores: $ \\frac{${currentNumerator}}{${currentDenominator}} $</li>`;
+                            break;
+                        case 'resta':
+                            const lcmResta = lcm(currentDenominator, nextFraction.den);
+                            currentNumerator = (currentNumerator * (lcmResta / currentDenominator)) - (nextFraction.num * (lcmResta / nextFraction.den));
+                            currentDenominator = lcmResta;
+                            stepsHtml += `<br>Encontrar MCM(${currentDenominator}, ${nextFraction.den}) = ${lcmResta}.`;
+                            stepsHtml += `<br>Reescribir fracciones: $ \\frac{${fractions[i-1].num} \\times (${lcmResta / fractions[i-1].den})}{${fractions[i-1].den} \\times (${lcmResta / fractions[i-1].den})} $ y $ \\frac{${nextFraction.num} \\times (${lcmResta / nextFraction.den})}{${nextFraction.den} \\times (${lcmResta / nextFraction.den})} $`;
+                            stepsHtml += `<br>Restar numeradores: $ \\frac{${currentNumerator}}{${currentDenominator}} $</li>`;
+                            break;
+                        case 'multiplicacion':
+                            currentNumerator *= nextFraction.num;
+                            currentDenominator *= nextFraction.den;
+                            stepsHtml += `<br>Multiplicar numeradores y denominadores: $ \\frac{${currentNumerator}}{${currentDenominator}} $</li>`;
+                            break;
+                        case 'division':
+                            if (nextFraction.num === 0) {
+                                fraccionResultElement.textContent = 'Error: No se puede dividir por cero.';
+                                fraccionResultElement.className = 'result-message incorrect';
+                                fraccionSteps.style.display = 'none';
+                                return;
+                            }
+                            currentNumerator *= nextFraction.den;
+                            currentDenominator *= nextFraction.num;
+                            stepsHtml += `<br>Voltear y multiplicar: $ \\frac{${fractions[i-1].num}}{${fractions[i-1].den}} \\times \\frac{${nextFraction.den}}{${nextFraction.num}} = \\frac{${currentNumerator}}{${currentDenominator}} $</li>`;
+                            break;
+                    }
+                     // Update currentProblemDisplay for the next step
+                     currentProblemDisplay = formatFractionForDisplay(currentNumerator, currentDenominator);
+                }
+                resultFraction = simplifyFraction(currentNumerator, currentDenominator);
+                stepsHtml += `<li>Simplificar el resultado final: $ \\frac{${currentNumerator}}{${currentDenominator}} = \\frac{${resultFraction.num}}{${resultFraction.den}} $</li>`;
+            }
+
+            fraccionResultElement.textContent = `Resultado: ${formatFractionForDisplay(resultFraction.num, resultFraction.den)}`;
+            fraccionResultElement.className = 'result-message correct';
+            fraccionSteps.innerHTML = stepsHtml + `</ol>`;
+            fraccionSteps.style.display = 'block';
+            fraccionSteps.className = 'info-container';
+        }
+
+        function getOperatorSymbol(operation) {
+            switch(operation) {
+                case 'suma': return '+';
+                case 'resta': return '-';
+                case 'multiplicacion': return '×';
+                case 'division': return '÷';
+                default: return '';
+            }
+        }
+
+        // Clears results when inputs are changed in the fraction section
+        function clearFractionResult() {
+            fraccionResultElement.textContent = '';
+            fraccionResultElement.className = 'result-message';
+            fraccionSteps.textContent = '';
+            fraccionSteps.style.display = 'none';
+        }
+
+        // Clears all inputs and results in the fractions section
+        function clearFractionSection() {
+            document.getElementById('fraccionNumerator').value = '';
+            document.getElementById('fraccionDenominator').value = '';
+            numFractionOperandsInput.value = 2; // Reset to default
+            mixedFractionInputsContainer.innerHTML = '';
+            fraccionResultElement.textContent = '';
+            fraccionResultElement.className = 'result-message';
+            fraccionSteps.textContent = '';
+            fraccionSteps.style.display = 'none';
+            fraccionInfo.style.display = 'none'; // Hide info on clear
+            selectFractionType.value = 'fraccionAMixta'; // Reset type selector
+            selectFractionOperation.value = 'toImproper'; // Reset operation selector
+            toggleFractionSection(); // Re-initialize based on default type
+        }
+
+
+        // --- Initial Setup on Load ---
+        document.addEventListener('DOMContentLoaded', () => {
+            displayOperationInfo(); // Display info for default selected operation (and calls generateOperandInputs)
+            toggleFractionSection(); // Set initial visibility for fraction section
+        });
+    </script>
+</body>
+</html>
