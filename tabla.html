@@ -36,8 +36,13 @@
             --selected-table-bg: #e0f2f7; /* Light blue for selected table */
             --selected-table-border: #007bff;
             --table-option-hover: #e9ecef;
+            --checkbox-checked-bg: #007bff;
+            --checkbox-checked-border: #007bff;
+            --checkbox-label-bg: #f2f4f7;
+            --checkbox-label-border: #e9ecef;
+            --checkbox-label-hover: #e9ecef;
         }
-
+ 
         [data-theme="dark"] {
             /* Dark Mode */
             --bg-color: #212529; /* Dark Gray */
@@ -64,6 +69,11 @@
             --selected-table-bg: #4f5b66; /* Darker blue-gray for selected table */
             --selected-table-border: #ffc107;
             --table-option-hover: #495057;
+            --checkbox-checked-bg: #ffc107;
+            --checkbox-checked-border: #ffc107;
+            --checkbox-label-bg: #495057;
+            --checkbox-label-border: #495057;
+            --checkbox-label-hover: #5a646c;
         }
 
         /* General Styles */
@@ -543,6 +553,80 @@
             padding: 1.2rem;
         }
 
+        /* Styles for multi-select checkboxes */
+        .multi-table-selection {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3 columns for checkboxes */
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background-color: var(--checkbox-label-bg);
+            border: 2px solid var(--checkbox-label-border);
+            border-radius: 10px;
+            padding: 0.7rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .checkbox-item:hover {
+            background-color: var(--checkbox-label-hover);
+            border-color: var(--primary-color);
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--text-color);
+            border-radius: 5px;
+            display: grid;
+            place-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+
+        .checkbox-item input[type="checkbox"]::before {
+            content: "";
+            width: 12px;
+            height: 12px;
+            transform: scale(0);
+            transition: transform .1s ease-in-out;
+            box-shadow: inset 1em 1em var(--checkbox-checked-bg);
+            background-color: CanvasText; /* Fallback for older browsers */
+            clip-path: polygon(14% 44%, 0 65%, 34% 80%, 100% 10%);
+        }
+
+        .checkbox-item input[type="checkbox"]:checked {
+            border-color: var(--checkbox-checked-border);
+            background-color: var(--checkbox-checked-bg);
+        }
+
+        .checkbox-item input[type="checkbox"]:checked::before {
+            transform: scale(1);
+        }
+
+        .checkbox-item label {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             body {
@@ -619,6 +703,9 @@
             .table-selection-area p {
                 font-size: 0.9rem;
             }
+            .checkbox-grid {
+                grid-template-columns: repeat(2, 1fr); /* 2 columns for checkboxes on smaller screens */
+            }
         }
 
         @media (max-width: 480px) {
@@ -635,6 +722,9 @@
             button {
                 padding: 0.8rem 1rem;
                 font-size: 1rem;
+            }
+            .checkbox-grid {
+                grid-template-columns: 1fr; /* 1 column for checkboxes on extra small screens */
             }
         }
     </style>
@@ -654,7 +744,7 @@
         </header>
 
         <div class="form-init" id="formInicio">
-            <h1>Tiene 3 minutos para resolver la evaluación (10 minutos para el modo aleatorio)</h1>
+            <h1>Tiempo de evaluación: 3 minutos para tablas individuales, 10 para modo aleatorio y 4 minutos por tabla seleccionada en modo múltiple.</h1>
             <label for="nombre">Nombre del estudiante:</label>
             <input type="text" id="nombre" placeholder="Ej: Juan Pérez" required autocomplete="name">
             
@@ -687,6 +777,14 @@
                         <button class="table-option-button" data-value="12">Tabla del 12</button>
                     </div>
                 </div>
+
+                <div class="multi-table-selection">
+                    <h2>O selecciona múltiples tablas (aleatorio de las seleccionadas):</h2>
+                    <p>El tiempo se ajustará a 4 minutos por tabla seleccionada.</p>
+                    <div class="checkbox-grid" id="multiTableCheckboxes">
+                        </div>
+                    <button id="iniciarMulti" disabled>Iniciar Evaluación con Tablas Seleccionadas</button>
+                </div>
             </div>
             
             <input type="hidden" id="selected-table-value" value="">
@@ -711,12 +809,16 @@
     </div>
 
     <script>
-        let selectedTable;
+        let selectedTableMode; // 'single', 'random', or 'multi'
+        let selectedTable; // For 'single' mode (e.g., '5')
+        let selectedRandomTables = []; // For 'random' mode (e.g., [2, 7, 10])
+        let selectedMultiTables = []; // For 'multi' mode (e.g., [2, 3, 5])
+
         let errores = [];
         let timerInterval;
         let timeLeft; 
         let evaluationCompleted = false;
-        let selectedRandomTables = []; // Para almacenar las tablas aleatorias seleccionadas
+        let totalQuestions; // To store the total number of questions for dynamic scoring
 
         // Modo Oscuro
         const themeToggle = document.getElementById('themeToggle');
@@ -786,28 +888,81 @@
             timeLeft--;
         }
 
-        // Table Selection Logic
+        // Table Selection Logic for single table / random 3 tables
         document.querySelectorAll('.table-option-button').forEach(button => {
             button.addEventListener('click', () => {
-                // Remove 'selected' class from all buttons
+                // Remove 'selected' class from all single/random buttons
                 document.querySelectorAll('.table-option-button').forEach(btn => {
                     btn.classList.remove('selected');
                 });
+                // Uncheck all multi-select checkboxes
+                document.querySelectorAll('.multi-table-checkbox').forEach(chk => {
+                    chk.checked = false;
+                });
+                selectedMultiTables = []; // Clear multi-selection
 
                 // Add 'selected' class to the clicked button
                 button.classList.add('selected');
                 
-                // Store the selected value in the hidden input
-                document.getElementById('selected-table-value').value = button.dataset.value;
-                document.getElementById('iniciar').disabled = false; // Enable the start button
+                // Store the selected value and mode
+                selectedTable = button.dataset.value;
+                selectedTableMode = (selectedTable === 'random') ? 'random' : 'single';
+
+                document.getElementById('iniciar').disabled = false; // Enable the main start button
+                document.getElementById('iniciarMulti').disabled = true; // Disable multi-select start button
+            });
+        });
+
+        // Generate multi-table checkboxes
+        const multiTableCheckboxesDiv = document.getElementById('multiTableCheckboxes');
+        for (let i = 2; i <= 12; i++) {
+            const checkboxItem = document.createElement('div');
+            checkboxItem.className = 'checkbox-item';
+            checkboxItem.innerHTML = `
+                <input type="checkbox" id="table-${i}" class="multi-table-checkbox" value="${i}">
+                <label for="table-${i}">Tabla del ${i}</label>
+            `;
+            multiTableCheckboxesDiv.appendChild(checkboxItem);
+        }
+
+        // Logic for multi-select checkboxes
+        document.querySelectorAll('.multi-table-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                // Clear single/random selection
+                document.querySelectorAll('.table-option-button').forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+                selectedTable = null; // Clear single selection
+
+                selectedMultiTables = Array.from(document.querySelectorAll('.multi-table-checkbox:checked'))
+                                            .map(chk => parseInt(chk.value));
+
+                if (selectedMultiTables.length > 0) {
+                    selectedTableMode = 'multi';
+                    document.getElementById('iniciarMulti').disabled = false;
+                    document.getElementById('iniciar').disabled = true; // Disable main start button
+                } else {
+                    selectedTableMode = null;
+                    document.getElementById('iniciarMulti').disabled = true;
+                    // Re-enable main start button if no other mode is selected
+                    if (!selectedTable) {
+                         document.getElementById('iniciar').disabled = true;
+                    }
+                }
             });
         });
 
 
-        // Evaluation Logic
         document.getElementById('iniciar').addEventListener('click', () => {
+            handleStartEvaluation();
+        });
+
+        document.getElementById('iniciarMulti').addEventListener('click', () => {
+            handleStartEvaluation();
+        });
+
+        function handleStartEvaluation() {
             const nombre = document.getElementById('nombre').value.trim();
-            selectedTable = document.getElementById('selected-table-value').value; // Get value from hidden input
             
             if(!nombre) {
                 alert('Por favor ingresa tu nombre.');
@@ -815,8 +970,13 @@
                 return;
             }
 
-            if (!selectedTable) {
-                alert('Por favor selecciona un modo de evaluación o una tabla.');
+            if (!selectedTableMode) {
+                alert('Por favor selecciona un modo de evaluación o tablas.');
+                return;
+            }
+
+            if (selectedTableMode === 'multi' && selectedMultiTables.length === 0) {
+                alert('Por favor selecciona al menos una tabla para el modo múltiple.');
                 return;
             }
 
@@ -824,13 +984,31 @@
             document.getElementById('preguntas').classList.remove('hidden');
             
             let tablaDisplay;
-            if (selectedTable === 'random') {
+            let tablesToGenerateQuestions = [];
+
+            if (selectedTableMode === 'random') {
                 tablaDisplay = 'Aleatorio (3 tablas del 2 al 12)';
                 timeLeft = 600; // 10 minutos para el modo aleatorio
-            } else {
+                // Select 3 random distinct tables from 2 to 12
+                const possibleTables = Array.from({length: 11}, (_, i) => i + 2); // Tables from 2 to 12
+                for (let i = 0; i < 3; i++) {
+                    const randomIndex = Math.floor(Math.random() * possibleTables.length);
+                    tablesToGenerateQuestions.push(possibleTables.splice(randomIndex, 1)[0]);
+                }
+                selectedRandomTables = tablesToGenerateQuestions.sort((a,b) => a-b); // Store and sort for PDF
+                totalQuestions = 3 * 12; // 3 tables * 12 questions each
+            } else if (selectedTableMode === 'single') {
                 tablaDisplay = `Tabla del ${selectedTable}`;
                 timeLeft = 180; // 3 minutos para tablas individuales
+                tablesToGenerateQuestions.push(parseInt(selectedTable));
+                totalQuestions = 1 * 12; // 1 table * 12 questions
+            } else if (selectedTableMode === 'multi') {
+                tablaDisplay = `Tablas seleccionadas: ${selectedMultiTables.sort((a,b) => a-b).join(', ')}`;
+                timeLeft = selectedMultiTables.length * 4 * 60; // 4 minutes per selected table
+                tablesToGenerateQuestions = [...selectedMultiTables]; // Use the selected tables
+                totalQuestions = selectedMultiTables.length * 12; // Number of selected tables * 12 questions each
             }
+
             document.getElementById('tabla-seleccionada').textContent = `Evaluando: ${tablaDisplay}`;
 
             evaluationCompleted = false;
@@ -839,54 +1017,50 @@
             timerElement.classList.remove('low-time');
             timerElement.style.color = 'var(--primary-color)'; // Reset timer color
 
-            generarPreguntas(selectedTable);
+            generarPreguntas(tablesToGenerateQuestions);
 
             updateTimer();
             timerInterval = setInterval(updateTimer, 1000);
-        });
+        }
 
-        function generarPreguntas(tabla) {
+        function generarPreguntas(tables) {
             const contenedor = document.getElementById('lista-preguntas');
             contenedor.innerHTML = '';
             
-            let tablesToEvaluate = [];
-            if (tabla === 'random') {
-                // Seleccionar 3 tablas aleatorias distintas del 2 al 12
-                const possibleTables = Array.from({length: 11}, (_, i) => i + 2); // Tablas del 2 al 12
-                for (let i = 0; i < 3; i++) {
-                    const randomIndex = Math.floor(Math.random() * possibleTables.length);
-                    tablesToEvaluate.push(possibleTables.splice(randomIndex, 1)[0]);
-                }
-                selectedRandomTables = tablesToEvaluate.sort((a,b) => a-b); // Guardar y ordenar las tablas aleatorias para el PDF
-            } else {
-                tablesToEvaluate.push(parseInt(tabla));
+            // Collect all questions first
+            let allQuestions = [];
+            tables.forEach(currentTable => {
+                const multipliers = Array.from({length: 12}, (_, i) => i + 1);
+                multipliers.forEach(multiplicador => {
+                    const correctAnswer = currentTable * multiplicador;
+                    allQuestions.push({
+                        factor1: currentTable,
+                        factor2: multiplicador,
+                        correctAnswer: correctAnswer
+                    });
+                });
+            });
+
+            // Shuffle all questions together to make it truly random across selected tables
+            for (let i = allQuestions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [allQuestions[i], allQuestions[j]] = [allQuestions[j], allQuestions[i]];
             }
 
-            tablesToEvaluate.forEach(currentTable => {
-                const multipliers = Array.from({length: 12}, (_, i) => i + 1);
-                // Mezclar los multiplicadores para cada tabla
-                for (let i = multipliers.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [multipliers[i], multipliers[j]] = [multipliers[j], multipliers[i]];
-                }
-
-                multipliers.forEach(multiplicador => {
-                    const preguntaDiv = document.createElement('div');
-                    preguntaDiv.className = 'pregunta';
-                    
-                    const correctAnswer = currentTable * multiplicador;
-
-                    preguntaDiv.innerHTML = `
-                        <span>${currentTable} × ${multiplicador} =</span>
-                        <input type="number" class="respuesta"
-                                data-factor1="${currentTable}"
-                                data-factor2="${multiplicador}"
-                                data-respuesta="${correctAnswer}"
-                                inputmode="numeric" pattern="[0-9]*"
-                                aria-label="Respuesta para ${currentTable} por ${multiplicador}">
-                    `;
-                    contenedor.appendChild(preguntaDiv);
-                });
+            allQuestions.forEach(q => {
+                const preguntaDiv = document.createElement('div');
+                preguntaDiv.className = 'pregunta';
+                
+                preguntaDiv.innerHTML = `
+                    <span>${q.factor1} × ${q.factor2} =</span>
+                    <input type="number" class="respuesta"
+                            data-factor1="${q.factor1}"
+                            data-factor2="${q.factor2}"
+                            data-respuesta="${q.correctAnswer}"
+                            inputmode="numeric" pattern="[0-9]*"
+                            aria-label="Respuesta para ${q.factor1} por ${q.factor2}">
+                `;
+                contenedor.appendChild(preguntaDiv);
             });
         }
 
@@ -939,10 +1113,9 @@
             const resultadoElement = document.getElementById('mensaje-resultado');
             const erroresElement = document.getElementById('errores');
 
-            // Cada tabla tiene 12 preguntas. Si es aleatorio (3 tablas), son 3 x 12 = 36 preguntas.
-            const totalPreguntas = selectedTable === 'random' ? 36 : 12;
-            const scoreOutOf10 = (correctas / totalPreguntas) * 10;
-            resultadoElement.innerHTML = `Correctas: ${correctas}/${totalPreguntas}.<br>Calificación: ${scoreOutOf10.toFixed(1)}/10`;
+            // totalQuestions is already set in handleStartEvaluation based on the mode
+            const scoreOutOf10 = (correctas / totalQuestions) * 10;
+            resultadoElement.innerHTML = `Correctas: ${correctas}/${totalQuestions}.<br>Calificación: ${scoreOutOf10.toFixed(1)}/10`;
 
             if(errores.length > 0) {
                 erroresElement.innerHTML = '<h3>Errores:</h3>';
@@ -982,15 +1155,21 @@
             doc.text(`Nombre del estudiante: ${nombreEstudiante}`, 20, 30);
             
             let tablaEvaluadaPDF;
-            if (selectedTable === 'random') {
+            let totalMinutesForPDF;
+
+            if (selectedTableMode === 'random') {
                 tablaEvaluadaPDF = `Aleatorio (Tablas: ${selectedRandomTables.join(', ')})`;
-            } else {
+                totalMinutesForPDF = '10 minutos';
+            } else if (selectedTableMode === 'single') {
                 tablaEvaluadaPDF = `Tabla del ${selectedTable}`;
+                totalMinutesForPDF = '3 minutos';
+            } else if (selectedTableMode === 'multi') {
+                tablaEvaluadaPDF = `Múltiples Tablas (Seleccionadas: ${selectedMultiTables.sort((a,b) => a-b).join(', ')})`;
+                totalMinutesForPDF = `${selectedMultiTables.length * 4} minutos`;
             }
-            doc.text(`Tabla evaluada: ${tablaEvaluadaPDF}`, 20, 40);
+            doc.text(`Tabla(s) evaluada(s): ${tablaEvaluadaPDF}`, 20, 40);
             
-            const totalMinutesForPDF = selectedTable === 'random' ? '10 minutos' : '3 minutos'; // Actualizado a 10 minutos
-            doc.text(`Duración de la evaluación: ${totalMinutesForPDF}`, 20, 50);
+            doc.text(`Duración estimada de la evaluación: ${totalMinutesForPDF}`, 20, 50);
             doc.text(`Estado del tiempo: ${timeStatus}`, 20, 60);
 
             doc.text(`Calificación: ${finalResultText}`, 20, 70);
@@ -1018,10 +1197,14 @@
 
             const safeStudentName = nombreEstudiante.replace(/[^a-zA-Z0-9_\-]/g, '_').replace(/__+/g, '_');
             let filenameTablePart;
-            if (selectedTable === 'random') {
+            if (selectedTableMode === 'random') {
                 filenameTablePart = 'aleatorio';
-            } else {
+            } else if (selectedTableMode === 'single') {
                 filenameTablePart = `tabla_${selectedTable}`;
+            } else if (selectedTableMode === 'multi') {
+                filenameTablePart = `tablas_multi_${selectedMultiTables.sort((a,b) => a-b).join('_')}`;
+            } else {
+                filenameTablePart = 'evaluacion';
             }
 
             doc.save(`reporte-evaluacion-${safeStudentName}_${filenameTablePart}.pdf`);
