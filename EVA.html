@@ -541,8 +541,6 @@
             border-radius: 0.75rem;
             box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
             transition: border-color 0.3s ease;
-            /* Further restrict iframe capabilities */
-            pointer-events: none; /* Prevents direct interaction with iframe content */
         }
 
         /* "Coming soon" messages */
@@ -899,8 +897,7 @@
         <div class="material-card">
             <h3 class="section-title"><i class="fas fa-book-open"></i> Study Material</h3>
             <iframe id="pdfViewer" class="pdf-viewer" src="" 
-                    frameborder="0" 
-                    sandbox="allow-scripts allow-same-origin"></iframe>
+                    frameborder="0"></iframe>
             <div class="coming-soon-message" id="pdfComingSoon" style="display: none;">
                 <p>Class material will be uploaded to the system very soon. Thank you for your patience!</p>
             </div>
@@ -1188,7 +1185,9 @@
                 modalVideoPlayer.addEventListener('contextmenu', (e) => e.preventDefault());
             }
 
-            // Apply protection to PDF iframe (limited by cross-origin policy)
+            // PDF iframe will now be fully interactive as previous restrictions have been removed.
+            // The following commented lines were for read-only functionality:
+            /*
             const pdfFrame = document.getElementById('pdfViewer');
             if (pdfFrame) {
                 pdfFrame.onload = function() {
@@ -1202,11 +1201,10 @@
                         pdfFrame.contentWindow.document.body.style.msUserSelect = 'none';
                     } catch (e) {
                         console.warn("Could not set full security measures on iframe due to cross-origin policy.", e);
-                        // This warning is normal if the PDF is hosted on a different domain.
-                        // The `sandbox` attribute provides some client-side protection regardless.
                     }
                 };
             }
+            */
         }
         // --- End Core Security Measures ---
 
