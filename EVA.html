@@ -1037,7 +1037,7 @@
 
         // PDF Database with 'level'
         const pdfDB = {
-            'A1': 'https://vadimdez.github.io/ng2-pdf-viewer/assets/pdf-sample.pdf', // Sample PDF
+            'A1': 'https://cenalosnaranjos.github.io/Homework.pdf', // Updated to the provided URL
             'A2': 'https://www.africau.edu/images/default/sample.pdf', // Another sample PDF
             'B1': 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf', // Yet another sample PDF
             'A1_Platform': 'https://www.example.com/a1-activities-platform' // Placeholder for A1 activities platform
@@ -1224,8 +1224,16 @@
                 if (user.role === 'student') {
                     const teacherName = levelTeachers[user.level] || 'N/A';
                     document.getElementById('userLevelInfo').textContent = `Level: ${user.level} | Teacher: ${teacherName}`;
+                    // Show A1 platform section only for A1 students
+                    if (user.level === 'A1') {
+                        document.getElementById('a1PlatformSection').style.display = 'block';
+                    } else {
+                        document.getElementById('a1PlatformSection').style.display = 'none';
+                    }
                 } else if (user.role === 'admin') {
                     document.getElementById('userLevelInfo').textContent = `Role: Admin`;
+                    // Admins might have different access, hide A1 platform for them by default
+                    document.getElementById('a1PlatformSection').style.display = 'none';
                 }
 
                 showContent(user.role);
@@ -1285,26 +1293,7 @@
                 pdfComingSoon.style.display = 'block';
             }
 
-            // Show/hide A1 Platform section based on user level
-            const a1PlatformSection = document.getElementById('a1PlatformSection');
-            if (level === 'A1') {
-                a1PlatformSection.style.display = 'block';
-            } else {
-                a1PlatformSection.style.display = 'none';
-            }
-        }
-
-        function joinMeeting(url) {
-            window.open(url, '_blank', 'noopener,noreferrer');
-        }
-
-        function accessA1Platform() {
-            const platformUrl = pdfDB['A1_Platform']; // Get the URL for the A1 platform
-            if (platformUrl) {
-                window.open(platformUrl, '_blank', 'noopener,noreferrer');
-            } else {
-                alert('A1 Activities Platform URL is not configured.'); // Fallback message
-            }
+            
         }
 
         function logout() {
@@ -1404,7 +1393,7 @@
             videoPlayer.currentTime = 0; 
             videoPlayer.src = ''; 
             modal.style.display = 'none';
-        }
+        } 
 
         // Close modal if user clicks outside of the video content
         window.onclick = function(event) {
@@ -1420,6 +1409,15 @@
             const message = encodeURIComponent('Hello, I need technical assistance with the EVA system. My access code is: [Please provide your access code here].');
             const whatsappUrl = `https://wa.me/+593967879068?text=Deseo%20ayuda%20con%20mi%20codigo`;
             window.open(whatsappUrl, '_blank');
+        }
+
+        // Function to join a virtual meeting
+        function joinMeeting(url) {
+            if (url) {
+                window.open(url, '_blank');
+            } else {
+                alert('Meeting link not available yet.');
+            }
         }
     </script>
 </body>
