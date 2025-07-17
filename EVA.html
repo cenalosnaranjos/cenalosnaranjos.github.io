@@ -268,8 +268,9 @@
 
         .user-info {
             display: flex;
-            align-items: center;
-            gap: 1.2rem;
+            flex-direction: column; /* Changed to column for date positioning */
+            align-items: flex-start;
+            gap: 0.5rem; /* Reduced gap */
         }
 
         .user-avatar {
@@ -285,6 +286,7 @@
             font-size: 1.8rem;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             transition: background-color 0.3s ease, color 0.3s ease;
+            margin-bottom: 0.5rem; /* Space between avatar and name */
         }
 
         .user-details {
@@ -303,6 +305,20 @@
             font-size: 0.95rem;
             color: var(--secondary-color);
         }
+
+        /* Date/Time Display */
+        #currentDateTime, #currentDate {
+            font-size: 1rem;
+            color: var(--secondary-color);
+            margin-top: 1rem; /* Space below button/input */
+            text-align: center;
+            width: 100%;
+        }
+        #currentDate {
+            margin-top: 0; /* No extra margin within user-info */
+            font-size: 0.9rem; /* Slightly smaller for internal display */
+        }
+
 
         /* Section Titles */
         .section-title {
@@ -664,6 +680,10 @@
                 gap: 1rem;
             }
 
+            .user-info {
+                align-items: flex-start; /* Ensure user info aligns left */
+            }
+
             .user-details h2 {
                 font-size: 1.4rem;
             }
@@ -728,6 +748,10 @@
             }
             .video-thumbnail-container img {
                 height: 120px;
+            }
+            #currentDateTime {
+                margin-top: 1rem;
+                font-size: 0.9rem;
             }
         }
 
@@ -827,7 +851,12 @@
                 bottom: 80px; /* Adjust for smaller footer */
                 right: 15px;
             }
-        </style>
+
+            #currentDateTime {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
 </head>
 <body>
     <header class="institutional-header">
@@ -849,6 +878,7 @@
             <i class="fas fa-exclamation-triangle"></i>
             <span id="errorText">Invalid access code</span>
         </div>
+        <span id="currentDateTime"></span>
     </div>
 
     <div class="content-container" id="contentContainer">
@@ -857,9 +887,10 @@
                 <div class="user-avatar" id="userAvatar"></div>
                 <div class="user-details">
                     <h2 id="userName"></h2>
-                    <p id="userLevelInfo"></p> </div>
+                    <p id="userLevelInfo"></p>
+                </div>
             </div>
-            <button onclick="logout()" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            <span id="currentDate"></span> <button onclick="logout()" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
         </div>
 
         <div class="connectivity-section">
@@ -1111,6 +1142,16 @@
 
         let currentUserLevel = null; // To store the logged-in user's level
 
+        // Function to update date and time display
+        function updateDateTime() {
+            const now = new Date();
+            const optionsDateTime = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+            const optionsDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+
+            document.getElementById('currentDateTime').textContent = now.toLocaleDateString('en-US', optionsDateTime);
+            document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', optionsDate);
+        }
+
         // Function to apply the theme
         function applyTheme(theme) {
             const body = document.body;
@@ -1150,6 +1191,10 @@
 
             document.getElementById('inputCode').focus();
             initializeSecurityMeasures(); // Apply all security measures
+            
+            // Set initial date/time and update every second for the login screen
+            updateDateTime();
+            setInterval(updateDateTime, 1000); 
         });
 
         // --- Core Security Measures ---
@@ -1212,25 +1257,6 @@
             }
 
             // PDF iframe will now be fully interactive as previous restrictions have been removed.
-            // The following commented lines were for read-only functionality:
-            /*
-            const pdfFrame = document.getElementById('pdfViewer');
-            if (pdfFrame) {
-                pdfFrame.onload = function() {
-                    try {
-                        // Attempt to disable right-click inside the iframe
-                        pdfFrame.contentWindow.document.addEventListener('contextmenu', (e) => e.preventDefault());
-                        // Attempt to disable text selection inside the iframe
-                        pdfFrame.contentWindow.document.body.style.userSelect = 'none';
-                        pdfFrame.contentWindow.document.body.style.webkitUserSelect = 'none';
-                        pdfFrame.contentWindow.document.body.style.mozUserSelect = 'none';
-                        pdfFrame.contentWindow.document.body.style.msUserSelect = 'none';
-                    } catch (e) {
-                        console.warn("Could not set full security measures on iframe due to cross-origin policy.", e);
-                    }
-                };
-            }
-            */
         }
         // --- End Core Security Measures ---
 
@@ -1273,6 +1299,8 @@
         function showContent(role) {
             document.getElementById('loginContainer').style.display = 'none';
             document.getElementById('contentContainer').style.display = 'flex';
+            document.getElementById('currentDateTime').style.display = 'none'; // Hide date/time on login screen
+            document.getElementById('currentDate').style.display = 'block'; // Show date inside content container
             initializeSecurityMeasures(); // Re-initialize security measures if needed
         }
 
@@ -1345,6 +1373,9 @@
             document.querySelector('#scheduleTable tbody').innerHTML = ''; // Clear schedule
             document.getElementById('videoGallery').innerHTML = ''; // Clear video gallery
             document.getElementById('a1PlatformSection').style.display = 'none'; // Hide A1 platform section
+            
+            document.getElementById('currentDateTime').style.display = 'block'; // Show date/time on login screen again
+            document.getElementById('currentDate').style.display = 'none'; // Hide date from content area
         }
 
         // Video Gallery Functions
