@@ -192,6 +192,7 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
+            margin-top: 15px; /* Added margin for spacing between buttons */
         }
 
         button:hover:not(#themeToggle) { /* Exclude theme toggle button */
@@ -205,10 +206,20 @@
 
         .logout-btn {
             background: var(--accent-color);
+            margin-top: 0; /* Override general button margin for this specific button */
         }
 
         .logout-btn:hover {
             background: #D8931F;
+        }
+
+        .main-site-btn {
+            background: #28a745; /* A distinct color for the main site button */
+            margin-top: 15px;
+        }
+
+        .main-site-btn:hover {
+            background: #218838;
         }
 
         /* Error Messages */
@@ -585,6 +596,7 @@
             background: var(--primary-color);
             color: var(--text-light);
             transition: background 0.3s ease;
+            margin-top: 0; /* Override general button margin */
         }
 
         .pdf-item button:hover {
@@ -966,6 +978,9 @@
         </div>
         
         <button onclick="validateCode()"><i class="fas fa-sign-in-alt"></i> Enter System</button>
+        <button onclick="window.open('https://cenalosnaranjos.github.io/', '_blank')" class="main-site-btn">
+            <i class="fas fa-external-link-alt"></i> Visit Main Site
+        </button>
         
         <div class="error-message" id="errorMessage">
             <i class="fas fa-exclamation-triangle"></i>
@@ -983,7 +998,13 @@
                     <p id="userLevelInfo"></p>
                 </div>
             </div>
-            <span id="currentDate"></span> <button onclick="logout()" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            <div>
+                <span id="currentDate"></span>
+                <button onclick="logout()" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                <button onclick="window.open('https://cenalosnaranjos.github.io/', '_blank')" class="main-site-btn" style="margin-top: 10px;">
+                    <i class="fas fa-external-link-alt"></i> Visit Main Site
+                </button>
+            </div>
         </div>
 
         <div id="teacherDashboard" class="teacher-dashboard-section" style="display: none;">
