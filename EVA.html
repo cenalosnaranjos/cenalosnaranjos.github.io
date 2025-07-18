@@ -550,15 +550,48 @@
         }
 
         /* PDF Viewer */
-        .pdf-viewer {
-            width: 100%;
-            height: 600px;
-            border: 1px solid var(--border-color);
-            border-radius: 0.75rem;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
-            transition: border-color 0.3s ease;
-            margin-bottom: 20px; /* Added spacing between PDF viewers */
+        .pdf-section-content {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
+
+        .pdf-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--background-light);
+            padding: 15px 20px;
+            border-radius: 0.75rem;
+            border: 1px solid var(--border-color);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .pdf-item:hover {
+            background-color: var(--background-white);
+        }
+
+        .pdf-item p {
+            margin: 0;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .pdf-item button {
+            width: auto;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            border-radius: 0.5rem;
+            background: var(--primary-color);
+            color: var(--text-light);
+            transition: background 0.3s ease;
+        }
+
+        .pdf-item button:hover {
+            background: #3A7BBF;
+            transform: none; /* Override general button hover transform */
+        }
+
 
         /* "Coming soon" messages */
         .coming-soon-message {
@@ -594,6 +627,60 @@
             margin: 0 auto; /* Center the button */
         }
 
+        /* Teacher Dashboard Specific Styles */
+        .teacher-dashboard-section {
+            background: var(--background-white);
+            border-radius: 0.75rem;
+            box-shadow: 0 5px 15px var(--shadow-light);
+            padding: 2rem;
+            margin-top: 2rem;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .teacher-dashboard-section h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .teacher-dashboard-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .teacher-dashboard-section ul li {
+            padding: 10px 0;
+            border-bottom: 1px dashed var(--border-color);
+            color: var(--text-dark);
+            font-size: 1rem;
+            display: flex; /* For aligning name and button */
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .teacher-dashboard-section ul li:last-child {
+            border-bottom: none;
+        }
+
+        .teacher-dashboard-section ul li .file-button {
+            width: auto;
+            padding: 5px 10px;
+            font-size: 0.85rem;
+            border-radius: 0.4rem;
+            background: var(--accent-color);
+            color: var(--text-light);
+        }
+
+        .teacher-dashboard-section ul li .file-button:hover {
+            background: #D8931F;
+        }
 
         /* Footer */
         footer {
@@ -815,8 +902,13 @@
                 font-size: 1.2rem;
             }
 
-            .pdf-viewer {
-                height: 400px;
+            .pdf-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            .pdf-item button {
+                width: 100%;
             }
             
             footer {
@@ -893,7 +985,17 @@
             <span id="currentDate"></span> <button onclick="logout()" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
         </div>
 
-        <div class="connectivity-section">
+        <div id="teacherDashboard" class="teacher-dashboard-section" style="display: none;">
+            <h3 class="section-title"><i class="fas fa-users"></i> Students Overview</h3>
+            <div id="studentsList">
+                </div>
+
+            <h3 class="section-title" style="margin-top: 30px;"><i class="fas fa-layer-group"></i> Content Overview by Level</h3>
+            <div id="teacherContentOverview">
+                </div>
+        </div>
+
+        <div class="connectivity-section" id="connectivitySection">
             <h3 class="section-title"><i class="fas fa-calendar-alt"></i> Connectivity - Scheduled Virtual Meeting</h3>
             <table class="schedule-table" id="scheduleTable">
                 <thead>
@@ -914,7 +1016,7 @@
             <a href="https://edpuzzle.com/discover" target="_blank"><button><i class="fas fa-external-link-alt"></i> Go to Platform</button></a>
         </div>
 
-        <div class="material-card">
+        <div class="material-card" id="materialCardVideos">
             <h3 class="section-title"><i class="fas fa-play-circle"></i> Educational Content - Class Recordings</h3>
             <div class="video-controls">
                 <label for="weekSelect">Filter by Week:</label>
@@ -925,17 +1027,17 @@
                 </div>
         </div>
 
-        <div class="material-card">
+        <div class="material-card" id="materialCardStudy">
             <h3 class="section-title"><i class="fas fa-book-open"></i> Study Material</h3>
-            <iframe id="pdfViewer" class="pdf-viewer" src="" 
-                    frameborder="0"></iframe>
+            <div id="pdfMaterialSection" class="pdf-section-content">
+                </div>
             <div class="coming-soon-message" id="pdfComingSoon" style="display: none;">
                 <p>Class material will be uploaded to the system very soon. Thank you for your patience!</p>
             </div>
 
             <h3 class="section-title" style="margin-top: 30px;"><i class="fas fa-file-pdf"></i> Chone Grammar Practice</h3>
-            <iframe id="choneGrammarPdfViewer" class="pdf-viewer" src="Chone_Grammar_Practice.pdf" 
-                    frameborder="0"></iframe>
+            <div id="choneGrammarPdfSection" class="pdf-section-content">
+                </div>
             <div class="coming-soon-message" id="choneGrammarPdfComingSoon" style="display: none;">
                 <p>Chone Grammar Practice PDF will be available soon. Thank you for your patience!</p>
             </div>
@@ -963,16 +1065,26 @@
         // User Authorization Database with 'level' property
         const validUsers = [
             {
-                code: 'DOCENTE2025',
+                code: 'DOCENTEA12025',
                 name: 'Ing. Doménica Valencia',
-                role: 'admin',
-                level: 'N/A' 
+                role: 'teacher', // Changed role to 'teacher'
+                level: ['A1'] // Teacher can manage multiple levels
+            }, {
+                code: 'DOCENTEa22025',
+                name: 'Ing. Valencia',
+                role: 'teacher', // Changed role to 'teacher'
+                level: ['A2'] // Teacher can manage multiple levels
+            }, {
+                code: 'DOCENTEb12025',
+                name: 'Ing. Doménica',
+                role: 'teacher', // Changed role to 'teacher'
+                level: ['B1'] // Teacher can manage multiple levels
             },
             {
                 code: 'KAREN2025',
                 name: 'MOREIRA VÈLEZ KAREN STEFANY',
                 role: 'student',
-                level: 'A1' 
+                level: 'A1'
             },
             {
                 code: 'CAMILA2025',
@@ -986,12 +1098,7 @@
                 role: 'student',
                 level: 'B1'
             },
-            {
-                code: 'JUAN2025',
-                name: 'Juan Perez',
-                role: 'student',
-                level: 'A1'
-            },
+            
             {
                 code: 'FIDEL2025',
                 name: 'FIDEL VALENCIA',
@@ -1032,20 +1139,20 @@
             },
             {
                 id: 'a1_video2',
-                title: 'SOON',
-                thumbnail: 'SOON', // Placeholder thumbnail
-                url: 'SOON', // Placeholder video
+                title: 'A1 - Basic Greetings',
+                thumbnail: 'Welcome%20to%20the%20class%20-%20mini.jpeg', // Placeholder thumbnail
+                url: 'Welcome%20to%20the%20class.mp4', // Placeholder video
                 week: 2,
-                presenter: '',
+                presenter: 'Ing. Doménica Valencia',
                 level: 'A1'
             },
             {
                 id: 'a1_video3',
-                title: 'SOON',
-                thumbnail: 'SOON', // Placeholder thumbnail
-                url: 'SOON', // Placeholder video
-                week: 2,
-                presenter: '',
+                title: 'A1 - Numbers 1-10',
+                thumbnail: 'Welcome%20to%20the%20class%20-%20mini.jpeg', // Placeholder thumbnail
+                url: 'Welcome%20to%20the%20class.mp4', // Placeholder video
+                week: 3,
+                presenter: 'Mgtr. Enny Castro',
                 level: 'A1'
             },
             // A2 Level Videos
@@ -1060,9 +1167,9 @@
             },
             {
                 id: 'a2_video2',
-                title: 'SOOS',
-                thumbnail: 'SOOS', // Placeholder thumbnail
-                url: 'SOOS', // Placeholder video
+                title: 'A2 - Daily Routines',
+                thumbnail: 'Welcome%20to%20the%20class%20-%20mini.jpeg', // Placeholder thumbnail
+                url: 'Welcome%20to%20the%20class.mp4', // Placeholder video
                 week: 3,
                 presenter: 'Ing. Doménica Valencia',
                 level: 'A2'
@@ -1090,57 +1197,58 @@
 
         // PDF Database with 'level'
         const pdfDB = {
-            'A1': 'https://cenalosnaranjos.github.io/Homework.pdf', // Updated to the provided URL
-            'A1_Grammar': 'Chone_Grammar_Practice.pdf', // New PDF for A1 Grammar Practice
-            'A2': 'https://www.africau.edu/images/default/sample.pdf', // Another sample PDF
-            'B1': 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf', // Yet another sample PDF
-            'A1_Platform': 'https://www.example.com/a1-activities-platform' // Placeholder for A1 activities platform
+            'A1': { name: 'Level A1 Study Guide', url: 'Homework.pdf' },
+            'A1_Grammar': { name: 'Chone Grammar Practice', url: 'Chone_Grammar_Practice.pdf' },
+            'A2': { name: 'Level A2 Study Guide', url: 'sample.pdf' },
+            'B1': { name: 'Level B1 Study Guide', url: 'dummy.pdf' },
+            'A1_Platform': { name: 'A1 Activities Platform', url: 'https://edpuzzle.com/discover' }
         };
 
         // Scheduled meetings database with 'level'
         const scheduleDB = [
             // A1 Level Meetings
             {
-                date: '2025',
-                time: '',
-                url: '',
+                date: 'July 25, 2025',
+                time: '10:00 AM',
+                url: 'https://meet.google.com/xyz-abc-def',
                 level: 'A1'
             },
             {
-                date: '2025',
-                time: '',
-                url: '',
+                date: 'August 1, 2025',
+                time: '10:00 AM',
+                url: 'https://meet.google.com/ghi-jkl-mno',
                 level: 'A1'
             },
             // A2 Level Meetings
             {
-                date: '2025',
-                time: '',
-                url: '',
+                date: 'July 26, 2025',
+                time: '02:00 PM',
+                url: 'https://meet.google.com/pqr-stu-vwx',
                 level: 'A2'
             },
             {
-                date: '2025',
-                time: '',
-                url: '',
+                date: 'August 2, 2025',
+                time: '02:00 PM',
+                url: 'https://meet.google.com/yza-bcd-efg',
                 level: 'A2'
             },
             // B1 Level Meetings
             {
-                date: '2025',
-                time: '',
-                url: '',
+                date: 'July 27, 2025',
+                time: '04:00 PM',
+                url: 'https://meet.google.com/hij-klm-nop',
                 level: 'B1'
             },
             {
-                date: '2025',
-                time: '',
-                url: '',
+                date: 'August 3, 2025',
+                time: '04:00 PM',
+                url: 'https://meet.google.com/qrs-tuv-wxy',
                 level: 'B1'
             }
         ];
 
         let currentUserLevel = null; // To store the logged-in user's level
+        let currentUserRole = null; // To store the logged-in user's role
 
         // Function to update date and time display
         function updateDateTime() {
@@ -1267,6 +1375,7 @@
 
             if (user) {
                 currentUserLevel = user.level; // Set the current user's level
+                currentUserRole = user.role; // Set the current user's role
 
                 document.getElementById('userName').textContent = user.name;
                 document.getElementById('userAvatar').textContent = user.name[0].toUpperCase();
@@ -1280,15 +1389,24 @@
                     } else {
                         document.getElementById('a1PlatformSection').style.display = 'none';
                     }
-                } else if (user.role === 'admin') {
-                    document.getElementById('userLevelInfo').textContent = `Role: Admin`;
-                    // Admins might have different access, hide A1 platform for them by default
+                    showStudentContent(); // Show student-specific content
+                    loadLevelContent(currentUserLevel); // Load content specific to the user's level
+                } else if (user.role === 'teacher') {
+                    document.getElementById('userLevelInfo').textContent = `Role: Teacher`;
+                    // Hide student-specific sections for teachers
                     document.getElementById('a1PlatformSection').style.display = 'none';
+                    document.getElementById('connectivitySection').style.display = 'none';
+                    document.getElementById('materialCardVideos').style.display = 'none';
+                    document.getElementById('materialCardStudy').style.display = 'none';
+                    showTeacherContent(user); // Call function to display teacher-specific content
                 }
 
-                showContent(user.role);
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('contentContainer').style.display = 'flex';
+                document.getElementById('currentDateTime').style.display = 'none'; // Hide date/time on login screen
+                document.getElementById('currentDate').style.display = 'block'; // Show date inside content container
                 errorElement.style.display = 'none';
-                loadLevelContent(currentUserLevel); // Load content specific to the user's level
+                initializeSecurityMeasures(); // Re-initialize security measures if needed
             } else {
                 errorElement.style.display = 'flex';
                 document.getElementById('errorText').textContent = 
@@ -1296,12 +1414,69 @@
             }
         }
 
-        function showContent(role) {
-            document.getElementById('loginContainer').style.display = 'none';
-            document.getElementById('contentContainer').style.display = 'flex';
-            document.getElementById('currentDateTime').style.display = 'none'; // Hide date/time on login screen
-            document.getElementById('currentDate').style.display = 'block'; // Show date inside content container
-            initializeSecurityMeasures(); // Re-initialize security measures if needed
+        function showStudentContent() {
+            // Show student-specific sections
+            document.getElementById('connectivitySection').style.display = 'block';
+            document.getElementById('materialCardVideos').style.display = 'block';
+            document.getElementById('materialCardStudy').style.display = 'block';
+            document.getElementById('teacherDashboard').style.display = 'none'; // Hide teacher dashboard
+        }
+
+        function showTeacherContent(teacherUser) {
+            // Show teacher-specific sections
+            document.getElementById('teacherDashboard').style.display = 'block';
+            
+            // Populate Students List
+            const studentsListDiv = document.getElementById('studentsList');
+            studentsListDiv.innerHTML = ''; // Clear previous content
+            let studentsHtml = '<ul>';
+            validUsers.forEach(student => {
+                // Check if the student's level is among the levels this teacher teaches
+                if (student.role === 'student' && teacherUser.level.includes(student.level)) {
+                    studentsHtml += `<li>${student.name} (Code: ${student.code}) - Level: ${student.level}</li>`;
+                }
+            });
+            studentsHtml += '</ul>';
+            studentsListDiv.innerHTML = studentsHtml;
+
+            // Populate Content Overview by Level
+            const teacherContentOverviewDiv = document.getElementById('teacherContentOverview');
+            teacherContentOverviewDiv.innerHTML = ''; // Clear previous content
+            
+            teacherUser.level.forEach(level => {
+                let levelContentHtml = `<h4>Level ${level} Videos:</h4><ul>`;
+                const videosForLevel = videoDB.filter(video => video.level === level);
+                if (videosForLevel.length > 0) {
+                    videosForLevel.forEach(video => {
+                        levelContentHtml += `<li>${video.title} (Week: ${video.week}, Presenter: ${video.presenter})</li>`;
+                    });
+                } else {
+                    levelContentHtml += `<li>No videos available for Level ${level} yet.</li>`;
+                }
+                levelContentHtml += '</ul>';
+
+                levelContentHtml += `<h4>Level ${level} Study Material:</h4><ul>`;
+                const pdfData = pdfDB[level];
+                if (pdfData && pdfData.url) {
+                    levelContentHtml += `<li>
+                                            <span>${pdfData.name}</span>
+                                            <button class="file-button" onclick="window.open('${pdfData.url}', '_blank')">Access <i class="fas fa-external-link-alt"></i></button>
+                                          </li>`;
+                } else {
+                    levelContentHtml += `<li>No main PDF available for Level ${level} yet.</li>`;
+                }
+                // Specific A1 Grammar PDF
+                const choneGrammarPdfData = pdfDB['A1_Grammar'];
+                if (level === 'A1' && choneGrammarPdfData && choneGrammarPdfData.url) {
+                    levelContentHtml += `<li>
+                                            <span>${choneGrammarPdfData.name} (A1)</span>
+                                            <button class="file-button" onclick="window.open('${choneGrammarPdfData.url}', '_blank')">Access <i class="fas fa-external-link-alt"></i></button>
+                                          </li>`;
+                }
+                levelContentHtml += '</ul>';
+
+                teacherContentOverviewDiv.innerHTML += levelContentHtml;
+            });
         }
 
         function loadLevelContent(level) {
@@ -1327,36 +1502,44 @@
             }
 
             // Populate week filter and videos for the level
-            populateWeekFilter(level); 
-            filterVideosByWeek(level); // Load videos for the initial week (e.g., 'All' or first week) for the specific level
+            populateWeekFilter(level);
+            filterVideosByWeek(); // Load videos for the initial week (e.g., 'All' or first week) for the specific level
 
-            // Load PDF for the level
-            const pdfViewer = document.getElementById('pdfViewer');
+            // Load PDF for the level (buttons instead of iframe)
+            const pdfMaterialSection = document.getElementById('pdfMaterialSection');
             const pdfComingSoon = document.getElementById('pdfComingSoon');
-            const pdfUrl = pdfDB[level];
+            const pdfData = pdfDB[level];
+            pdfMaterialSection.innerHTML = ''; // Clear previous content
 
-            if (pdfUrl) {
-                pdfViewer.src = pdfUrl;
-                pdfViewer.style.display = 'block';
+            if (pdfData && pdfData.url) {
+                const pdfItem = document.createElement('div');
+                pdfItem.classList.add('pdf-item');
+                pdfItem.innerHTML = `
+                    <p>${pdfData.name}</p>
+                    <button onclick="window.open('${pdfData.url}', '_blank')">Access <i class="fas fa-external-link-alt"></i></button>
+                `;
+                pdfMaterialSection.appendChild(pdfItem);
                 pdfComingSoon.style.display = 'none';
             } else {
-                pdfViewer.src = ''; // Clear source
-                pdfViewer.style.display = 'none';
                 pdfComingSoon.style.display = 'block';
             }
 
-            // Load new PDF for Chone Grammar Practice (only for A1 level)
-            const choneGrammarPdfViewer = document.getElementById('choneGrammarPdfViewer');
+            // Load new PDF for Chone Grammar Practice (only for A1 level - buttons instead of iframe)
+            const choneGrammarPdfSection = document.getElementById('choneGrammarPdfSection');
             const choneGrammarPdfComingSoon = document.getElementById('choneGrammarPdfComingSoon');
-            const choneGrammarPdfUrl = pdfDB['A1_Grammar']; // Always load this specific PDF if available
+            const choneGrammarPdfData = pdfDB['A1_Grammar'];
+            choneGrammarPdfSection.innerHTML = ''; // Clear previous content
 
-            if (level === 'A1' && choneGrammarPdfUrl) {
-                choneGrammarPdfViewer.src = choneGrammarPdfUrl;
-                choneGrammarPdfViewer.style.display = 'block';
+            if (level === 'A1' && choneGrammarPdfData && choneGrammarPdfData.url) {
+                const pdfItem = document.createElement('div');
+                pdfItem.classList.add('pdf-item');
+                pdfItem.innerHTML = `
+                    <p>${choneGrammarPdfData.name}</p>
+                    <button onclick="window.open('${choneGrammarPdfData.url}', '_blank')">Access <i class="fas fa-external-link-alt"></i></button>
+                `;
+                choneGrammarPdfSection.appendChild(pdfItem);
                 choneGrammarPdfComingSoon.style.display = 'none';
             } else {
-                choneGrammarPdfViewer.src = ''; // Clear source
-                choneGrammarPdfViewer.style.display = 'none';
                 choneGrammarPdfComingSoon.style.display = 'block';
             }
         }
@@ -1368,12 +1551,23 @@
             document.getElementById('errorMessage').style.display = 'none';
             closeVideoModal(); // Close any open video modal on logout
             currentUserLevel = null; // Clear the current user's level
-            document.getElementById('pdfViewer').src = ''; // Clear PDF viewer
-            document.getElementById('choneGrammarPdfViewer').src = ''; // Clear new PDF viewer
-            document.querySelector('#scheduleTable tbody').innerHTML = ''; // Clear schedule
-            document.getElementById('videoGallery').innerHTML = ''; // Clear video gallery
-            document.getElementById('a1PlatformSection').style.display = 'none'; // Hide A1 platform section
+            currentUserRole = null; // Clear the current user's role
+
+            // Clear and hide student-specific sections
+            document.getElementById('pdfMaterialSection').innerHTML = ''; // Clear PDF buttons
+            document.getElementById('choneGrammarPdfSection').innerHTML = ''; // Clear PDF buttons
+            document.querySelector('#scheduleTable tbody').innerHTML = '';
+            document.getElementById('videoGallery').innerHTML = '';
+            document.getElementById('a1PlatformSection').style.display = 'none';
+            document.getElementById('connectivitySection').style.display = 'block'; // Ensure these are visible again for student login
+            document.getElementById('materialCardVideos').style.display = 'block';
+            document.getElementById('materialCardStudy').style.display = 'block';
             
+            // Hide teacher dashboard
+            document.getElementById('teacherDashboard').style.display = 'none';
+            document.getElementById('studentsList').innerHTML = '';
+            document.getElementById('teacherContentOverview').innerHTML = '';
+
             document.getElementById('currentDateTime').style.display = 'block'; // Show date/time on login screen again
             document.getElementById('currentDate').style.display = 'none'; // Hide date from content area
         }
@@ -1430,7 +1624,7 @@
 
                 const presenterSpan = document.createElement('span');
                 presenterSpan.classList.add('presenter-name');
-                presenterSpan.textContent = video.presenter ? `By ${video.presenter}` : ''; 
+                presenterSpan.textContent = video.presenter ? `By ${video.presenter}` : '';
 
                 thumbnailContainer.appendChild(img);
                 thumbnailContainer.appendChild(titleParagraph);
@@ -1462,7 +1656,7 @@
             videoPlayer.currentTime = 0; 
             videoPlayer.src = ''; 
             modal.style.display = 'none';
-        } 
+        }
 
         // Close modal if user clicks outside of the video content
         window.onclick = function(event) {
