@@ -745,6 +745,74 @@
             transform: translateY(0);
         }
 
+        /* Floating WhatsApp Container and Button */
+        .whatsapp-fixed-container {
+            position: fixed;
+            bottom: 100px; /* Aligned with help button */
+            left: 20px; /* Positioned on the left */
+            display: flex;
+            align-items: center; /* Vertically align items */
+            gap: 10px; /* Space between message and button */
+            z-index: 1001;
+        }
+
+        #whatsappButton {
+            background: #25D366; /* WhatsApp green */
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            /* Override general button styles for a round button */
+            margin-top: 0;
+            width: 60px; /* Fixed width */
+            height: 60px; /* Fixed height */
+            padding: 0; /* Remove padding */
+        }
+
+        #whatsappButton:hover {
+            background: #1DA851; /* Darker green on hover */
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        #whatsappButton:active {
+            transform: translateY(0);
+        }
+
+        /* Fixed Message Bubble for WhatsApp Button */
+        .whatsapp-message-bubble {
+            background-color: #333; /* Dark background for message */
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 0.85rem;
+            white-space: nowrap; /* Prevent text wrapping */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            position: relative; /* For the triangle pointer */
+        }
+
+        .whatsapp-message-bubble::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -5px; /* Position the triangle on the right */
+            transform: translateY(-50%) rotate(45deg); /* Rotate for triangle shape */
+            width: 10px;
+            height: 10px;
+            background-color: #333;
+            box-shadow: 2px -2px 5px rgba(0, 0, 0, 0.2); /* Shadow for the triangle */
+            z-index: -1; /* Behind the bubble content */
+        }
+
+
         /* Animations */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-10px); }
@@ -852,6 +920,29 @@
                 margin-top: 1rem;
                 font-size: 0.9rem;
             }
+
+            .whatsapp-fixed-container {
+                bottom: 100px;
+                left: 15px;
+                flex-direction: column-reverse; /* Put button on top, message below */
+                align-items: flex-start; /* Align message to the left */
+                gap: 5px;
+            }
+
+            .whatsapp-message-bubble {
+                margin-left: 0; /* Remove left margin */
+                margin-bottom: 5px; /* Add margin above button */
+                white-space: normal; /* Allow text to wrap on small screens */
+                width: 150px; /* Limit width */
+                text-align: center;
+            }
+            .whatsapp-message-bubble::after {
+                top: auto;
+                bottom: -5px; /* Position triangle at the bottom */
+                left: 50%;
+                right: auto;
+                transform: translateX(-50%) rotate(45deg); /* Center triangle horizontally */
+            }
         }
 
         @media (max-width: 480px) {
@@ -954,6 +1045,21 @@
                 font-size: 1.5rem;
                 bottom: 80px; /* Adjust for smaller footer */
                 right: 15px;
+            }
+
+            .whatsapp-fixed-container {
+                bottom: 80px; /* Adjust for smaller footer */
+                left: 15px;
+            }
+            #whatsappButton {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+
+            .whatsapp-message-bubble {
+                width: 120px; /* Smaller width for very small screens */
+                font-size: 0.75rem;
             }
 
             #currentDateTime {
@@ -1076,6 +1182,13 @@
     <button id="helpButton" onclick="openHelpChat()">
         <i class="fas fa-headset"></i>
     </button>
+
+    <div class="whatsapp-fixed-container">
+        <span class="whatsapp-message-bubble">Habilitado para chatear con la docente</span>
+        <button id="whatsappButton" onclick="openWhatsAppChat()">
+            <i class="fab fa-whatsapp"></i>
+        </button>
+    </div>
 
     <footer>
         <strong>
@@ -1693,6 +1806,14 @@
             const phoneNumber = '593994183892'; // Replace with the actual phone number for technical support
             const message = encodeURIComponent('Hello, I need technical assistance with the EVA system. My access code is: [Please provide your access code here].');
             const whatsappUrl = `https://wa.me/+593967879068?text=Deseo%20ayuda%20con%20mi%20codigo`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // Function to open WhatsApp chat for doubts or homework
+        function openWhatsAppChat() {
+            const phoneNumber = '593979700558'; 
+            const message = encodeURIComponent('Hola, tengo una duda o una tarea y quisiera chatear con la docente.');
+            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
             window.open(whatsappUrl, '_blank');
         }
 
