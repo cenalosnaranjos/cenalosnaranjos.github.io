@@ -750,7 +750,7 @@
             position: fixed;
             bottom: 100px; /* Aligned with help button */
             left: 20px; /* Positioned on the left */
-            display: flex;
+            display: none; /* Hidden by default */
             align-items: center; /* Vertically align items */
             gap: 10px; /* Space between message and button */
             z-index: 1001;
@@ -1260,6 +1260,18 @@
             'B1': 'Ing. Doménica Valencia'
         };
 
+        // WhatsApp numbers based on user level/role
+        const whatsappNumbers = {
+            'A1': '593979700558', // Número de WhatsApp para nivel A1 (estudiante)
+            'A2': '593979700559', // Número de WhatsApp para nivel A2 (estudiante) - Ejemplo
+            'B1': '593979700560', // Número de WhatsApp para nivel B1 (estudiante) - Ejemplo
+            'teacher': '593994183892' // Número de WhatsApp general para docentes
+        };
+
+        let currentUserLevel = null; // To store the logged-in user's level
+        let currentUserRole = null; // To store the logged-in user's role
+        let currentUserWhatsappNumber = null; // To store the specific WhatsApp number for the logged-in user
+
         // Video Database with 'week' property and 'presenter', now with 'level'
         const videoDB = [
             // A1 Level Videos
@@ -1381,9 +1393,6 @@
                 level: 'B1'
             }
         ];
-
-        let currentUserLevel = null; // To store the logged-in user's level
-        let currentUserRole = null; // To store the logged-in user's role
 
         // Function to update date and time display
         function updateDateTime() {
@@ -1507,10 +1516,27 @@
             const input = document.getElementById('inputCode').value.trim().toUpperCase();
             const errorElement = document.getElementById('errorMessage');
             const user = validUsers.find(u => u.code === input);
+            const whatsappContainer = document.querySelector('.whatsapp-fixed-container');
 
             if (user) {
                 currentUserLevel = user.level; // Set the current user's level
                 currentUserRole = user.role; // Set the current user's role
+
+                // Determine WhatsApp number based on role/level
+                if (user.role === 'teacher') {
+                    currentUserWhatsappNumber = whatsappNumbers['teacher'];
+                } else if (user.role === 'student' && whatsappNumbers[user.level]) {
+                    currentUserWhatsappNumber = whatsappNumbers[user.level];
+                } else {
+                    currentUserWhatsappNumber = null; // No specific WhatsApp for this user
+                }
+
+                // Show WhatsApp button if a number is assigned
+                if (currentUserWhatsappNumber) {
+                    whatsappContainer.style.display = 'flex';
+                } else {
+                    whatsappContainer.style.display = 'none';
+                }
 
                 document.getElementById('userName').textContent = user.name;
                 document.getElementById('userAvatar').textContent = user.name[0].toUpperCase();
@@ -1546,6 +1572,7 @@
                 errorElement.style.display = 'flex';
                 document.getElementById('errorText').textContent = 
                     input.length > 0 ? 'Access Restricted: Invalid Code.' : 'Please enter an access code.';
+                whatsappContainer.style.display = 'none'; // Ensure WhatsApp button is hidden on login failure
             }
         }
 
@@ -1687,6 +1714,8 @@
             closeVideoModal(); // Close any open video modal on logout
             currentUserLevel = null; // Clear the current user's level
             currentUserRole = null; // Clear the current user's role
+            currentUserWhatsappNumber = null; // Clear the WhatsApp number
+            document.querySelector('.whatsapp-fixed-container').style.display = 'none'; // Hide WhatsApp button on logout
 
             // Clear and hide student-specific sections
             document.getElementById('pdfMaterialSection').innerHTML = ''; // Clear PDF buttons
@@ -1811,10 +1840,13 @@
 
         // Function to open WhatsApp chat for doubts or homework
         function openWhatsAppChat() {
-            const phoneNumber = '593979700558'; 
-            const message = encodeURIComponent('Hola, tengo una duda o una tarea y quisiera chatear con la docente.');
-            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
-            window.open(whatsappUrl, '_blank');
+            if (currentUserWhatsappNumber) {
+                const message = encodeURIComponent('Hola, tengo una duda o una tarea y quisiera chatear con la docente.');
+                const whatsappUrl = `https://wa.me/${currentUserWhatsappNumber}?text=${message}`;
+                window.open(whatsappUrl, '_blank');
+            } else {
+                alert('No hay un número de WhatsApp disponible para tu perfil en este momento.');
+            }
         }
 
         // Function to join a virtual meeting
