@@ -1098,6 +1098,90 @@
                 font-size: 1.2rem;
             }
 
+            /* diagnostic-button.css */
+/* Estilos para la tarjeta de la plataforma */
+.platform-card {
+    background: var(--background-white);
+    border-radius: 0.75rem;
+    box-shadow: 0 5px 15px var(--shadow-light);
+    padding: 2rem;
+    margin-top: 2rem;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    text-align: center; /* Centra el contenido dentro de la tarjeta */
+}
+
+/* Estilos para el título de la sección dentro de la tarjeta */
+.platform-card .section-title {
+    margin-bottom: 1.5rem;
+    justify-content: center; /* Centra el título y el icono */
+}
+
+/* Estilos para el botón dentro de la tarjeta */
+.platform-card button {
+    max-width: 300px; /* Limita el ancho del botón */
+    margin: 0 auto; /* Centra el botón horizontalmente */
+    width: 100%; /* Asegura que ocupe el ancho máximo permitido */
+    padding: 1.2rem;
+    background: var(--primary-color); /* Color de fondo del botón */
+    color: var(--text-light); /* Color del texto del botón */
+    border: none;
+    border-radius: 0.75rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    letter-spacing: 0.5px;
+    display: flex; /* Para centrar el icono y el texto */
+    align-items: center;
+    justify-content: center;
+    gap: 10px; /* Espacio entre el icono y el texto */
+}
+
+/* Efecto hover para el botón */
+.platform-card button:hover {
+    background: #3A7BBF; /* Color de fondo más oscuro al pasar el ratón */
+    transform: translateY(-2px); /* Ligero desplazamiento hacia arriba */
+}
+
+/* Estilos para el párrafo descriptivo */
+.platform-card p {
+    margin-bottom: 20px;
+    color: var(--secondary-color);
+}
+
+/* Icono dentro del botón */
+.platform-card button i {
+    margin-right: 5px; /* Espacio entre el icono y el texto */
+}
+
+/* Media Queries para adaptabilidad (opcional, si necesitas que el botón sea responsivo) */
+@media (max-width: 768px) {
+    .platform-card {
+        padding: 1.5rem;
+    }
+    .platform-card button {
+        font-size: 1rem;
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .platform-card {
+        padding: 1rem;
+        margin: 1rem auto;
+    }
+    .platform-card button {
+        font-size: 0.9rem;
+        padding: 0.9rem;
+    }
+    .platform-card .section-title {
+        font-size: 1.2rem;
+    }
+    .platform-card p {
+        font-size: 0.9rem;
+    }
+}
+
             .schedule-table td {
                 padding: 0.8rem 1rem;
                 padding-left: 45%;
@@ -1268,6 +1352,13 @@
             <a href="https://edpuzzle.com/discover" target="_blank"><button><i class="fas fa-external-link-alt"></i> Go to Platform</button></a>
         </div>
 
+       <div class="platform-card" id="diagnosticFormSection">
+    <h3 class="section-title"><i class="fas fa-clipboard-list"></i> Diagnostic Platform</h3>
+    <p style="margin-bottom: 20px; color: var(--secondary-color);">Access the diagnostic platform to evaluate your progress.</p>
+    <a href="https://forms.gle/8GfAPaENDZJ58irW8" target="_blank">
+        <button><i class="fas fa-external-link-alt"></i> Go to Diagnostic Platform</button>
+    </a>
+</div>
         <div class="material-card" id="materialCardVideos">
             <h3 class="section-title"><i class="fas fa-play-circle"></i> Educational Content - Class Recordings</h3>
             <div class="video-controls">
@@ -1342,8 +1433,7 @@
 
     <footer>
         <strong>
-        <p>© 2025 "Los Naranjos" Academic Specialties and Tutoring Center</p>
-        <p>Contact: "cnalosnaranjos@gmail.com" | Phone: (593) 99 418 3892</p></strong>
+        <p>© 2025 Center for Specialties and Academic Tutoring "Los Naranjos"</p></strong>
     </footer>
 
     <script>
