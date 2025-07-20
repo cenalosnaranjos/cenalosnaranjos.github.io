@@ -222,6 +222,18 @@
             background: #218838;
         }
 
+        .help-button-inside-content {
+            background: #4A90E2; /* Primary color */
+            margin-top: 10px; /* Adjust spacing as needed */
+            max-width: 200px; /* Adjust width as needed */
+            margin-left: auto; /* Push to the right within its flex container */
+            margin-right: auto;
+        }
+
+        .help-button-inside-content:hover {
+            background: #3A7BBF;
+        }
+
         /* Error Messages */
         .error-message {
             background: #FEF2F2;
@@ -812,6 +824,92 @@
             z-index: -1; /* Behind the bubble content */
         }
 
+        /* General Modal Styles (for Help Modal) */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 2000; /* Sit on top of other content, higher than video modal */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.7); /* Black w/ opacity */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--background-white);
+            margin: auto;
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            width: 90%;
+            max-width: 600px;
+            border-radius: 1rem;
+            box-shadow: 0 5px 15px var(--shadow-medium);
+            position: relative;
+            animation-name: fadeIn;
+            animation-duration: 0.4s;
+            transition: background-color 0.3s ease;
+        }
+
+        .modal-content .close-button {
+            color: var(--secondary-color);
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            font-size: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .modal-content .close-button:hover,
+        .modal-content .close-button:focus {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .modal-content .modal-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+            transition: border-color 0.3s ease;
+        }
+
+        .modal-content .modal-header img {
+            max-width: 80px;
+            height: auto;
+            margin-bottom: 10px;
+            border-radius: 50%;
+        }
+
+        .modal-content .modal-header h2 {
+            font-size: 1.6rem;
+            color: var(--primary-color);
+            text-align: center;
+            transition: color 0.3s ease;
+        }
+
+        .modal-content .modal-body {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-dark);
+        }
+
+        .modal-content .modal-body ul {
+            list-style: disc;
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .modal-content .modal-body ul li {
+            margin-bottom: 8px;
+        }
 
         /* Animations */
         @keyframes fadeIn {
@@ -943,6 +1041,19 @@
                 right: auto;
                 transform: translateX(-50%) rotate(45deg); /* Center triangle horizontally */
             }
+
+            .modal-content {
+                padding: 20px;
+            }
+            .modal-content .modal-header h2 {
+                font-size: 1.4rem;
+            }
+            .modal-content .modal-body {
+                font-size: 0.95rem;
+            }
+            .help-button-inside-content {
+                max-width: 100%; /* Allow button to take full width */
+            }
         }
 
         @media (max-width: 480px) {
@@ -1065,6 +1176,13 @@
             #currentDateTime {
                 font-size: 0.8rem;
             }
+
+            .modal-content .modal-header h2 {
+                font-size: 1.2rem;
+            }
+            .modal-content .modal-body {
+                font-size: 0.85rem;
+            }
         }
     </style>
 </head>
@@ -1087,6 +1205,9 @@
         <button onclick="window.open('https://cenalosnaranjos.github.io/', '_blank')" class="main-site-btn">
             <i class="fas fa-external-link-alt"></i> Visit Main Site
         </button>
+        <button id="loginHelpButton" onclick="openHelpModal()">
+            <i class="fas fa-question-circle"></i> How to use the system?
+        </button>
         
         <div class="error-message" id="errorMessage">
             <i class="fas fa-exclamation-triangle"></i>
@@ -1105,10 +1226,13 @@
                 </div>
             </div>
             <div>
-                <span id="currentDate"></span>
+                <strong><span id="currentDate"></span></strong>
                 <button onclick="logout()" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
                 <button onclick="window.open('https://cenalosnaranjos.github.io/', '_blank')" class="main-site-btn" style="margin-top: 10px;">
                     <i class="fas fa-external-link-alt"></i> Visit Main Site
+                </button>
+                <button onclick="openHelpModal()" class="help-button-inside-content">
+                    <i class="fas fa-question-circle"></i> How to use the system?
                 </button>
             </div>
         </div>
@@ -1176,6 +1300,32 @@
         <div class="video-modal-content">
             <span class="close-button" onclick="closeVideoModal()">&times;</span>
             <video id="modalVideoPlayer" controls controlsList="nodownload" disablePictureInPicture></video>
+        </div>
+    </div>
+
+    <div id="helpModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeHelpModal()">&times;</span>
+            <div class="modal-header">
+                <img src="icono.png" alt="Institutional Logo" class="institutional-logo">
+                <h2>CETA "Los Naranjos"</h2>
+            </div>
+            <div class="modal-body">
+                <p>Welcome to the EVA System! Here's how to use it:</p>
+                <ul>
+                    <li><strong>Access:</strong> Enter your unique access code on the login screen.</li>
+                    <li><strong>Personalized Content:</strong> Once inside, you'll see content tailored to your level.</li>
+                    <li><strong>Connectivity:</strong> Find scheduled virtual meetings with direct links.</li>
+                    <li><strong>Class Recordings:</strong> Watch past class recordings, filtered by week.</li>
+                    <li><strong>Study Material:</strong> Access PDFs for your study and practice.</li>
+                    <li><strong>Activities Platform (A1):</strong> If you are an A1 student, access additional interactive activities.</li>
+                    <li><strong>Teacher Dashboard (Teachers):</strong> If you are a teacher, view student lists and content overview by level.</li>
+                    <li><strong>Logout:</strong> Use the "Logout" button to exit the system.</li>
+                    <li><strong>WhatsApp Support:</strong> Click the WhatsApp button to chat directly with your teacher for doubts.</li>
+                    <li><strong>Technical Help:</strong> Use the headset button for technical assistance.</li>
+                </ul>
+                <p>If you have any further questions, please contact our support team.</p>
+            </div>
         </div>
     </div>
 
@@ -1432,6 +1582,39 @@
             }
         }
 
+        // Function to request location permission
+        function requestLocationPermission() {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        console.log("Location granted. Latitude: " + position.coords.latitude + ", Longitude: " + position.coords.longitude);
+                        // You can now use position.coords.latitude and position.coords.longitude
+                        // For example, send them to a server or display them.
+                    },
+                    function(error) {
+                        // Handle errors here
+                        switch(error.code) {
+                            case error.PERMISSION_DENIED:
+                                console.log("Location permission denied by the user.");
+                                break;
+                            case error.POSITION_UNAVAILABLE:
+                                console.log("Location information is unavailable.");
+                                break;
+                            case error.TIMEOUT:
+                                console.log("The request to get user location timed out.");
+                                break;
+                            case error.UNKNOWN_ERROR:
+                                console.log("An unknown error occurred.");
+                                break;
+                        }
+                    }
+                );
+            } else {
+                console.log("Geolocation is not supported by this browser.");
+            }
+        }
+
+
         // On page load, apply saved theme or dark mode by default
         document.addEventListener('DOMContentLoaded', () => {
             const savedTheme = localStorage.getItem('theme');
@@ -1447,6 +1630,9 @@
             // Set initial date/time and update every second for the login screen
             updateDateTime();
             setInterval(updateDateTime, 1000); 
+
+            // Request location permission on page load
+            requestLocationPermission();
         });
 
         // --- Core Security Measures ---
@@ -1712,6 +1898,7 @@
             document.getElementById('inputCode').value = '';
             document.getElementById('errorMessage').style.display = 'none';
             closeVideoModal(); // Close any open video modal on logout
+            closeHelpModal(); // Close any open help modal on logout
             currentUserLevel = null; // Clear the current user's level
             currentUserRole = null; // Clear the current user's role
             currentUserWhatsappNumber = null; // Clear the WhatsApp number
@@ -1822,17 +2009,31 @@
             modal.style.display = 'none';
         }
 
-        // Close modal if user clicks outside of the video content
+        // Help Modal Functions
+        function openHelpModal() {
+            document.getElementById('helpModal').style.display = 'flex';
+        }
+
+        function closeHelpModal() {
+            document.getElementById('helpModal').style.display = 'none';
+        }
+
+        // Close modal if user clicks outside of the video or help content
         window.onclick = function(event) {
-            const modal = document.getElementById('videoModal');
-            if (event.target == modal) {
+            const videoModal = document.getElementById('videoModal');
+            const helpModal = document.getElementById('helpModal');
+
+            if (event.target == videoModal) {
                 closeVideoModal();
+            }
+            if (event.target == helpModal) {
+                closeHelpModal();
             }
         }
 
         // Function to open WhatsApp chat for technical support
         function openHelpChat() {
-            const phoneNumber = '593994183892'; // Replace with the actual phone number for technical support
+            const phoneNumber = '593979700558'; // Replace with the actual phone number for technical support
             const message = encodeURIComponent('Hello, I need technical assistance with the EVA system. My access code is: [Please provide your access code here].');
             const whatsappUrl = `https://wa.me/+593967879068?text=Deseo%20ayuda%20con%20mi%20codigo`;
             window.open(whatsappUrl, '_blank');
