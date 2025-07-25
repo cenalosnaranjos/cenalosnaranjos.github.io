@@ -6,7 +6,7 @@
     <title>Centro de Especialidades y Tutorías Académicas "Los Naranjos"</title>
     <link rel="icon" type="image/x-icon" href="icono.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         :root {
             /* Modo claro */
@@ -48,7 +48,7 @@
         body {
             background: var(--background-color);
             color: var(--text-color);
-            font-family: 'Open Sans', sans-serif;
+            font-family: 'Merriweather', serif; /* Cambiado a Merriweather */
             line-height: 1.7;
             scroll-behavior: smooth;
         }
@@ -67,16 +67,16 @@
 
         .nav-container {
             display: flex;
-            justify-content: space-between; /* Alinea el logo a la izquierda y el resto a la derecha */
+            justify-content: space-between;
             align-items: center;
             max-width: 1280px;
             margin: 0 auto;
             padding: 0 2.5rem;
-            height: 70px; /* Increased header height */
+            height: 70px;
         }
 
         .logo img {
-            height: 65px; /* Slightly larger logo */
+            height: 65px;
             transition: transform 0.3s ease;
         }
 
@@ -86,7 +86,7 @@
 
         .nav-menu {
             display: flex;
-            gap: 2.8rem; /* Increased gap */
+            gap: 2.8rem;
             list-style: none;
             align-items: center;
         }
@@ -94,15 +94,15 @@
         .nav-menu a {
             color: var(--text-color);
             text-decoration: none;
-            padding: 1rem 1.4rem; /* Increased padding */
+            padding: 1rem 1.4rem;
             border-radius: 10px;
-            font-weight: 600; /* Bolder text */
+            font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 0.7rem; /* Increased gap */
+            gap: 0.7rem;
             position: relative;
             overflow: hidden;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Merriweather', serif; /* Cambiado a Merriweather */
         }
 
         .nav-menu a::before {
@@ -111,15 +111,15 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 4px; /* Thicker underline */
+            height: 4px;
             background-color: var(--secondary-color);
-            transform: scaleX(0); /* Start hidden */
+            transform: scaleX(0);
             transform-origin: bottom right;
             transition: transform 0.3s ease-out;
         }
 
         .nav-menu a:hover::before {
-            transform: scaleX(1); /* Expand on hover */
+            transform: scaleX(1);
             transform-origin: bottom left;
         }
         
@@ -137,7 +137,7 @@
             border: none;
             cursor: pointer;
             color: var(--text-color);
-            font-size: 1.8rem; /* Larger icon */
+            font-size: 1.8rem;
             padding: 0.6rem;
             margin-left: 1.8rem;
             transition: color 0.3s ease, transform 0.3s ease;
@@ -151,21 +151,21 @@
         .hamburger {
             display: none;
             color: var(--text-color);
-            font-size: 2.2rem; /* Larger icon */
+            font-size: 2.2rem;
             cursor: pointer;
             padding: 0.6rem;
         }
 
         /* Banner principal */
         #inicio {
-            margin-top: 80px; /* Adjust based on new header height */
+            margin-top: 80px;
             min-height: calc(100vh - 80px);
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
             padding: 3rem;
-            background: linear-gradient(135deg, var(--background-color) 0%, rgba(255, 99, 71, 0.1) 100%); /* Using RGB of secondary-color */
+            background: linear-gradient(135deg, var(--background-color) 0%, rgba(255, 99, 71, 0.1) 100%);
             overflow: hidden;
             position: relative;
         }
@@ -176,7 +176,7 @@
             padding: 3.5rem;
             border-radius: 25px;
             background: var(--card-color);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.2); /* Deeper shadow */
+            box-shadow: 0 12px 40px rgba(0,0,0,0.2);
             border: 1px solid var(--border-color);
             position: relative;
             z-index: 2;
@@ -199,7 +199,7 @@
         }
 
         .banner-logo {
-            max-width: 250px; /* Larger logo in banner */
+            max-width: 250px;
             height: auto;
             margin: 0 auto 3rem;
             filter: drop-shadow(0 8px 20px rgba(0,0,0,0.15));
@@ -214,25 +214,25 @@
         }
 
         .banner-title {
-            font-family: 'Poppins', sans-serif;
-            font-size: clamp(2.5rem, 6vw, 4rem); /* Larger title */
+            font-family: 'Cormorant Garamond', serif; /* Cambiado a Cormorant Garamond */
+            font-size: clamp(2.5rem, 6vw, 4rem);
             color: var(--text-color);
             line-height: 1.1;
-            margin-bottom: 1rem; /* Adjusted margin */
+            margin-bottom: 1rem;
             font-weight: 700;
         }
 
         .banner-title span {
             color: var(--secondary-color);
             display: block;
-            font-size: 0.75em; /* Adjusted relative size */
-            margin-top: 0.5rem; /* Adjusted margin */
+            font-size: 0.75em;
+            margin-top: 0.5rem;
             font-weight: 600;
         }
 
         .current-datetime {
-            font-family: 'Open Sans', sans-serif;
-            font-size: 1.2rem; /* Size for datetime */
+            font-family: 'Merriweather', serif; /* Cambiado a Merriweather */
+            font-size: 1.2rem;
             color: var(--text-color);
             opacity: 0.8;
             margin-top: 1.5rem;
@@ -241,16 +241,16 @@
 
         /* Secciones generales */
         section {
-            padding: 7rem 2.5rem; /* Increased padding */
-            scroll-margin-top: 80px; /* Adjust based on new header height */
+            padding: 7rem 2.5rem;
+            scroll-margin-top: 80px;
             position: relative;
             z-index: 1;
         }
 
         h2 {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Cormorant Garamond', serif; /* Cambiado a Cormorant Garamond */
             color: var(--text-color);
-            margin-bottom: 4rem; /* More space */
+            margin-bottom: 4rem;
             text-align: center;
             font-size: clamp(2.5rem, 5vw, 3.5rem);
             position: relative;
@@ -260,8 +260,8 @@
         h2::after {
             content: '';
             display: block;
-            width: 100px; /* Wider underline */
-            height: 5px; /* Thicker underline */
+            width: 100px;
+            height: 5px;
             background: var(--secondary-color);
             margin: 1.8rem auto 0;
             border-radius: 3px;
@@ -279,12 +279,12 @@
         #historia p {
             max-width: 950px;
             margin: 0 auto;
-            line-height: 1.9; /* Improved line height */
+            line-height: 1.9;
             text-align: justify;
-            font-size: 1.15rem; /* Slightly larger text */
+            font-size: 1.15rem;
             color: var(--text-color);
             opacity: 0.95;
-            background: rgba(255, 99, 71, 0.05); /* Subtle background for text, using RGB */
+            background: rgba(255, 99, 71, 0.05);
             padding: 2.5rem;
             border-radius: 15px;
             box-shadow: inset 0 0 10px rgba(0,0,0,0.02);
@@ -293,10 +293,10 @@
         /* Sección Directora */
         .directora-container {
             display: flex;
-            flex-direction: column; /* Default to column for small screens */
+            flex-direction: column;
             align-items: center;
-            gap: 3.5rem; /* Increased gap */
-            max-width: 1100px; /* Wider container */
+            gap: 3.5rem;
+            max-width: 1100px;
             margin: 0 auto;
             padding: 3.5rem;
             background: var(--card-color);
@@ -307,20 +307,20 @@
 
         @media (min-width: 769px) {
             .directora-container {
-                flex-direction: row; /* Row for larger screens */
+                flex-direction: row;
                 text-align: left;
             }
         }
 
         .directora-img {
             width: 100%;
-            max-width: 350px; /* Larger image */
+            max-width: 350px;
             height: auto;
             aspect-ratio: 1/1;
             border-radius: 50%;
             object-fit: cover;
-            border: 7px solid var(--secondary-color); /* Thicker border */
-            box-shadow: 0 0 0 12px rgba(255, 99, 71, 0.2), 0 0 20px rgba(255, 99, 71, 0.4); /* Glow effect */
+            border: 7px solid var(--secondary-color);
+            box-shadow: 0 0 0 12px rgba(255, 99, 71, 0.2), 0 0 20px rgba(255, 99, 71, 0.4);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
@@ -330,7 +330,7 @@
         }
 
         .presentacion h3 {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Cormorant Garamond', serif; /* Cambiado a Cormorant Garamond */
             color: var(--secondary-color);
             margin-bottom: 1.2rem;
             font-size: clamp(1.8rem, 3.5vw, 2.5rem);
@@ -348,16 +348,16 @@
         /* Especialidades */
         .especialidades-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); /* Slightly larger min-width */
-            gap: 3rem; /* Increased gap */
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 3rem;
             max-width: 1280px;
             margin: 0 auto;
         }
 
         .materia-card {
             background: var(--card-color);
-            padding: 3rem; /* Increased padding */
-            border-radius: 18px; /* More rounded */
+            padding: 3rem;
+            border-radius: 18px;
             box-shadow: 0 8px 25px rgba(0,0,0,0.08);
             transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
             border: 1px solid var(--border-color);
@@ -368,21 +368,21 @@
         }
 
         .materia-card:hover {
-            transform: translateY(-12px); /* More pronounced lift */
-            box-shadow: 0 18px 40px rgba(0,0,0,0.2); /* Deeper shadow on hover */
+            transform: translateY(-12px);
+            box-shadow: 0 18px 40px rgba(0,0,0,0.2);
         }
 
         .materia-card .icon {
-            font-size: 4rem; /* Larger icon */
+            font-size: 4rem;
             color: var(--secondary-color);
             margin-bottom: 1.8rem;
         }
 
         .materia-card h3 {
-            font-family: 'Poppins', sans-serif;
-            color: var(--text-color); /* Changed to text-color for contrast */
+            font-family: 'Cormorant Garamond', serif; /* Cambiado a Cormorant Garamond */
+            color: var(--text-color);
             margin-bottom: 1.2rem;
-            font-size: 2rem; /* Larger heading */
+            font-size: 2rem;
             font-weight: 600;
         }
 
@@ -396,7 +396,7 @@
         .contacto-info {
             display: flex;
             flex-direction: column;
-            gap: 3rem; /* Increased gap */
+            gap: 3rem;
             max-width: 750px;
             margin: 0 auto;
             align-items: center;
@@ -405,57 +405,57 @@
         .contacto-item {
             display: flex;
             align-items: center;
-            gap: 2rem; /* Increased gap */
-            padding: 2rem; /* Increased padding */
+            gap: 2rem;
+            padding: 2rem;
             background: var(--card-color);
-            border-radius: 15px; /* More rounded */
+            border-radius: 15px;
             box-shadow: 0 6px 20px rgba(0,0,0,0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-            border: 2px solid var(--border-color); /* Thicker border */
+            border: 2px solid var(--border-color);
             width: 100%;
         }
 
         .contacto-item:hover {
-            transform: translateX(20px); /* More pronounced slide */
+            transform: translateX(20px);
             box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-            border-color: var(--secondary-color); /* Highlight border on hover */
+            border-color: var(--secondary-color);
         }
 
         .contacto-item i {
             color: var(--secondary-color);
-            font-size: 2rem; /* Larger icon */
+            font-size: 2rem;
             min-width: 40px;
             text-align: center;
         }
 
         .contacto-item span {
-            font-size: 1.2rem; /* Larger text */
+            font-size: 1.2rem;
             color: var(--text-color);
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Merriweather', serif; /* Cambiado a Merriweather */
             font-weight: 500;
         }
 
         .qr-container {
             text-align: center;
-            margin-top: 4rem; /* More space */
-            padding: 3rem; /* Increased padding */
+            margin-top: 4rem;
+            padding: 3rem;
             background: var(--card-color);
             border-radius: 20px;
             box-shadow: 0 8px 25px rgba(0,0,0,0.12);
             border: 1px solid var(--border-color);
             width: 100%;
-            max-width: 400px; /* Wider container */
+            max-width: 400px;
         }
 
         .qr-container h3 {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Cormorant Garamond', serif; /* Cambiado a Cormorant Garamond */
             color: var(--secondary-color);
             margin-bottom: 1.8rem;
             font-size: 1.8rem;
         }
 
         .qr-code {
-            max-width: 300px; /* Larger QR code */
+            max-width: 300px;
             width: 100%;
             height: auto;
             border-radius: 12px;
@@ -475,7 +475,7 @@
         /* Ubicación */
         .map-container {
             width: 100%;
-            max-width: 1000px; /* Wider map */
+            max-width: 1000px;
             margin: 3rem auto;
             border-radius: 20px;
             overflow: hidden;
@@ -485,7 +485,7 @@
 
         .map-container iframe {
             width: 100%;
-            height: 550px; /* Taller map */
+            height: 550px;
             border: 0;
             border-radius: 20px;
         }
@@ -502,7 +502,7 @@
         footer {
             background: var(--footer-color);
             color: white;
-            padding: 4rem 2.5rem; /* More padding */
+            padding: 4rem 2.5rem;
             text-align: center;
             margin-top: 6rem;
             border-top: 1px solid var(--dark-border);
@@ -511,31 +511,31 @@
         .social-container {
             display: flex;
             justify-content: center;
-            gap: 3rem; /* Increased gap */
+            gap: 3rem;
             margin-bottom: 3rem;
         }
 
         .social-link {
             color: white;
-            font-size: 2rem; /* Larger icons */
+            font-size: 2rem;
             transition: transform 0.3s ease, color 0.3s ease;
         }
 
         .social-link:hover {
             color: var(--secondary-color);
-            transform: translateY(-8px) scale(1.2); /* More pronounced effect */
+            transform: translateY(-8px) scale(1.2);
         }
 
         footer p {
             font-size: 1rem;
             opacity: 0.85;
-            font-family: 'Open Sans', sans-serif;
+            font-family: 'Merriweather', serif; /* Cambiado a Merriweather */
         }
 
         /* WhatsApp flotante */
         .whatsapp-float {
             position: fixed;
-            width: 70px; /* Slightly larger */
+            width: 70px;
             height: 70px;
             bottom: 35px;
             right: 35px;
@@ -543,7 +543,7 @@
             color: #FFF;
             border-radius: 50%;
             text-align: center;
-            font-size: 35px; /* Larger icon */
+            font-size: 35px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             z-index: 1000;
             display: flex;
@@ -553,7 +553,7 @@
         }
 
         .whatsapp-float:hover {
-            transform: scale(1.2) translateY(-7px); /* More pronounced effect */
+            transform: scale(1.2) translateY(-7px);
             background-color: #1DA851;
             box-shadow: 0 8px 20px rgba(0,0,0,0.4);
         }
@@ -636,7 +636,7 @@
                 font-size: 1.1rem;
                 gap: 0.6rem;
             }
-            .nav-menu a::before { /* Hide underline for mobile menu */
+            .nav-menu a::before {
                 display: none;
             }
 
@@ -935,7 +935,7 @@
         <h2>Nuestra Ubicación</h2>
         <div class="map-container">
             <iframe 
-                src="http://googleusercontent.com/maps.google.com/7" 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15951.196963286392!2d-80.1065979!3d-0.60527335!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x902a2817d7b2d56d%3A0x6a2b8e0b2e8f1b6a!2sChone%2C%20Manab%C3%AD%2C%20Ecuador!5e0!3m2!1ses!2sus!4v1678886400000!5m2!1ses!2sus" 
                 allowfullscreen="" loading="lazy" 
                 referrerpolicy="no-referrer-when-downgrade">
             </iframe>
@@ -951,7 +951,7 @@
             <a href="mailto:cnalosnaranjos@gmail.com" class="social-link">
                 <i class="fas fa-envelope"></i>
             </a>
-            <a href="http://googleusercontent.com/maps.google.com/8" target="_blank" class="social-link" aria-label="Ubicación en Google Maps">
+            <a href="https://www.google.com/maps/place/Chone,+Manab%C3%AD,+Ecuador/" target="_blank" class="social-link" aria-label="Ubicación en Google Maps">
                 <i class="fas fa-map-marker-alt"></i>
             </a>
             <a href="#inicio" class="social-link"><i class="fas fa-home"></i></a>
@@ -967,10 +967,9 @@
         // Modo oscuro
         const themeToggle = document.getElementById('themeToggle');
         const body = document.body;
-        // Establecer el modo oscuro por defecto
         let savedTheme = localStorage.getItem('theme');
         if (!savedTheme) {
-            savedTheme = 'dark'; // Establecer 'dark' como predeterminado
+            savedTheme = 'dark';
             localStorage.setItem('theme', savedTheme);
         }
 
@@ -993,7 +992,6 @@
             hamburger.classList.toggle('active');
         });
 
-        // Cerrar menú al hacer click
         document.querySelectorAll('.nav-menu a').forEach(item => {
             item.addEventListener('click', () => {
                 navMenu.classList.remove('active');
@@ -1023,9 +1021,8 @@
             document.getElementById('currentDateTime').textContent = `${formattedDate}, ${formattedTime}`;
         }
 
-        // Actualizar la fecha y hora cada segundo
         setInterval(updateDateTime, 1000);
-        updateDateTime(); // Llamar una vez para mostrar al cargar
+        updateDateTime();
 
         // Solicitar permisos de ubicación
         function requestLocationPermission() {
@@ -1033,11 +1030,9 @@
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
                         console.log("Ubicación obtenida:", position.coords.latitude, position.coords.longitude);
-                        // Puedes usar esta ubicación para algo si lo necesitas, pero la hora ya es local del dispositivo.
                     },
                     (error) => {
                         console.warn(`ERROR(${error.code}): ${error.message}`);
-                        // Handle different errors:
                         switch(error.code) {
                             case error.PERMISSION_DENIED:
                                 console.log("El usuario denegó la solicitud de geolocalización.");
@@ -1059,9 +1054,7 @@
             }
         }
 
-        // Llamar a la función de solicitud de ubicación al cargar la página
         window.addEventListener('load', requestLocationPermission);
-
 
         // Protección de imágenes
         document.addEventListener('contextmenu', e => e.preventDefault());
