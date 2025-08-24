@@ -48,9 +48,96 @@
         body {
             background: var(--background-color);
             color: var(--text-color);
-            font-family: 'Merriweather', serif; /* Cambiado a Merriweather */
+            font-family: 'Merriweather', serif;
             line-height: 1.7;
             scroll-behavior: smooth;
+            overflow-x: hidden;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        body.loaded {
+            opacity: 1;
+        }
+
+        /* Barra de carga */
+        .loader-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--background-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.7s ease, visibility 0.7s ease;
+        }
+
+        .loader-container.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .loader-logo {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 2rem;
+            animation: bounceIn 1s ease-out;
+        }
+
+        .loader-text {
+            font-size: 1.8rem;
+            color: var(--text-color);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .loader-bar {
+            width: 250px;
+            height: 8px;
+            background: var(--border-color);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .loader-progress {
+            height: 100%;
+            width: 0%;
+            background: var(--secondary-color);
+            border-radius: 5px;
+            transition: width 0.7s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes bounceIn {
+            0% { opacity: 0; transform: translateY(-50px); }
+            60% { opacity: 1; transform: translateY(10px); }
+            80% { transform: translateY(-5px); }
+            100% { transform: translateY(0); }
+        }
+
+        /* Transiciones de secciones */
+        section {
+            padding: 7rem 2.5rem;
+            scroll-margin-top: 80px;
+            position: relative;
+            z-index: 1;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         /* Header y navegación */
@@ -102,7 +189,7 @@
             gap: 0.7rem;
             position: relative;
             overflow: hidden;
-            font-family: 'Merriweather', serif; /* Cambiado a Merriweather */
+            font-family: 'Merriweather', serif;
         }
 
         .nav-menu a::before {
@@ -206,15 +293,8 @@
             animation: bounceIn 1.2s ease-out forwards;
         }
 
-        @keyframes bounceIn {
-            0% { opacity: 0; transform: translateY(-50px); }
-            60% { opacity: 1; transform: translateY(10px); }
-            80% { transform: translateY(-5px); }
-            100% { transform: translateY(0); }
-        }
-
         .banner-title {
-            font-family: 'Cormorant Garamond', serif; /* Cambiado a Cormorant Garamond */
+            font-family: 'Cormorant Garamond', serif;
             font-size: clamp(2.5rem, 6vw, 4rem);
             color: var(--text-color);
             line-height: 1.1;
@@ -231,7 +311,7 @@
         }
 
         .current-datetime {
-            font-family: 'Merriweather', serif; /* Cambiado a Merriweather */
+            font-family: 'Merriweather', serif;
             font-size: 1.2rem;
             color: var(--text-color);
             opacity: 0.8;
@@ -240,15 +320,8 @@
         }
 
         /* Secciones generales */
-        section {
-            padding: 7rem 2.5rem;
-            scroll-margin-top: 80px;
-            position: relative;
-            z-index: 1;
-        }
-
         h2 {
-            font-family: 'Cormorant Garamond', serif; /* Cambiado a Cormorant Garamond */
+            font-family: 'Cormorant Garamond', serif;
             color: var(--text-color);
             margin-bottom: 4rem;
             text-align: center;
@@ -266,6 +339,77 @@
             margin: 1.8rem auto 0;
             border-radius: 3px;
             box-shadow: 0 2px 8px rgba(255, 99, 71, 0.4);
+        }
+
+        /* Carrusel */
+        .carousel-container {
+            max-width: 1280px;
+            margin: 0 auto 5rem;
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+            padding: 2rem;
+            background: var(--card-color);
+        }
+
+        .carousel-slides {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            height: auto;
+            border-radius: 15px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+        
+        .carousel-controls {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            padding: 0 1rem;
+        }
+        
+        .carousel-btn {
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            padding: 1rem;
+            cursor: pointer;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            transition: background 0.3s ease;
+        }
+
+        .carousel-btn:hover {
+            background: rgba(0,0,0,0.8);
+        }
+
+        .carousel-pagination {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .dot {
+            height: 15px;
+            width: 15px;
+            margin: 0 5px;
+            background-color: var(--border-color);
+            border-radius: 50%;
+            display: inline-block;
+            transition: background-color 0.6s ease;
+            cursor: pointer;
+        }
+
+        .dot.active {
+            background-color: var(--secondary-color);
         }
 
         /* Sección Historia */
@@ -330,7 +474,7 @@
         }
 
         .presentacion h3 {
-            font-family: 'Cormorant Garamond', serif; /* Cambiado a Cormorant Garamond */
+            font-family: 'Cormorant Garamond', serif;
             color: var(--secondary-color);
             margin-bottom: 1.2rem;
             font-size: clamp(1.8rem, 3.5vw, 2.5rem);
@@ -379,7 +523,7 @@
         }
 
         .materia-card h3 {
-            font-family: 'Cormorant Garamond', serif; /* Cambiado a Cormorant Garamond */
+            font-family: 'Cormorant Garamond', serif;
             color: var(--text-color);
             margin-bottom: 1.2rem;
             font-size: 2rem;
@@ -431,7 +575,7 @@
         .contacto-item span {
             font-size: 1.2rem;
             color: var(--text-color);
-            font-family: 'Merriweather', serif; /* Cambiado a Merriweather */
+            font-family: 'Merriweather', serif;
             font-weight: 500;
         }
 
@@ -448,7 +592,7 @@
         }
 
         .qr-container h3 {
-            font-family: 'Cormorant Garamond', serif; /* Cambiado a Cormorant Garamond */
+            font-family: 'Cormorant Garamond', serif;
             color: var(--secondary-color);
             margin-bottom: 1.8rem;
             font-size: 1.8rem;
@@ -529,7 +673,7 @@
         footer p {
             font-size: 1rem;
             opacity: 0.85;
-            font-family: 'Merriweather', serif; /* Cambiado a Merriweather */
+            font-family: 'Merriweather', serif;
         }
 
         /* WhatsApp flotante */
@@ -818,6 +962,14 @@
     </style>
 </head>
 <body data-theme="dark">
+    <div class="loader-container">
+        <img src="icono.png" alt="Logo de Los Naranjos" class="loader-logo">
+        <p class="loader-text">Cargando...</p>
+        <div class="loader-bar">
+            <div class="loader-progress"></div>
+        </div>
+    </div>
+
     <header>
         <nav class="nav-container">
             <div class="logo">
@@ -852,6 +1004,22 @@
             <p id="currentDateTime" class="current-datetime"></p>
         </div>
     </section>
+    
+    <section id="carrusel-cursos">
+        <h2>Galería de Cursos</h2>
+        <div class="carousel-container">
+            <div class="carousel-slides">
+                <img src="Arte y pintura.jpeg" alt="Taller de Arte y Pintura" class="carousel-slide" draggable="false">
+            <!--<img src="https://via.placeholder.com/1200x600/FF6347/FFFFFF?text=Clase+de+Matemáticas" alt="Clase de Matemáticas" class="carousel-slide" draggable="false">
+                <img src="https://via.placeholder.com/1200x600/9b59b6/FFFFFF?text=Clase+de+Física" alt="Clase de Física" class="carousel-slide" draggable="false">-->
+            </div>
+            <div class="carousel-controls">
+                <button class="carousel-btn prev">❮</button>
+                <button class="carousel-btn next">❯</button>
+            </div>
+        </div>
+        <div class="carousel-pagination"></div>
+    </section>
 
     <section id="historia">
         <h2>Nuestra Historia</h2>
@@ -881,6 +1049,11 @@
                 <i class="fas fa-calculator icon"></i>
                 <h3>Matemáticas</h3>
                 <p>Ofrecemos apoyo en todas las ramas de las matemáticas, incluyendo álgebra, geometría, trigonometría y cálculo, ayudando a los estudiantes a resolver problemas complejos.</p>
+            </div>
+            <div class="materia-card">
+                <i class="fas fa-palette icon"></i>
+                <h3>Arte y Pintura</h3>
+                <p>TALLER: FUNDAMENTOS DEL DIBUJO Y PINTURA para NIÑOS. El dibujo es el mejor entrenamiento para desarrollar el cerebro.</p>
             </div>
             <div class="materia-card">
                 <i class="fas fa-atom icon"></i>
@@ -963,6 +1136,47 @@
     </a>
 
     <script>
+        // Barra de carga y transiciones de secciones
+        window.addEventListener('load', () => {
+            const loader = document.querySelector('.loader-container');
+            const sections = document.querySelectorAll('section');
+            const body = document.body;
+
+            // Ocultar barra de carga
+            setTimeout(() => {
+                loader.classList.add('hidden');
+                body.classList.add('loaded');
+            }, 500);
+
+            // Observador para transiciones
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        });
+        
+        // Simular progreso de carga
+        const loaderProgress = document.querySelector('.loader-progress');
+        let progress = 0;
+        const interval = setInterval(() => {
+            progress += 10;
+            if (progress <= 100) {
+                loaderProgress.style.width = `${progress}%`;
+            } else {
+                clearInterval(interval);
+            }
+        }, 100);
+
         // Modo oscuro
         const themeToggle = document.getElementById('themeToggle');
         const body = document.body;
@@ -1002,10 +1216,13 @@
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
                 e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
             });
         });
 
@@ -1017,11 +1234,77 @@
             const formattedDate = now.toLocaleDateString('es-ES', optionsDate);
             const formattedTime = now.toLocaleTimeString('es-ES', optionsTime);
             
-            document.getElementById('currentDateTime').textContent = `${formattedDate}, ${formattedTime}`;
+            const datetimeElement = document.getElementById('currentDateTime');
+            if (datetimeElement) {
+                datetimeElement.textContent = `${formattedDate}, ${formattedTime}`;
+            }
         }
 
         setInterval(updateDateTime, 1000);
         updateDateTime();
+
+        // Carrusel
+        const carouselSlides = document.querySelector('.carousel-slides');
+        const slides = document.querySelectorAll('.carousel-slide');
+        const prevBtn = document.querySelector('.carousel-btn.prev');
+        const nextBtn = document.querySelector('.carousel-btn.next');
+        const paginationContainer = document.querySelector('.carousel-pagination');
+        let currentIndex = 0;
+        let slideInterval;
+
+        function updateCarousel() {
+            carouselSlides.style.transform = `translateX(-${currentIndex * 100}%)`;
+            updateDots();
+        }
+
+        function createDots() {
+            slides.forEach((_, index) => {
+                const dot = document.createElement('span');
+                dot.classList.add('dot');
+                dot.addEventListener('click', () => {
+                    currentIndex = index;
+                    updateCarousel();
+                    resetInterval();
+                });
+                paginationContainer.appendChild(dot);
+            });
+            updateDots();
+        }
+
+        function updateDots() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                if (index === currentIndex) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % slides.length;
+            updateCarousel();
+        }
+
+        function resetInterval() {
+            clearInterval(slideInterval);
+            slideInterval = setInterval(nextSlide, 5000);
+        }
+
+        prevBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+            updateCarousel();
+            resetInterval();
+        });
+
+        nextBtn.addEventListener('click', () => {
+            nextSlide();
+            resetInterval();
+        });
+
+        createDots();
+        resetInterval();
 
         // Solicitar permisos de ubicación
         function requestLocationPermission() {
