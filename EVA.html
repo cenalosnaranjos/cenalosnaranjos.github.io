@@ -1392,7 +1392,6 @@
                 <p>Chone Grammar Practice PDF will be available soon. Thank you for your patience!</p>
             </div>
 
-            <!-- Nuevo PDF agregado para el nivel A1 -->
             <h3 class="section-title" style="margin-top: 30px;"><i class="fas fa-file-pdf"></i> Importance of Learning Languages</h3>
             <div id="languageImportancePdfSection" class="pdf-section-content">
                 </div>
@@ -1446,7 +1445,7 @@
         </button>
     </div>
 
-    <footer>
+    <footer> 
         <strong>
         <p>© 2025 Center for Specialties and Academic Tutoring "Los Naranjos"</p></strong>
     </footer>
@@ -1455,15 +1454,15 @@
         // User Authorization Database with 'level' property
         const validUsers = [
             {
-                code: 'DOCENTEA12025',
+                code: 'DOCENTEA22025',
+                name: 'Lcda. Lucía Gabriela Tapia Arboleda',
+                role: 'teacher', // Changed role to 'teacher'
+                level: ['A2'] // Teacher can manage multiple levels
+            }, {
+                code: 'DOCENTEa12025',
                 name: 'Ing. Doménica Valencia',
                 role: 'teacher', // Changed role to 'teacher'
                 level: ['A1'] // Teacher can manage multiple levels
-            }, {
-                code: 'DOCENTEa22025',
-                name: 'Ing. Valencia',
-                role: 'teacher', // Changed role to 'teacher'
-                level: ['A2'] // Teacher can manage multiple levels
             }, {
                 code: 'DOCENTEb12025',
                 name: 'Ing. Doménica',
@@ -1474,13 +1473,13 @@
                 code: 'KAREN2025',
                 name: 'MOREIRA VÈLEZ KAREN STEFANY',
                 role: 'student',
-                level: 'A1'
+                level: 'A2'
             },
             {
                 code: 'CAMILA2025',
                 name: 'Camila Quijije',
                 role: 'student',
-                level: 'A2'
+                level: 'A1'
             },
             {
                 code: 'AMY2025',
@@ -1497,28 +1496,28 @@
             },
             {
                 code: 'ACNABEL2025',
-                name: 'ACNABEL',
+                name: 'ACNABEL DIRECTORA',
                 role: 'student',
-                level: 'A1'
+                level: 'A2'
             },
             {
                 code: 'ENY2025',
-                name: 'ENY CASTRO',
+                name: 'ENY CASTRO CANCILLER',
                 role: 'student',
-                level: 'A1'
+                level: 'A2'
             }
         ];
 
         const levelTeachers = {
             'A1': 'Ing. Doménica Valencia',
-            'A2': 'Ing. Doménica ',
-            'B1': 'Ing.  Valencia'
+            'A2': 'Lcda. Lucía Gabriela Tapia Arboleda',
+            'B1': 'Ing. Doménica Valencia'
         };
 
         // WhatsApp numbers based on user level/role
         const whatsappNumbers = {
             'A1': '593979700558', // Número de WhatsApp para nivel A1 (estudiante)
-            'A2': '593979700559', // Número de WhatsApp para nivel A2 (estudiante) - Ejemplo
+            'A2': '593967879068', // Número de WhatsApp para nivel A2 (estudiante) - Ejemplo
             'B1': '593979700560', // Número de WhatsApp para nivel B1 (estudiante) - Ejemplo
             'teacher': '593994183892' // Número de WhatsApp general para docentes
         };
@@ -1668,20 +1667,20 @@
             // A2 Level Videos
             {
                 id: 'a2_video1',
-                title: 'A2 - Intermediate Grammar',
+                title: 'A2 - Welcome',
                 thumbnail: 'Welcome%20to%20the%20class%20-%20mini.jpeg', // Placeholder thumbnail
                 url: 'Welcome%20to%20the%20class.mp4', // Placeholder video
                 week: 1,
-                presenter: 'Ing. Doménica Valencia',
+                presenter: 'Mgtr. Enny Castro',
                 level: 'A2'
             },
             {
                 id: 'a2_video2',
                 title: 'A2 - Daily Routines',
-                thumbnail: 'Welcome%20to%20the%20class%20-%20mini.jpeg', // Placeholder thumbnail
-                url: 'Welcome%20to%20the%20class.mp4', // Placeholder video
+                thumbnail: '', // Placeholder thumbnail
+                url: '', // Placeholder video
                 week: 3,
-                presenter: 'Ing. Doménica Valencia',
+                presenter: '',
                 level: 'A2'
             },
             // B1 Level Videos
@@ -1709,7 +1708,7 @@
         const pdfDB = {
             'A1': { name: 'Level A1 Study Guide', url: 'Homework.pdf' },
             'A1_Grammar': { name: 'Chone Grammar Practice', url: 'Chone_Grammar_Practice.pdf' },
-            'A2': { name: 'Level A2 Study Guide', url: 'sample.pdf' },
+            'A2': { name: 'Level A2 Study Guide', url: '#' },
             'B1': { name: 'Level B1 Study Guide', url: 'dummy.pdf' },
             'A1_Platform': { name: 'A1 Activities Platform', url: 'https://edpuzzle.com/discover' },
             // Nuevo PDF agregado
@@ -1736,15 +1735,15 @@
             },
             // A2 Level Meetings
             {
-                date: 'July 26, 2025',
-                time: '02:00 PM',
-                url: 'https://meet.google.com/pqr-stu-vwx',
+                date: 'August 30, 2025',
+                time: '09:00 AM',
+                url: 'https://meet.google.com/sha-pxen-wxx',
                 level: 'A2'
             },
             {
-                date: 'August 2, 2025',
-                time: '02:00 PM',
-                url: 'https://meet.google.com/yza-bcd-efg',
+                date: 'No data found',
+                time: '',
+                url: '',
                 level: 'A2'
             },
             // B1 Level Meetings
@@ -2010,7 +2009,10 @@
             teacherContentOverviewDiv.innerHTML = ''; // Clear previous content
             
             teacherUser.level.forEach(level => {
-                let levelContentHtml = `<h4>Level ${level} Videos:</h4><ul>`;
+                let levelContentHtml = '';
+
+                // Videos Section
+                levelContentHtml += `<h4>Level ${level} Videos:</h4><ul>`;
                 const videosForLevel = videoDB.filter(video => video.level === level);
                 if (videosForLevel.length > 0) {
                     videosForLevel.forEach(video => {
@@ -2021,6 +2023,7 @@
                 }
                 levelContentHtml += '</ul>';
 
+                // Study Material Section
                 levelContentHtml += `<h4>Level ${level} Study Material:</h4><ul>`;
                 const pdfData = pdfDB[level];
                 if (pdfData && pdfData.url) {
@@ -2049,9 +2052,26 @@
                 }
                 levelContentHtml += '</ul>';
 
+                // MODIFICATION START: Scheduled Meetings Section
+                levelContentHtml += `<h4>Level ${level} Scheduled Meetings:</h4><ul>`;
+                const meetingsForLevel = scheduleDB.filter(meeting => meeting.level === level && meeting.date !== 'No data found');
+                if (meetingsForLevel.length > 0) {
+                    meetingsForLevel.forEach(meeting => {
+                        levelContentHtml += `<li>
+                                                <span>${meeting.date} at ${meeting.time}</span>
+                                                <button class="file-button" onclick="window.open('${meeting.url}', '_blank')">Access Link <i class="fas fa-external-link-alt"></i></button>
+                                              </li>`;
+                    });
+                } else {
+                    levelContentHtml += `<li>No scheduled meetings found for Level ${level}.</li>`;
+                }
+                levelContentHtml += '</ul>';
+                // MODIFICATION END
+
                 teacherContentOverviewDiv.innerHTML += levelContentHtml;
             });
         }
+
 
         function loadLevelContent(level) {
             // Load scheduled meetings for the level
