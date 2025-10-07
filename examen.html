@@ -3,96 +3,638 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Examen - Centro de Especialidades y Tutorías Académicas "Los Naranjos"</title>
-    <link rel="stylesheet" href="stylesex.css">
-    <link rel="icon" type="image/x-icon" href="logo.jpeg">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <title>Examen de Hojas de Cálculo (Moderno)</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300,400,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <style>
+        /* ================================================= */
+        /* === ESTILOS CSS MODERNOS === */
+        /* ================================================= */
+        :root {
+            --primary-color: #007bff;
+            --primary-dark: #0056b3;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --whatsapp-color: #25d366;
+            --bg-light: #f8f9fa;
+            --text-color: #343a40;
+            --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --border-radius: 8px;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 30px 20px;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+        }
+
+        h1 {
+            color: var(--primary-dark);
+            text-align: center;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            border-left: 4px solid var(--primary-color);
+            padding-left: 10px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+
+        /* --- PANTALLA DE INICIO --- */
+        #startScreen {
+            text-align: center;
+            padding: 50px 20px;
+            background-color: #e6f7ff;
+            border: 2px solid var(--primary-color);
+            border-radius: var(--border-radius);
+        }
+        
+        #startScreen h2 {
+            color: var(--primary-dark);
+            border: none;
+            padding-left: 0;
+            margin-top: 0;
+        }
+
+        #startScreen input {
+            padding: 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            width: 80%;
+            max-width: 400px;
+            font-size: 1.1em;
+            margin: 15px 0 25px 0;
+            transition: border-color 0.3s;
+        }
+
+        #startExamBtn {
+            background-color: var(--success-color);
+            padding: 12px 30px;
+            font-size: 1.1em;
+        }
+        
+        #startExamBtn:hover {
+            background-color: #1e7e34;
+        }
+
+        /* --- EXAMEN --- */
+        .header-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: var(--border-radius);
+            margin-bottom: 25px;
+        }
+        
+        .header-info label {
+            font-weight: 500;
+            margin-right: 10px;
+        }
+
+        #studentNameDisplay {
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+
+        .timer {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: var(--danger-color);
+            background-color: #fcebeb;
+            padding: 8px 15px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+        }
+
+        .timer .material-icons {
+            margin-right: 5px;
+        }
+
+        /* Tabla, Preguntas, Resultados (Estilos del diseño anterior) */
+        #dataTable {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        #dataTable th, #dataTable td {
+            border: 1px solid #dee2e6;
+            padding: 12px;
+            text-align: center;
+        }
+
+        #dataTable thead th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 500;
+        }
+        
+        .question {
+            background-color: #fff;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: var(--border-radius);
+            border: 1px solid #e1e1e1;
+            transition: box-shadow 0.3s, border-color 0.3s;
+        }
+
+        .question:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .question p {
+            font-weight: 500;
+            font-size: 1.1em;
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: var(--primary-dark);
+        }
+
+        .question label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #e9ecef;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .question label:hover {
+            background-color: #f0f0f0;
+        }
+
+        .question input[type="radio"] {
+            margin-right: 15px;
+            transform: scale(1.2);
+            accent-color: var(--primary-color);
+        }
+
+        /* Botones de acción */
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 25px;
+        }
+
+        button, .whatsapp-link {
+            padding: 12px 25px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 500;
+            margin-right: 15px;
+            margin-bottom: 10px;
+            transition: background-color 0.2s, box-shadow 0.2s;
+            text-decoration: none; /* Para el enlace de WhatsApp */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #submitBtn {
+            background-color: var(--primary-color);
+        }
+        #submitBtn:hover {
+            background-color: var(--primary-dark);
+            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+        }
+        
+        #pdfBtn {
+            background-color: var(--success-color);
+        }
+        #pdfBtn:hover {
+            background-color: #1e7e34;
+        }
+
+        /* Botón de WhatsApp */
+        #whatsappBtn {
+            background-color: var(--whatsapp-color);
+            display: none; /* Inicialmente oculto */
+        }
+
+        #whatsappBtn:hover {
+            background-color: #1a9e4d;
+            box-shadow: 0 4px 8px rgba(37, 211, 102, 0.3);
+        }
+
+        .material-icons {
+             margin-right: 5px;
+        }
+
+        /* Resultados */
+        .results {
+            margin-top: 40px;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            background-color: #e6f7ff;
+            border: 2px solid var(--primary-color);
+            box-shadow: var(--card-shadow);
+        }
+
+        /* Colores de feedback */
+        .feedback-correct {
+            background-color: #d4edda;
+            color: var(--success-color);
+            border-left: 5px solid var(--success-color);
+        }
+
+        .feedback-incorrect {
+            background-color: #f8d7da;
+            color: var(--danger-color);
+            border-left: 5px solid var(--danger-color);
+        }
+
+        .feedback-correct .material-icons, .feedback-incorrect .material-icons {
+            margin-right: 8px;
+        }
+
+        /* Estilos de mensaje de estado */
+        .status-approved, .status-reproved, .status-practice {
+            font-weight: 700;
+            font-size: 1.2em;
+        }
+        .status-approved { color: var(--success-color); }
+        .status-reproved { color: var(--danger-color); }
+        .status-practice { color: var(--warning-color); }
+    </style>
 </head>
 <body>
-    <div id="app">
-        <header>
-            <div class="institution-info">
-                <img src="logo.jpeg" alt="Logo de la Institución" class="logo">
-                <h1>Centro de Especialidades y Tutorías Académicas "Los Naranjos"</h1>
-                <h2>Docente: Ing. Teddy Valencia</h2>
-            </div>
-            <div id="timer">Tiempo restante: 02:00:00</div>
-        </header>
-        <details class="instructions">
-            <summary>Instrucciones del examen</summary>
-            <ul>
-                <li>⏰ Tienes 2 horas para completar el examen</li>
-                <li>❌ No salgas de esta pestaña del navegador</li>
-                <li>📝 Lee cuidadosamente cada pregunta</li>
-                <li>✅ Selecciona solo una respuesta por pregunta</li>
-                <li>⏭ Puedes navegar entre preguntas</li>
-            </ul>
-        </details>
-        <main>
-            <div id="student-info">
-                <label for="student-name">Nombre del Estudiante:</label>
-                <input type="text" id="student-name" placeholder="Ingresa tu nombre">
-            </div>
-            <div id="questions-container">
-                <!-- Aquí se generarán dinámicamente las preguntas -->
-            </div>
-        </main>
-        <footer>
-            <button id="submit-btn">Finalizar Examen</button>
-            <button id="download-pdf-btn" style="display: none;">Descargar en PDF</button>
-            <div id="results" style="display: none;">
-                <h2>Resultados del Examen:</h2>
-                <p id="student-result"></p>
-                <p id="feedback"></p>
-            </div>
-        </footer>
-    </div>
-    <script>
-        document.getElementById('submit-btn').addEventListener('click', () => {
-            const studentName = document.getElementById('student-name').value || 'Nombre no ingresado';
+    <div class="container">
+        <h1><i class="material-icons" style="font-size: 32px; vertical-align: middle;">assessment</i> Examen de Operaciones en Hojas de Cálculo</h1>
+
+        <div id="startScreen">
+            <h2>Ingresa tus Datos para Comenzar</h2>
+            <p>El examen tiene un límite de tiempo de 30 minutos.</p>
+            <input type="text" id="studentName" placeholder="Escribe tu Nombre y Apellido" required>
+            <button type="button" id="startExamBtn">
+                <i class="material-icons">play_arrow</i> Empezar Examen
+            </button>
+        </div>
+
+        <div id="examContainer" style="display: none;">
             
-            // Simulamos una calificación para este ejemplo
-            const score = Math.floor(Math.random() * 11); // Calificación entre 0 y 10
-            const resultElement = document.getElementById('student-result');
-            const feedbackElement = document.getElementById('feedback');
+            <div class="header-info">
+                <div>
+                    <label>Estudiante:</label>
+                    <span id="studentNameDisplay"></span>
+                </div>
+                <div id="timer" class="timer">
+                    <i class="material-icons">timer</i> Tiempo Restante: 30:00
+                </div>
+            </div>
+            
+            <p class="instructions">
+                **Instrucciones:** Use la tabla de datos a continuación para responder. La primera fila de datos es la **Fila 2**.
+            </p>
 
-            // Mostrar el resultado y el feedback
-            let feedbackMessage = '';
-            if (score >= 7) {
-                resultElement.innerText = `Estudiante: ${studentName}, tu calificación es ${score}/10. ¡Has aprobado! 🎉`;
-            } else {
-                feedbackMessage = 'Necesitas reforzar los temas clave del examen.';
-                resultElement.innerText = `Estudiante: ${studentName}, tu calificación es ${score}/10. Lo siento, reprobaste. 😔`;
-            }
-            feedbackElement.innerText = feedbackMessage;
+            <h2>Tabla de Datos</h2>
+            <table id="dataTable">
+                <thead>
+                    <tr><th>Fila</th><th>A</th><th>B</th><th>C</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>2</td><td>19</td><td>5</td><td>7</td></tr>
+                    <tr><td>3</td><td>18</td><td>35</td><td>3</td></tr>
+                    <tr><td>4</td><td>23</td><td>12</td><td>21</td></tr>
+                    <tr><td>5</td><td>31</td><td>16</td><td>37</td></tr>
+                    <tr><td>6</td><td>25</td><td>27</td><td>19</td></tr>
+                    <tr><td>7</td><td>10</td><td>6</td><td>23</td></tr>
+                    <tr><td>8</td><td>19</td><td>5</td><td>37</td></tr>
+                    <tr><td>9</td><td>14</td><td>30</td><td>6</td></tr>
+                    <tr><td>10</td><td>22</td><td>22</td><td>15</td></tr>
+                    <tr><td>11</td><td>20</td><td>22</td><td>20</td></tr>
+                </tbody>
+            </table>
 
-            // Mostrar resultados en la página
-            document.getElementById('results').style.display = 'block';
-            document.getElementById('download-pdf-btn').style.display = 'inline-block';
+            <form id="quizForm">
+                <h2>Preguntas de Opción Múltiple</h2>
+
+                <div class="question" data-question-id="1"><p>1. ¿Cuál es la suma de los valores de la columna A?</p><label><input type="radio" name="q1" value="A"> A. 195</label><label><input type="radio" name="q1" value="B"> B. 196</label><label><input type="radio" name="q1" value="C"> C. 192</label><label><input type="radio" name="q1" value="D"> D. 201</label></div>
+                <div class="question" data-question-id="2"><p>2. ¿Cuál es la suma de los valores de la columna B?</p><label><input type="radio" name="q2" value="A"> A. 180</label><label><input type="radio" name="q2" value="B"> B. 186</label><label><input type="radio" name="q2" value="C"> C. 175</label><label><input type="radio" name="q2" value="D"> D. 190</label></div>
+                <div class="question" data-question-id="3"><p>3. ¿Cuál es la suma de los valores de la columna C?</p><label><input type="radio" name="q3" value="A"> A. 181</label><label><input type="radio" name="q3" value="B"> B. 186</label><label><input type="radio" name="q3" value="C"> C. 188</label><label><input type="radio" name="q3" value="D"> D. 182</label></div>
+                <div class="question" data-question-id="4"><p>4. Resta el valor de la celda B2 menos C2. (Nota: La respuesta correcta corresponde a B3 - C3)</p><label><input type="radio" name="q4" value="A"> A. 32</label><label><input type="radio" name="q4" value="B"> B. 29</label><label><input type="radio" name="q4" value="C"> C. 28</label><label><input type="radio" name="q4" value="D"> D. 23</label></div>
+                <div class="question" data-question-id="5"><p>5. Resta el valor total de la columna C a la suma total de la columna A.</p><label><input type="radio" name="q5" value="A"> A. 10</label><label><input type="radio" name="q5" value="B"> B. 5</label><label><input type="radio" name="q5" value="C"> C. 20</label><label><input type="radio" name="q5" value="D"> D. 13</label></div>
+                <div class="question" data-question-id="6"><p>6. Multiplica el valor de la celda A5 por C5. (Nota: La respuesta correcta corresponde a A6 * C6)</p><label><input type="radio" name="q6" value="A"> A. 476</label><label><input type="radio" name="q6" value="B"> B. 465</label><label><input type="radio" name="q6" value="C"> C. 485</label><label><input type="radio" name="q6" value="D"> D. 475</label></div>
+                <div class="question" data-question-id="7"><p>7. Multiplica el valor de la celda B6 por A6. (Nota: La respuesta correcta corresponde a B7 * A7)</p><label><input type="radio" name="q7" value="A"> A. 60</label><label><input type="radio" name="q7" value="B"> B. 61</label><label><input type="radio" name="q7" value="C"> C. 68</label><label><input type="radio" name="q7" value="D"> D. 51</label></div>
+                <div class="question" data-question-id="8"><p>8. Multiplica el total de la columna B por el total de la columna C.</p><label><input type="radio" name="q8" value="A"> A. 33841</label><label><input type="radio" name="q8" value="B"> B. 33835</label><label><input type="radio" name="q8" value="C"> C. 33839</label><label><input type="radio" name="q8" value="D"> D. 33840</label></div>
+                <div class="question" data-question-id="9"><p>9. Divide el valor de la celda A7 entre B7. (Nota: La respuesta correcta corresponde a A8 / B8)</p><label><input type="radio" name="q9" value="A"> A. 2.2</label><label><input type="radio" name="q9" value="B"> B. 1.01</label><label><input type="radio" name="q9" value="C"> C. 3.4</label><label><input type="radio" name="q9" value="D"> D. 3.8</label></div>
+                <div class="question" data-question-id="10"><p>10. Divide el total de la columna A entre el total de la columna B.</p><label><input type="radio" name="q10" value="A"> A. 3.72</label><label><input type="radio" name="q10" value="B"> B. 0.52</label><label><input type="radio" name="q10" value="C"> C. 4.05</label><label><input type="radio" name="q10" value="D"> D. 1.12</label></div>
+                <div class="question" data-question-id="11"><p>11. Divide el valor de C8 entre A8. (Nota: La respuesta correcta corresponde a C9 / A9)</p><label><input type="radio" name="q11" value="A"> A. -0.26</label><label><input type="radio" name="q11" value="B"> B. 0.71</label><label><input type="radio" name="q11" value="C"> C. 0.43</label><label><input type="radio" name="q11" value="D"> D. -0.55</label></div>
+                <div class="question" data-question-id="12"><p>12. Calcula el promedio de la columna A.</p><label><input type="radio" name="q12" value="A"> A. 17.32</label><label><input type="radio" name="q12" value="B"> B. 17.11</label><label><input type="radio" name="q12" value="C"> C. 22.2</label><label><input type="radio" name="q12" value="D"> D. 20.1</label></div>
+                <div class="question" data-question-id="13"><p>13. Calcula el promedio de la columna B.</p><label><input type="radio" name="q13" value="A"> A. 17.36</label><label><input type="radio" name="q13" value="B"> B. 15.38</label><label><input type="radio" name="q13" value="C"> C. 16.57</label><label><input type="radio" name="q13" value="D"> D. 18.0</label></div>
+                <div class="question" data-question-id="14"><p>14. Calcula el promedio de la columna C.</p><label><input type="radio" name="q14" value="A"> A. 18.8</label><label><input type="radio" name="q14" value="B"> B. 17.47</label><label><input type="radio" name="q14" value="C"> C. 17.21</label><label><input type="radio" name="q14" value="D"> D. 15.85</label></div>
+                <div class="question" data-question-id="15"><p>15. Suma los valores de las celdas A3, B3 y C3.</p><label><input type="radio" name="q15" value="A"> A. 58</label><label><input type="radio" name="q15" value="B"> B. 59</label><label><input type="radio" name="q15" value="C"> C. 51</label><label><input type="radio" name="q15" value="D"> D. 56</label></div>
+                <div class="question" data-question-id="16"><p>16. Multiplica los valores de las celdas A9, B9 y C9. (Nota: La respuesta correcta corresponde a A10 * B10 * C10)</p><label><input type="radio" name="q16" value="A"> A. 7260</label><label><input type="radio" name="q16" value="B"> B. 7268</label><label><input type="radio" name="q16" value="C"> C. 7266</label><label><input type="radio" name="q16" value="D"> D. 7252</label></div>
+                <div class="question" data-question-id="17"><p>17. Resta el promedio de la columna C al promedio de la columna B.</p><label><input type="radio" name="q17" value="A"> A. -2.98</label><label><input type="radio" name="q17" value="B"> B. -1.16</label><label><input type="radio" name="q17" value="C"> C. -0.8</label><label><input type="radio" name="q17" value="D"> D. -2.96</label></div>
+                <div class="question" data-question-id="18"><p>18. Divide la suma total de la columna A entre la suma de la columna C.</p><label><input type="radio" name="q18" value="A"> A. -0.5</label><label><input type="radio" name="q18" value="B"> B. 1.07</label><label><input type="radio" name="q18" value="C"> C. 3.27</label><label><input type="radio" name="q18" value="D"> D. -1.69</label></div>
+                
+                <div class="action-buttons">
+                    <button type="button" id="submitBtn"><i class="material-icons">check_circle</i> Calificar Examen</button>
+                    <button type="button" id="pdfBtn" style="display: none;"><i class="material-icons">picture_as_pdf</i> Generar PDF de Resultados</button>
+                    <a id="whatsappBtn" href="#" target="_blank" class="whatsapp-link">
+                        <i class="material-icons">send</i> Enviar por WhatsApp
+                    </a>
+                </div>
+            </form>
+
+            <div id="results" class="results" style="display: none;">
+                <h2>Resultados Finales</h2>
+                <p><strong><i class="material-icons" style="font-size: 16px; vertical-align: middle;">person</i> Estudiante:</strong> <span id="studentNameResult"></span></p>
+                <p><strong><i class="material-icons" style="font-size: 16px; vertical-align: middle;">score</i> Puntuación:</strong> <span id="scoreResult"></span></p>
+                <p><strong><i class="material-icons" style="font-size: 16px; vertical-align: middle;">grade</i> Calificación / 10:</strong> <span id="finalGradeResult"></span></p>
+                <p><strong><i class="material-icons" style="font-size: 16px; vertical-align: middle;">info</i> Estado:</strong> <span id="statusMessage"></span></p>
+                <div id="feedback"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // =================================================
+        // === LÓGICA JAVASCRIPT ===
+        // =================================================
+
+        const ANSWER_KEY = {
+            'q1': 'D', 'q2': 'A', 'q3': 'C', 'q4': 'A', 'q5': 'D', 'q6': 'D',
+            'q7': 'A', 'q8': 'D', 'q9': 'D', 'q10': 'D', 'q11': 'C', 'q12': 'D',
+            'q13': 'D', 'q14': 'A', 'q15': 'D', 'q16': 'A', 'q17': 'C', 'q18': 'B'
+        };
+
+        const TOTAL_QUESTIONS = Object.keys(ANSWER_KEY).length;
+        const EXAM_DURATION = 30 * 60; // 30 minutos en segundos
+        const WHATSAPP_NUMBER = '593967879068'; // Número 0967879068 con código de país 593 (Ecuador)
+        let timeRemaining = EXAM_DURATION;
+        let timerInterval;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const startExamBtn = document.getElementById('startExamBtn');
+            const submitBtn = document.getElementById('submitBtn');
+            const pdfBtn = document.getElementById('pdfBtn');
+            
+            startExamBtn.addEventListener('click', startExam);
+
+            submitBtn.addEventListener('click', () => {
+                clearInterval(timerInterval); // Detener el temporizador
+                calculateScore();
+            });
+
+            pdfBtn.addEventListener('click', generatePDF);
+            // El botón de WhatsApp se gestiona en la función generatePDF
         });
 
-        document.getElementById('download-pdf-btn').addEventListener('click', () => {
+        // --- Nuevas funciones de flujo ---
+        function startExam() {
+            const studentNameInput = document.getElementById('studentName');
+            const studentName = studentNameInput.value.trim();
+
+            if (studentName === '') {
+                alert('Por favor, ingresa tu Nombre y Apellido para empezar.');
+                studentNameInput.focus();
+                return;
+            }
+
+            // Ocultar pantalla de inicio
+            document.getElementById('startScreen').style.display = 'none';
+            // Mostrar contenedor del examen
+            document.getElementById('examContainer').style.display = 'block';
+            // Mostrar nombre del estudiante en el encabezado
+            document.getElementById('studentNameDisplay').textContent = studentName;
+            
+            startTimer();
+        }
+
+        // --- Funciones del examen ---
+
+        function startTimer() {
+            const timerDisplay = document.getElementById('timer');
+
+            timerInterval = setInterval(() => {
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    timeRemaining = 0;
+                    timerDisplay.innerHTML = '<i class="material-icons">timer_off</i> Tiempo Agotado';
+                    alert('¡El tiempo ha terminado! Se procederá a calificar el examen.');
+                    calculateScore();
+                    return;
+                }
+
+                const minutes = Math.floor(timeRemaining / 60);
+                const seconds = timeRemaining % 60;
+                const timeString = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+                timerDisplay.innerHTML = `<i class="material-icons">timer</i> Tiempo Restante: ${timeString}`;
+                timeRemaining--;
+            }, 1000);
+        }
+
+        function calculateScore() {
+            const form = document.getElementById('quizForm');
+            const studentName = document.getElementById('studentNameDisplay').textContent;
+            
+            let score = 0;
+            const feedbackDiv = document.getElementById('feedback');
+            feedbackDiv.innerHTML = '<h3>Retroalimentación Detallada</h3>';
+            const questions = document.querySelectorAll('.question');
+            const questionTextMap = {};
+
+            questions.forEach((qDiv, index) => {
+                const qId = `q${index + 1}`;
+                const questionNumber = index + 1;
+                const userAnswer = form.elements[qId]?.value;
+                const correctAnswer = ANSWER_KEY[qId];
+                const questionP = qDiv.querySelector('p').textContent;
+                
+                questionTextMap[qId] = questionP.replace(/^\d+\.\s*/, ''); 
+
+                const correctOptionInput = qDiv.querySelector(`input[value="${correctAnswer}"]`);
+                const correctOptionLabel = correctOptionInput ? correctOptionInput.parentNode.textContent.trim() : 'N/A';
+                
+                let feedbackHTML = '';
+
+                if (userAnswer === correctAnswer) {
+                    score++;
+                    qDiv.classList.add('correct');
+                    qDiv.classList.remove('incorrect');
+                    feedbackHTML = `<p class="feedback-correct"><i class="material-icons">check_circle</i> Pregunta ${questionNumber}: ¡Correcta! Tu respuesta: ${userAnswer}</p>`;
+                } else {
+                    qDiv.classList.add('incorrect');
+                    qDiv.classList.remove('correct');
+                    const userChoice = userAnswer ? userAnswer : 'No respondida';
+                    
+                    feedbackHTML = `
+                        <p class="feedback-incorrect">
+                            <i class="material-icons">cancel</i> Pregunta ${questionNumber}: Incorrecta. 
+                            Tu respuesta: ${userChoice}. 
+                            La respuesta **correcta** es **${correctAnswer}** (${correctOptionLabel})
+                        </p>`;
+                }
+                feedbackDiv.innerHTML += feedbackHTML;
+            });
+
+            displayResults(studentName, score, TOTAL_QUESTIONS);
+            window.questionTextMap = questionTextMap;
+        }
+
+        function displayResults(studentName, score, total) {
+            const resultsDiv = document.getElementById('results');
+            const scoreResult = document.getElementById('scoreResult');
+            const finalGradeResult = document.getElementById('finalGradeResult');
+            const statusMessage = document.getElementById('statusMessage');
+            const studentNameResult = document.getElementById('studentNameResult');
+            
+            // Ocultar WhatsApp hasta que se genere el PDF
+            document.getElementById('whatsappBtn').style.display = 'none';
+            document.getElementById('pdfBtn').style.display = 'inline-flex';
+
+            const finalGrade = (score / total) * 10;
+            const gradeFormatted = finalGrade.toFixed(2);
+
+            let status = '';
+            let message = '';
+
+            statusMessage.className = '';
+            if (finalGrade > 7) {
+                status = 'Aprobado';
+                message = '¡Felicitaciones! Has **aprobado** el examen con una excelente calificación.';
+                statusMessage.classList.add('status-approved');
+            } else if (finalGrade === 7) {
+                status = 'Aprobado';
+                message = '¡Aprobado! Pero te recomendamos **seguir practicando** para asegurar un mayor dominio de los temas.';
+                statusMessage.classList.add('status-practice');
+            } else {
+                status = 'Reprobado';
+                message = 'Necesitas reforzar tus conocimientos. ¡Sigue estudiando!';
+                statusMessage.classList.add('status-reproved');
+            }
+
+            studentNameResult.textContent = studentName;
+            scoreResult.textContent = `${score} / ${total}`;
+            finalGradeResult.textContent = gradeFormatted;
+            statusMessage.textContent = `${status}. ${message}`;
+            resultsDiv.style.display = 'block';
+        }
+
+        // --- Función para generar PDF y habilitar WhatsApp ---
+
+        function generatePDF() {
+            if (typeof window.jspdf === 'undefined') {
+                alert('Error: La librería jsPDF no se ha cargado correctamente.');
+                return;
+            }
+            
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
+            
+            const studentName = document.getElementById('studentNameResult').textContent;
+            const gradeText = document.getElementById('finalGradeResult').textContent;
+            const scoreText = document.getElementById('scoreResult').textContent;
+            const statusText = document.getElementById('statusMessage').textContent;
+            const quizForm = document.getElementById('quizForm');
+            const filename = `Examen_Resultados_${studentName.replace(/\s/g, '_')}.pdf`;
 
-            const studentName = document.getElementById('student-name').value || 'Nombre no ingresado';
-            const resultText = document.getElementById('student-result').innerText;
-            const feedbackText = document.getElementById('feedback').innerText;
+            // ... (Lógica de generación de PDF idéntica a la anterior para mantener el formato) ...
+            
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(18);
+            doc.text('Resultados del Examen de Hojas de Cálculo', 10, 20);
 
-            // Generar contenido del PDF
-            doc.text('Centro de Especialidades y Tutorías Académicas "Los Naranjos"', 10, 10);
-            doc.text(`Estudiante: ${studentName}`, 10, 20);
-            doc.text('Resultados del Examen:', 10, 30);
-            doc.text(resultText, 10, 40);
-            if (feedbackText) {
-                doc.text('Sugerencias:', 10, 50);
-                doc.text(feedbackText, 10, 60);
-            }
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(12);
+            doc.text(`Estudiante: ${studentName}`, 10, 35);
+            doc.text(`Puntuación: ${scoreText}`, 10, 45);
+            doc.text(`Calificación / 10: ${gradeText}`, 10, 55);
+            doc.text(`Estado: ${statusText}`, 10, 65, { maxWidth: 190 });
+            
+            doc.line(10, 75, 200, 75);
 
-            // Descargar el archivo PDF
-            doc.save('resultado_examen.pdf');
-        });
+            let yPos = 85;
+            
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(14);
+            doc.text('Detalle de Respuestas', 10, yPos);
+            yPos += 10;
+            
+            doc.setFontSize(10);
+            
+            const questions = document.querySelectorAll('.question');
+            questions.forEach((qDiv, index) => {
+                const qId = `q${index + 1}`;
+                const questionNumber = index + 1;
+                const userAnswer = quizForm.elements[qId]?.value || 'N/A';
+                const correctAnswer = ANSWER_KEY[qId];
+                const isCorrect = userAnswer === correctAnswer;
+                const questionText = window.questionTextMap[qId];
+                
+                const correctOptionInput = qDiv.querySelector(`input[value="${correctAnswer}"]`);
+                const correctOptionLabel = correctOptionInput ? correctOptionInput.parentNode.textContent.trim() : 'N/A';
+
+                if (yPos > 280) {
+                    doc.addPage();
+                    yPos = 20;
+                }
+                
+                doc.setFont('helvetica', 'bold');
+                doc.text(`${questionNumber}. ${questionText}`, 10, yPos, { maxWidth: 190 });
+                yPos += 7;
+
+                doc.setFont('helvetica', 'normal');
+                doc.text(`   - Tu Respuesta: ${userAnswer}`, 10, yPos);
+                
+                if (isCorrect) {
+                    doc.setTextColor(40, 167, 69);
+                    doc.text(`   - Estado: Correcta`, 70, yPos);
+                } else {
+                    doc.setTextColor(220, 53, 69);
+                    doc.text(`   - Estado: Incorrecta`, 70, yPos);
+                    doc.setTextColor(0, 0, 0);
+                    doc.text(`   - Correcta: ${correctAnswer} (${correctOptionLabel})`, 120, yPos, { maxWidth: 80 });
+                }
+                doc.setTextColor(0, 0, 0);
+                yPos += 10;
+                
+                doc.line(10, yPos - 2, 200, yPos - 2); 
+            });
+
+            // 1. Guardar el PDF
+            doc.save(filename);
+
+            // 2. Habilitar el botón de WhatsApp con el mensaje
+            const whatsappBtn = document.getElementById('whatsappBtn');
+            const whatsappMessage = encodeURIComponent(`Hola, te envío mi examen. Mi calificación final es ${gradeText}/10. (Adjunta el archivo PDF llamado "${filename}" que acabas de descargar)`);
+            
+            whatsappBtn.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${whatsappMessage}`;
+            whatsappBtn.style.display = 'inline-flex';
+            
+            alert(`El archivo PDF "${filename}" ha sido generado. Usa el botón "Enviar por WhatsApp" para compartirlo.`);
+        }
     </script>
-    <script src="scriptex.js"></script>
 </body>
 </html>
