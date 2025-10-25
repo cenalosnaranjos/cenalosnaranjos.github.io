@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Evaluador de Tablas de Multiplicar</title>
+    <title>Evaluador de Tablas de Multiplicar con IA</title>
     <link rel="icon" type="image/x-icon" href="icono.png">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
@@ -41,6 +41,10 @@
             --checkbox-label-bg: #f2f4f7;
             --checkbox-label-border: #e9ecef;
             --checkbox-label-hover: #e9ecef;
+            --ia-mode-bg: #f0f8ff;
+            --ia-mode-border: #4da6ff;
+            --learning-mode-bg: #f0fff0;
+            --learning-mode-border: #5cb85c;
         }
  
         [data-theme="dark"] {
@@ -74,6 +78,10 @@
             --checkbox-label-bg: #495057;
             --checkbox-label-border: #495057;
             --checkbox-label-hover: #5a646c;
+            --ia-mode-bg: #1a3a5f;
+            --ia-mode-border: #4da6ff;
+            --learning-mode-bg: #1a3f1a;
+            --learning-mode-border: #5cb85c;
         }
 
         /* General Styles */
@@ -99,7 +107,7 @@
 
         .container {
             width: 100%;
-            max-width: 700px; /* Slightly smaller for a tighter feel */
+            max-width: 800px; /* Slightly larger for more content */
             margin: 0 auto;
             padding: 2rem;
             background-color: var(--card-bg);
@@ -525,6 +533,16 @@
             color: var(--accent-color);
         }
 
+        /* Special styles for AI mode button */
+        .table-option-button.ai-mode {
+            background-color: var(--ia-mode-bg);
+            border-color: var(--ia-mode-border);
+        }
+        
+        .table-option-button.learning-mode {
+            background-color: var(--learning-mode-bg);
+            border-color: var(--learning-mode-border);
+        }
 
         .table-options-grid {
             display: grid;
@@ -627,6 +645,76 @@
             color: var(--text-color);
         }
 
+        /* AI Insights Panel */
+        .ai-insights {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background-color: var(--ia-mode-bg);
+            border: 2px solid var(--ia-mode-border);
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .ai-insights h3 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ai-insights-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .ai-insight-item {
+            padding: 1rem;
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .ai-insight-item h4 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .ai-insight-item p {
+            font-size: 0.9rem;
+            color: var(--text-color);
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin: 1.5rem 0;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background-color: var(--input-bg);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, var(--gradient-start), var(--gradient-end));
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             body {
@@ -706,6 +794,9 @@
             .checkbox-grid {
                 grid-template-columns: repeat(2, 1fr); /* 2 columns for checkboxes on smaller screens */
             }
+            .ai-insights-content {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 480px) {
@@ -740,11 +831,11 @@
             <div class="logo-container">
                 <img src="icono.png" alt="Logo de la Institución" class="instituto-logo">
             </div>
-            <h1>Evaluador de Tablas de Multiplicar</h1>
+            <h1>Evaluador de Tablas de Multiplicar con IA</h1>
         </header>
 
         <div class="form-init" id="formInicio">
-            <h1>Tiempo de evaluación: 3 minutos para tablas individuales, 10 para modo aleatorio y 4 minutos por tabla seleccionada en modo múltiple.</h1>
+            <h1>Tiempo de evaluación: 3 minutos para tablas individuales, 10 para modo aleatorio, 4 minutos por tabla seleccionada en modo múltiple, y 15 minutos para el modo IA.</h1>
             <label for="nombre">Nombre del estudiante:</label>
             <input type="text" id="nombre" placeholder="Ej: Juan Pérez" required autocomplete="name">
             
@@ -755,6 +846,20 @@
                     <p>Evalúa tu conocimiento con un desafío aleatorio de 3 tablas (del 2 al 12).</p>
                     <button class="table-option-button" data-value="random" id="random-table-button">
                         <i class="fas fa-random"></i> Modo Aleatorio
+                    </button>
+                </div>
+
+                <div class="ai-mode-options">
+                    <p>Modo IA: La inteligencia artificial analiza tu desempeño y adapta las preguntas según tus necesidades.</p>
+                    <button class="table-option-button ai-mode" data-value="ia" id="ia-mode-button">
+                        <i class="fas fa-robot"></i> Modo IA Inteligente
+                    </button>
+                </div>
+
+                <div class="learning-mode-options">
+                    <p>Modo Aprendizaje Rápido: Enfócate en las tablas que más te cuestan.</p>
+                    <button class="table-option-button learning-mode" data-value="learning" id="learning-mode-button">
+                        <i class="fas fa-bolt"></i> Modo Aprendizaje Rápido
                     </button>
                 </div>
 
@@ -803,13 +908,31 @@
             <h2>Resultados</h2>
             <p id="mensaje-resultado"></p>
             <div id="errores" class="errores-lista" style="display: none;"></div>
+            
+            <div class="ai-insights" id="aiInsights" style="display: none;">
+                <h3><i class="fas fa-robot"></i> Análisis de IA</h3>
+                <div class="ai-insights-content" id="aiInsightsContent">
+                    <!-- AI insights will be populated here -->
+                </div>
+            </div>
+            
+            <div class="progress-container" id="progressContainer" style="display: none;">
+                <div class="progress-label">
+                    <span>Progreso general</span>
+                    <span id="progressPercentage">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+            </div>
+            
             <button id="descargar">Descargar PDF</button>
             <button id="reiniciar">Nueva Evaluación</button>
         </div>
     </div>
 
     <script>
-        let selectedTableMode; // 'single', 'random', or 'multi'
+        let selectedTableMode; // 'single', 'random', 'ia', 'learning', or 'multi'
         let selectedTable; // For 'single' mode (e.g., '5')
         let selectedRandomTables = []; // For 'random' mode (e.g., [2, 7, 10])
         let selectedMultiTables = []; // For 'multi' mode (e.g., [2, 3, 5])
@@ -819,6 +942,7 @@
         let timeLeft; 
         let evaluationCompleted = false;
         let totalQuestions; // To store the total number of questions for dynamic scoring
+        let studentHistory = {}; // To store student performance history
 
         // Modo Oscuro
         const themeToggle = document.getElementById('themeToggle');
@@ -855,6 +979,22 @@
         // Apply theme on load
         applyTheme();
 
+        // Load student history from localStorage
+        function loadStudentHistory() {
+            const savedHistory = localStorage.getItem('studentHistory');
+            if (savedHistory) {
+                studentHistory = JSON.parse(savedHistory);
+            }
+        }
+
+        // Save student history to localStorage
+        function saveStudentHistory() {
+            localStorage.setItem('studentHistory', JSON.stringify(studentHistory));
+        }
+
+        // Initialize student history
+        loadStudentHistory();
+
         // Timer functions
         function formatTime(seconds) {
             const minutes = Math.floor(seconds / 60);
@@ -888,10 +1028,10 @@
             timeLeft--;
         }
 
-        // Table Selection Logic for single table / random 3 tables
+        // Table Selection Logic for single table / random 3 tables / IA mode / Learning mode
         document.querySelectorAll('.table-option-button').forEach(button => {
             button.addEventListener('click', () => {
-                // Remove 'selected' class from all single/random buttons
+                // Remove 'selected' class from all single/random/IA/learning buttons
                 document.querySelectorAll('.table-option-button').forEach(btn => {
                     btn.classList.remove('selected');
                 });
@@ -906,7 +1046,9 @@
                 
                 // Store the selected value and mode
                 selectedTable = button.dataset.value;
-                selectedTableMode = (selectedTable === 'random') ? 'random' : 'single';
+                selectedTableMode = (selectedTable === 'random') ? 'random' : 
+                                   (selectedTable === 'ia') ? 'ia' : 
+                                   (selectedTable === 'learning') ? 'learning' : 'single';
 
                 document.getElementById('iniciar').disabled = false; // Enable the main start button
                 document.getElementById('iniciarMulti').disabled = true; // Disable multi-select start button
@@ -928,7 +1070,7 @@
         // Logic for multi-select checkboxes
         document.querySelectorAll('.multi-table-checkbox').forEach(checkbox => {
             checkbox.addEventListener('change', () => {
-                // Clear single/random selection
+                // Clear single/random/IA/learning selection
                 document.querySelectorAll('.table-option-button').forEach(btn => {
                     btn.classList.remove('selected');
                 });
@@ -1007,6 +1149,16 @@
                 timeLeft = selectedMultiTables.length * 4 * 60; // 4 minutes per selected table
                 tablesToGenerateQuestions = [...selectedMultiTables]; // Use the selected tables
                 totalQuestions = selectedMultiTables.length * 12; // Number of selected tables * 12 questions each
+            } else if (selectedTableMode === 'ia') {
+                tablaDisplay = 'Modo IA: Evaluación Inteligente';
+                timeLeft = 900; // 15 minutos para el modo IA
+                tablesToGenerateQuestions = generateIATables();
+                totalQuestions = 30; // Fixed number of questions for IA mode
+            } else if (selectedTableMode === 'learning') {
+                tablaDisplay = 'Modo Aprendizaje Rápido';
+                timeLeft = 600; // 10 minutos para el modo aprendizaje rápido
+                tablesToGenerateQuestions = generateLearningTables();
+                totalQuestions = 25; // Fixed number of questions for learning mode
             }
 
             document.getElementById('tabla-seleccionada').textContent = `Evaluando: ${tablaDisplay}`;
@@ -1023,28 +1175,130 @@
             timerInterval = setInterval(updateTimer, 1000);
         }
 
+        // AI algorithm to determine which tables to focus on
+        function generateIATables() {
+            // If no history exists, use a balanced approach
+            if (!studentHistory.tables || Object.keys(studentHistory.tables).length === 0) {
+                return [2, 5, 7, 8, 9]; // Common difficult tables
+            }
+            
+            // Calculate performance for each table
+            const tablePerformance = {};
+            for (let table = 2; table <= 12; table++) {
+                if (studentHistory.tables[table]) {
+                    const total = studentHistory.tables[table].total || 0;
+                    const correct = studentHistory.tables[table].correct || 0;
+                    tablePerformance[table] = total > 0 ? (correct / total) : 0;
+                } else {
+                    tablePerformance[table] = 0; // Assume difficult if no data
+                }
+            }
+            
+            // Sort tables by performance (worst first)
+            const sortedTables = Object.keys(tablePerformance)
+                .map(table => ({ table: parseInt(table), performance: tablePerformance[table] }))
+                .sort((a, b) => a.performance - b.performance);
+            
+            // Select the 5 worst performing tables
+            const worstTables = sortedTables.slice(0, 5).map(item => item.table);
+            
+            // If we don't have 5 tables with data, add some common difficult ones
+            if (worstTables.length < 5) {
+                const commonDifficult = [7, 8, 9, 6, 12];
+                for (let table of commonDifficult) {
+                    if (!worstTables.includes(table) && worstTables.length < 5) {
+                        worstTables.push(table);
+                    }
+                }
+            }
+            
+            return worstTables;
+        }
+
+        // Learning mode algorithm - focuses on weak areas
+        function generateLearningTables() {
+            // If no history exists, focus on common difficult tables
+            if (!studentHistory.tables || Object.keys(studentHistory.tables).length === 0) {
+                return [6, 7, 8, 9]; // Common difficult tables
+            }
+            
+            // Identify the weakest table
+            let weakestTable = 2;
+            let worstPerformance = 1; // Start with 100% (best possible)
+            
+            for (let table = 2; table <= 12; table++) {
+                if (studentHistory.tables[table]) {
+                    const total = studentHistory.tables[table].total || 0;
+                    const correct = studentHistory.tables[table].correct || 0;
+                    const performance = total > 0 ? (correct / total) : 0;
+                    
+                    if (performance < worstPerformance) {
+                        worstPerformance = performance;
+                        weakestTable = table;
+                    }
+                }
+            }
+            
+            // Focus on the weakest table and related tables (neighbors)
+            const focusTables = [weakestTable];
+            
+            // Add tables that are mathematically related
+            if (weakestTable % 2 === 0) {
+                focusTables.push(weakestTable / 2);
+            }
+            
+            // Add tables that are close in value
+            for (let i = weakestTable - 1; i <= weakestTable + 1; i++) {
+                if (i >= 2 && i <= 12 && !focusTables.includes(i)) {
+                    focusTables.push(i);
+                }
+            }
+            
+            // Ensure we have at least 3 tables
+            while (focusTables.length < 3) {
+                const randomTable = Math.floor(Math.random() * 11) + 2; // 2-12
+                if (!focusTables.includes(randomTable)) {
+                    focusTables.push(randomTable);
+                }
+            }
+            
+            return focusTables;
+        }
+
         function generarPreguntas(tables) {
             const contenedor = document.getElementById('lista-preguntas');
             contenedor.innerHTML = '';
             
             // Collect all questions first
             let allQuestions = [];
-            tables.forEach(currentTable => {
-                const multipliers = Array.from({length: 12}, (_, i) => i + 1);
-                multipliers.forEach(multiplicador => {
-                    const correctAnswer = currentTable * multiplicador;
-                    allQuestions.push({
-                        factor1: currentTable,
-                        factor2: multiplicador,
-                        correctAnswer: correctAnswer
+            
+            // For IA and Learning modes, generate specific questions based on algorithm
+            if (selectedTableMode === 'ia' || selectedTableMode === 'learning') {
+                allQuestions = generateAdaptiveQuestions(tables);
+            } else {
+                // For other modes, generate all questions for selected tables
+                tables.forEach(currentTable => {
+                    const multipliers = Array.from({length: 12}, (_, i) => i + 1);
+                    multipliers.forEach(multiplicador => {
+                        const correctAnswer = currentTable * multiplicador;
+                        allQuestions.push({
+                            factor1: currentTable,
+                            factor2: multiplicador,
+                            correctAnswer: correctAnswer
+                        });
                     });
                 });
-            });
-
-            // Shuffle all questions together to make it truly random across selected tables
-            for (let i = allQuestions.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [allQuestions[i], allQuestions[j]] = [allQuestions[j], allQuestions[i]];
+                
+                // Shuffle all questions together
+                for (let i = allQuestions.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [allQuestions[i], allQuestions[j]] = [allQuestions[j], allQuestions[i]];
+                }
+                
+                // For modes other than IA and Learning, limit to totalQuestions
+                if (allQuestions.length > totalQuestions) {
+                    allQuestions = allQuestions.slice(0, totalQuestions);
+                }
             }
 
             allQuestions.forEach(q => {
@@ -1064,6 +1318,84 @@
             });
         }
 
+        // Generate adaptive questions based on student performance
+        function generateAdaptiveQuestions(tables) {
+            const questions = [];
+            
+            // For each table, generate questions with emphasis on difficult multipliers
+            tables.forEach(table => {
+                // Determine which multipliers are difficult for this table
+                const difficultMultipliers = identifyDifficultMultipliers(table);
+                
+                // Generate more questions for difficult multipliers
+                const totalForTable = selectedTableMode === 'ia' ? 6 : 5; // 6 questions per table in IA mode, 5 in learning
+                const difficultCount = Math.ceil(totalForTable * 0.7); // 70% difficult questions
+                const easyCount = totalForTable - difficultCount;
+                
+                // Add difficult questions
+                for (let i = 0; i < difficultCount && difficultMultipliers.length > 0; i++) {
+                    const multiplier = difficultMultipliers[i % difficultMultipliers.length];
+                    questions.push({
+                        factor1: table,
+                        factor2: multiplier,
+                        correctAnswer: table * multiplier
+                    });
+                }
+                
+                // Add easy questions (random multipliers not in difficult list)
+                const allMultipliers = Array.from({length: 12}, (_, i) => i + 1);
+                const easyMultipliers = allMultipliers.filter(m => !difficultMultipliers.includes(m));
+                
+                for (let i = 0; i < easyCount && easyMultipliers.length > 0; i++) {
+                    const randomIndex = Math.floor(Math.random() * easyMultipliers.length);
+                    const multiplier = easyMultipliers[randomIndex];
+                    questions.push({
+                        factor1: table,
+                        factor2: multiplier,
+                        correctAnswer: table * multiplier
+                    });
+                }
+            });
+            
+            // Shuffle questions
+            for (let i = questions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [questions[i], questions[j]] = [questions[j], questions[i]];
+            }
+            
+            return questions;
+        }
+
+        // Identify which multipliers are difficult for a given table
+        function identifyDifficultMultipliers(table) {
+            // If we have history for this table, use it
+            if (studentHistory.tables && studentHistory.tables[table] && studentHistory.tables[table].multipliers) {
+                const multiplierData = studentHistory.tables[table].multipliers;
+                const difficulties = [];
+                
+                for (let multiplier = 1; multiplier <= 12; multiplier++) {
+                    if (multiplierData[multiplier]) {
+                        const total = multiplierData[multiplier].total || 0;
+                        const correct = multiplierData[multiplier].correct || 0;
+                        const accuracy = total > 0 ? (correct / total) : 1;
+                        difficulties.push({ multiplier, accuracy });
+                    } else {
+                        difficulties.push({ multiplier, accuracy: 1 }); // Assume easy if no data
+                    }
+                }
+                
+                // Sort by accuracy (worst first)
+                difficulties.sort((a, b) => a.accuracy - b.accuracy);
+                
+                // Return the 6 most difficult multipliers
+                return difficulties.slice(0, 6).map(item => item.multiplier);
+            }
+            
+            // If no history, use common difficult multipliers
+            // These are typically larger numbers and numbers that are harder to multiply
+            return [6, 7, 8, 9, 11, 12];
+        }
+
         document.getElementById('calificar').addEventListener('click', () => {
             if (!evaluationCompleted) {
                 clearInterval(timerInterval);
@@ -1081,6 +1413,11 @@
             let correctas = 0;
             errores = [];
 
+            // Initialize student history if needed
+            if (!studentHistory.tables) {
+                studentHistory.tables = {};
+            }
+
             respuestas.forEach(input => {
                 input.disabled = true;
 
@@ -1089,10 +1426,23 @@
                 const factor1 = parseInt(input.dataset.factor1);
                 const factor2 = parseInt(input.dataset.factor2);
 
+                // Update student history
+                if (!studentHistory.tables[factor1]) {
+                    studentHistory.tables[factor1] = { total: 0, correct: 0, multipliers: {} };
+                }
+                if (!studentHistory.tables[factor1].multipliers[factor2]) {
+                    studentHistory.tables[factor1].multipliers[factor2] = { total: 0, correct: 0 };
+                }
+                
+                studentHistory.tables[factor1].total++;
+                studentHistory.tables[factor1].multipliers[factor2].total++;
+                
                 if(respuestaUsuario === correctAnswer) {
                     correctas++;
                     input.classList.add('correct');
                     input.classList.remove('incorrect');
+                    studentHistory.tables[factor1].correct++;
+                    studentHistory.tables[factor1].multipliers[factor2].correct++;
                 } else {
                     input.classList.add('incorrect');
                     input.classList.remove('correct');
@@ -1104,6 +1454,9 @@
                 }
             });
 
+            // Save updated history
+            saveStudentHistory();
+
             document.getElementById('calificar').disabled = true;
 
             mostrarResultados(correctas);
@@ -1112,6 +1465,11 @@
         function mostrarResultados(correctas) {
             const resultadoElement = document.getElementById('mensaje-resultado');
             const erroresElement = document.getElementById('errores');
+            const aiInsightsElement = document.getElementById('aiInsights');
+            const aiInsightsContent = document.getElementById('aiInsightsContent');
+            const progressContainer = document.getElementById('progressContainer');
+            const progressPercentage = document.getElementById('progressPercentage');
+            const progressFill = document.getElementById('progressFill');
 
             // totalQuestions is already set in handleStartEvaluation based on the mode
             const scoreOutOf10 = (correctas / totalQuestions) * 10;
@@ -1130,8 +1488,128 @@
                 erroresElement.style.display = 'block';
             }
 
+            // Show AI insights for IA and Learning modes
+            if (selectedTableMode === 'ia' || selectedTableMode === 'learning') {
+                generateAIInsights(correctas);
+                aiInsightsElement.style.display = 'block';
+            }
+
+            // Show progress for all modes
+            const overallProgress = calculateOverallProgress();
+            progressPercentage.textContent = `${overallProgress}%`;
+            progressFill.style.width = `${overallProgress}%`;
+            progressContainer.style.display = 'block';
+
             document.getElementById('preguntas').classList.add('hidden');
             document.getElementById('resultado').classList.remove('hidden');
+        }
+
+        // Calculate overall progress based on history
+        function calculateOverallProgress() {
+            if (!studentHistory.tables || Object.keys(studentHistory.tables).length === 0) {
+                return 0;
+            }
+            
+            let totalQuestions = 0;
+            let totalCorrect = 0;
+            
+            for (const table in studentHistory.tables) {
+                totalQuestions += studentHistory.tables[table].total || 0;
+                totalCorrect += studentHistory.tables[table].correct || 0;
+            }
+            
+            return totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) : 0;
+        }
+
+        // Generate AI insights based on performance
+        function generateAIInsights(correctas) {
+            const aiInsightsContent = document.getElementById('aiInsightsContent');
+            aiInsightsContent.innerHTML = '';
+            
+            // Insight 1: Overall performance
+            const performanceInsight = document.createElement('div');
+            performanceInsight.className = 'ai-insight-item';
+            const performance = (correctas / totalQuestions) * 100;
+            
+            let performanceText = '';
+            if (performance >= 90) {
+                performanceText = 'Excelente rendimiento. ¡Sigue así!';
+            } else if (performance >= 70) {
+                performanceText = 'Buen rendimiento. Con un poco más de práctica mejorarás.';
+            } else if (performance >= 50) {
+                performanceText = 'Rendimiento regular. Enfócate en las tablas más difíciles.';
+            } else {
+                performanceText = 'Necesitas más práctica. Te recomendamos repasar las tablas básicas.';
+            }
+            
+            performanceInsight.innerHTML = `
+                <h4>Rendimiento General</h4>
+                <p>${performanceText}</p>
+            `;
+            aiInsightsContent.appendChild(performanceInsight);
+            
+            // Insight 2: Weakest table
+            if (studentHistory.tables && Object.keys(studentHistory.tables).length > 0) {
+                let weakestTable = null;
+                let worstPerformance = 1;
+                
+                for (const table in studentHistory.tables) {
+                    const tableData = studentHistory.tables[table];
+                    const performance = tableData.total > 0 ? (tableData.correct / tableData.total) : 1;
+                    
+                    if (performance < worstPerformance) {
+                        worstPerformance = performance;
+                        weakestTable = table;
+                    }
+                }
+                
+                if (weakestTable) {
+                    const weakTableInsight = document.createElement('div');
+                    weakTableInsight.className = 'ai-insight-item';
+                    weakTableInsight.innerHTML = `
+                        <h4>Área de Mejora</h4>
+                        <p>Tu tabla más débil es la del ${weakestTable}. Te recomendamos practicarla más.</p>
+                    `;
+                    aiInsightsContent.appendChild(weakTableInsight);
+                }
+            }
+            
+            // Insight 3: Progress over time
+            const progressInsight = document.createElement('div');
+            progressInsight.className = 'ai-insight-item';
+            const overallProgress = calculateOverallProgress();
+            
+            let progressText = '';
+            if (overallProgress >= 80) {
+                progressText = '¡Vas muy bien! Tu progreso es excelente.';
+            } else if (overallProgress >= 60) {
+                progressText = 'Buen progreso. Continúa practicando regularmente.';
+            } else {
+                progressText = 'Necesitas practicar más frecuentemente para mejorar.';
+            }
+            
+            progressInsight.innerHTML = `
+                <h4>Progreso General</h4>
+                <p>${progressText}</p>
+            `;
+            aiInsightsContent.appendChild(progressInsight);
+            
+            // Insight 4: Recommendation
+            const recommendationInsight = document.createElement('div');
+            recommendationInsight.className = 'ai-insight-item';
+            
+            let recommendation = '';
+            if (selectedTableMode === 'ia') {
+                recommendation = 'Te recomendamos usar el Modo Aprendizaje Rápido para enfocarte en tus áreas más débiles.';
+            } else {
+                recommendation = 'Te recomendamos probar el Modo IA para una evaluación más personalizada.';
+            }
+            
+            recommendationInsight.innerHTML = `
+                <h4>Próximo Paso</h4>
+                <p>${recommendation}</p>
+            `;
+            aiInsightsContent.appendChild(recommendationInsight);
         }
 
         document.getElementById('reiniciar').addEventListener('click', () => {
@@ -1166,6 +1644,12 @@
             } else if (selectedTableMode === 'multi') {
                 tablaEvaluadaPDF = `Múltiples Tablas (Seleccionadas: ${selectedMultiTables.sort((a,b) => a-b).join(', ')})`;
                 totalMinutesForPDF = `${selectedMultiTables.length * 4} minutos`;
+            } else if (selectedTableMode === 'ia') {
+                tablaEvaluadaPDF = 'Modo IA: Evaluación Inteligente';
+                totalMinutesForPDF = '15 minutos';
+            } else if (selectedTableMode === 'learning') {
+                tablaEvaluadaPDF = 'Modo Aprendizaje Rápido';
+                totalMinutesForPDF = '10 minutos';
             }
             doc.text(`Tabla(s) evaluada(s): ${tablaEvaluadaPDF}`, 20, 40);
             
@@ -1182,7 +1666,7 @@
                     if (yPosition > 280) { // Check for page overflow
                         doc.addPage();
                         yPosition = 20;
-                    }
+                    } 
                     doc.text(`${error.pregunta} = ${error.respuesta} (Correcto: ${error.correcta})`, 20, yPosition);
                     yPosition += 7;
                 });
@@ -1195,6 +1679,40 @@
                 yPosition += 10;
             }
 
+            // Add AI insights to PDF if available
+            if (selectedTableMode === 'ia' || selectedTableMode === 'learning') {
+                if (yPosition > 250) { // Check for page overflow
+                    doc.addPage();
+                    yPosition = 20;
+                }
+                doc.text('Análisis de IA:', 20, yPosition);
+                yPosition += 10;
+                
+                const aiInsights = document.querySelectorAll('.ai-insight-item');
+                aiInsights.forEach(insight => {
+                    if (yPosition > 280) { // Check for page overflow
+                        doc.addPage();
+                        yPosition = 20;
+                    }
+                    const title = insight.querySelector('h4').textContent;
+                    const text = insight.querySelector('p').textContent;
+                    doc.setFont(undefined, 'bold');
+                    doc.text(`${title}:`, 20, yPosition);
+                    doc.setFont(undefined, 'normal');
+                    yPosition += 7;
+                    doc.text(text, 25, yPosition);
+                    yPosition += 10;
+                });
+            }
+
+            // Add progress to PDF
+            if (yPosition > 270) { // Check for page overflow
+                doc.addPage();
+                yPosition = 20;
+            }
+            const overallProgress = calculateOverallProgress();
+            doc.text(`Progreso general: ${overallProgress}%`, 20, yPosition);
+
             const safeStudentName = nombreEstudiante.replace(/[^a-zA-Z0-9_\-]/g, '_').replace(/__+/g, '_');
             let filenameTablePart;
             if (selectedTableMode === 'random') {
@@ -1203,6 +1721,10 @@
                 filenameTablePart = `tabla_${selectedTable}`;
             } else if (selectedTableMode === 'multi') {
                 filenameTablePart = `tablas_multi_${selectedMultiTables.sort((a,b) => a-b).join('_')}`;
+            } else if (selectedTableMode === 'ia') {
+                filenameTablePart = 'modo_ia';
+            } else if (selectedTableMode === 'learning') {
+                filenameTablePart = 'modo_aprendizaje';
             } else {
                 filenameTablePart = 'evaluacion';
             }
