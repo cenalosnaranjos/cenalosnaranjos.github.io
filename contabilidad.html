@@ -12,28 +12,48 @@
         /* --- VARIABLES CSS ORIGINALES --- */
         :root {
             --primary-color: #ff6b35; /* Naranja/Coral de Bar Ceta */
-            --secondary-color: #2d3047; /* Azul oscuro */
-            --accent-color: #f7c59f; /* Color de acento */
-            --light-color: #f8f9fa;
+            --secondary-color-light: #2d3047; /* Azul oscuro original */
+            --accent-color-light: #f7c59f; /* Color de acento original */
+            --light-color-light: #f8f9fa;
+            --card-bg-light: #ffffff;
+            --body-bg-light: #f5f5f5;
+            --text-color-light: #212529;
+            --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.1);
+            
+            /* --- VARIABLES MODO OSCURO (PREDETERMINADO) --- */
+            --secondary-color: #f7c59f; /* Azul oscuro a acento claro en dark */
+            --accent-color: #495057; /* Gris medio para acentos en dark */
+            --light-color: #495057; /* Gris medio para contenedores ligeros en dark */
+            --card-bg: #343a40; /* Gris oscuro para cards en dark */
+            --body-bg: #212529; /* Fondo muy oscuro en dark */
+            --text-color: #f8f9fa; /* Texto claro en dark */
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.4); /* Sombra más oscura en dark */
+            
             --success-color: #28a745;
             --error-color: #dc3545;
-            --card-bg: #ffffff;
-            --body-bg: #f5f5f5;
-            --text-color: #212529;
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             --transition: all 0.3s ease;
             --radius: 12px;
         }
 
-        /* --- VARIABLES MODO OSCURO --- */
-        body.dark-mode {
-            --card-bg: #343a40; /* Gris oscuro para cards */
-            --body-bg: #212529; /* Fondo muy oscuro */
-            --text-color: #f8f9fa; /* Texto claro */
-            --secondary-color: #f7c59f; /* Azul oscuro a acento claro */
-            --accent-color: #495057; /* Gris medio para acentos */
-            --light-color: #495057; /* Gris medio para contenedores ligeros */
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+        /* Establecer Modo Oscuro como Default en el body */
+        body {
+            background-color: var(--body-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: var(--transition);
+        }
+        
+        /* Definir el modo claro para el toggle */
+        body.light-mode {
+            background-color: var(--body-bg-light);
+            color: var(--text-color-light);
+            --card-bg: var(--card-bg-light);
+            --body-bg: var(--body-bg-light);
+            --text-color: var(--text-color-light);
+            --secondary-color: var(--secondary-color-light);
+            --accent-color: var(--accent-color-light);
+            --light-color: var(--light-color-light);
+            --shadow: var(--shadow-light);
         }
 
         * {
@@ -44,12 +64,6 @@
             transition: var(--transition);
         }
         
-        body {
-            background-color: var(--body-bg);
-            color: var(--text-color);
-            line-height: 1.6;
-        }
-
         .container {
             width: 100%;
             max-width: 1000px;
@@ -57,16 +71,17 @@
             padding: 20px;
         }
 
-        /* Estilos de Header y Logo adaptados de BAR.html */
+        /* Estilos de Header */
         header {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            /* Usamos colores primarios fijos para el degradado */
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color-light)); 
             color: white;
             padding: 20px 0;
             margin-bottom: 30px;
             border-radius: 15px;
             box-shadow: var(--shadow);
             text-align: center;
-            position: relative; /* Para posicionar el toggle */
+            position: relative;
         }
         
         /* Toggle Modo Oscuro */
@@ -105,7 +120,8 @@
             font-size: 1.5rem;
             font-weight: 600;
             margin-bottom: 1.5rem;
-            color: var(--secondary-color);
+            /* Usamos el secondary-color que cambia según el modo */
+            color: var(--secondary-color); 
             border-bottom: 2px solid var(--accent-color);
             padding-bottom: 0.5rem;
             display: flex;
@@ -124,10 +140,12 @@
             font-weight: 500;
         }
 
+        /* Estilos de inputs y selectores (adaptados para modo oscuro por defecto) */
         .form-control, .form-select {
             width: 100%;
             padding: 0.75rem 1rem;
-            border: 1px solid rgba(0, 0, 0, 0.1);
+            /* El borde y fondo son para el modo oscuro por defecto */
+            border: 1px solid rgba(255, 255, 255, 0.1); 
             border-radius: var(--radius);
             background-color: var(--light-color);
             color: var(--text-color);
@@ -135,10 +153,9 @@
             transition: var(--transition);
         }
         
-        /* Ajuste para modo oscuro en inputs */
-        body.dark-mode .form-control, body.dark-mode .form-select {
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-color);
+        /* Ajuste de inputs para modo claro si se alterna */
+        body.light-mode .form-control, body.light-mode .form-select {
+            border: 1px solid rgba(0, 0, 0, 0.1);
         }
 
         .form-control:focus, .form-select:focus {
@@ -147,7 +164,7 @@
             box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.3);
         }
 
-        /* Botones (Adaptados) */
+        /* Botones */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -168,7 +185,7 @@
         }
 
         .btn-primary:hover {
-            background-color: #e55c2d; /* Tono oscuro del primario */
+            background-color: #e55c2d;
             transform: translateY(-1px);
         }
         
@@ -176,19 +193,11 @@
             background-color: var(--success-color);
             color: white;
         }
-
-        .btn-success:hover {
-            background-color: #218838;
-        }
         
         .btn-danger {
             background-color: var(--error-color);
             color: white;
             padding: 0.5rem 1rem;
-        }
-        
-        .btn-danger:hover {
-            background-color: #c82333;
         }
 
         /* Tabla de Ventas */
@@ -201,11 +210,13 @@
         .sales-table th, .sales-table td {
             text-align: left;
             padding: 0.75rem;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            /* Borde para modo oscuro por defecto */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1); 
         }
         
-        body.dark-mode .sales-table th, body.dark-mode .sales-table td {
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        /* Borde para modo claro si se alterna */
+        body.light-mode .sales-table th, body.light-mode .sales-table td {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         }
         
         .sales-table th {
@@ -226,11 +237,13 @@
             padding: 1.5rem;
             background-color: var(--light-color);
             border-radius: var(--radius);
-            border: 1px solid rgba(0, 0, 0, 0.1);
+            /* Borde para modo oscuro por defecto */
+            border: 1px solid rgba(255, 255, 255, 0.1); 
         }
         
-        body.dark-mode .total-summary {
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        /* Borde para modo claro si se alterna */
+        body.light-mode .total-summary {
+            border: 1px solid rgba(0, 0, 0, 0.1);
         }
 
         .total-row {
@@ -239,23 +252,20 @@
             font-size: 1.125rem;
             padding: 0.5rem 0;
         }
-
-        .total-row strong {
-            font-weight: 700;
-            color: var(--primary-color);
-        }
         
         .total-row.grand-total {
             font-size: 1.5rem;
-            border-top: 2px dashed rgba(0, 0, 0, 0.2);
+            /* Borde para modo oscuro por defecto */
+            border-top: 2px dashed rgba(255, 255, 255, 0.3); 
             margin-top: 1rem;
             padding-top: 1rem;
-            color: var(--secondary-color);
+            color: var(--text-color);
         }
         
-        body.dark-mode .total-row.grand-total {
-            border-top: 2px dashed rgba(255, 255, 255, 0.3);
-            color: var(--text-color);
+        /* Borde para modo claro si se alterna */
+        body.light-mode .total-row.grand-total {
+            border-top: 2px dashed rgba(0, 0, 0, 0.2);
+            color: var(--secondary-color);
         }
         
         .action-buttons {
@@ -265,8 +275,7 @@
             justify-content: flex-end;
         }
         
-        /* Contenedor Oculto para PDF (Estilos de Factura) */
-        /* Nota: Estos estilos deben ser fijos (no de modo oscuro) para que el PDF se vea bien */
+        /* --- Estilos de Factura PDF (NO deben cambiar con el modo oscuro) --- */
         #invoice-container {
             padding: 25px;
             margin-top: 20px;
@@ -276,7 +285,7 @@
             font-size: 12px;
             width: 100%;
             display: none; 
-            color: #212529; /* Color de texto fijo para PDF */
+            color: #212529; 
         }
         
         .invoice-header {
@@ -285,18 +294,13 @@
             align-items: center;
             margin-bottom: 20px;
             padding-bottom: 10px;
-            border-bottom: 3px solid var(--primary-color);
+            border-bottom: 3px solid #ff6b35; 
         }
         
         .invoice-title {
             font-size: 20px;
             font-weight: 700;
-            color: #2d3047; /* secondary-color original */
-        }
-        
-        .invoice-info p {
-            margin: 2px 0;
-            text-align: right;
+            color: #2d3047; 
         }
         
         .invoice-client-info {
@@ -304,13 +308,13 @@
             padding: 10px;
             margin-bottom: 20px;
             border-radius: 5px;
-            background-color: #f8f9fa; /* light-color original */
+            background-color: #f8f9fa; 
         }
         
         .invoice-client-info h4 {
             font-size: 14px;
             margin-bottom: 5px;
-            color: var(--primary-color);
+            color: #ff6b35; 
         }
         
         #invoice-detail-table {
@@ -327,7 +331,7 @@
         }
         
         #invoice-detail-table th {
-            background-color: #2d3047; /* secondary-color original */
+            background-color: #2d3047;
             color: white;
         }
         
@@ -341,22 +345,15 @@
             border-collapse: collapse;
         }
         
-        .invoice-totals td {
-            padding: 5px 8px;
-            border: none;
-            text-align: right;
-        }
-        
         .invoice-totals tr:last-child td {
             font-weight: 700;
-            border-top: 2px solid var(--primary-color);
+            border-top: 2px solid #ff6b35;
             font-size: 14px;
-            color: var(--primary-color);
+            color: #ff6b35; 
         }
-
     </style>
 </head>
-<body>
+<body class="dark-mode"> 
 
     <header>
         <div class="container">
@@ -365,8 +362,8 @@
                 <span>Bar Ceta - Sistema de Facturación</span>
             </div>
         </div>
-        <button id="dark-mode-toggle" title="Alternar Modo Oscuro">
-            <i class="fas fa-moon"></i> 
+        <button id="dark-mode-toggle" title="Alternar Modo Oscuro/Claro">
+            <i class="fas fa-sun"></i> 
         </button>
     </header>
 
@@ -392,7 +389,7 @@
         <div class="content-card">
             <h2 class="section-title"><i class="fas fa-hotdog"></i> Detalle de Venta (Bar Ceta)</h2>
             
-            <div class="action-buttons" style="justify-content: flex-start;">
+            <div class="action-buttons" style="justify-content: flex-start; margin-top: 0;">
                 <button type="button" class="btn btn-primary" id="add-row-btn">
                     <i class="fas fa-plus-circle"></i> Añadir Producto
                 </button>
@@ -411,6 +408,9 @@
                 <tbody id="sales-detail-body">
                     </tbody>
             </table>
+            
+            <datalist id="product-options">
+                </datalist>
 
             <div class="total-summary">
                 <div class="total-row grand-total">
@@ -469,14 +469,12 @@
         </main>
 
     <script>
-        // --- 1. DATOS DE PRODUCTOS EXTRAÍDOS DE BAR.html ---
+        // --- 1. DATOS DE PRODUCTOS ---
         const products = [
-            // Pipas
             { id: 1, name: "Pipas ácidas", price: 0.25, category: "Pipas" },
             { id: 2, name: "Pipas naturales", price: 0.25, category: "Pipas" },
             { id: 3, name: "Pipas de mango biche", price: 0.25, category: "Pipas" },
             { id: 4, name: "Pipas de maracuyá", price: 0.25, category: "Pipas" },
-            // Snacks Salados
             { id: 5, name: "Golpe de queso", price: 0.30, category: "Snacks Salados" },
             { id: 6, name: "Golpe de limón", price: 0.30, category: "Snacks Salados" },
             { id: 7, name: "Papas de mayonesa", price: 0.30, category: "Snacks Salados" },
@@ -486,22 +484,35 @@
             { id: 11, name: "Quipitos", price: 0.30, category: "Snacks Salados" },
             { id: 12, name: "Chifles", price: 0.30, category: "Snacks Salados" },
             { id: 13, name: "Maduritos", price: 0.30, category: "Snacks Salados" },
-            // Dulces y Golosinas
             { id: 14, name: "Paletas ácidas", price: 0.25, category: "Dulces y Golosinas" },
             { id: 15, name: "Mini paletas ácidas", price: 0.10, category: "Dulces y Golosinas" },
             { id: 16, name: "Chicles Bubbaloo", price: 0.10, category: "Dulces y Golosinas" },
             { id: 17, name: "Paquetes de gomitas", price: 0.30, category: "Dulces y Golosinas" },
             { id: 18, name: "Fundita de gomitas", price: 0.50, category: "Dulces y Golosinas" },
-            // Bebidas
             { id: 19, name: "Coca Cola", price: 0.60, category: "Bebidas" },
             { id: 20, name: "Pepsi", price: 0.30, category: "Bebidas" },
             { id: 21, name: "Big Cola", price: 0.30, category: "Bebidas" }
         ];
         
+        // --- FUNCIONES AUXILIARES ---
+        
+        // Obtiene el objeto producto por el nombre formateado (ej: "Pipas ácidas ($0.25)")
+        function getProductByName(productName) {
+            // El formato es "Nombre del Producto ($0.00)"
+            const nameOnly = productName.substring(0, productName.lastIndexOf('($')).trim();
+            return products.find(p => p.name === nameOnly);
+        }
+        
+        // Formatea el nombre del producto para mostrar en el datalist
+        function getFormattedProductName(product) {
+            return `${product.name} ($${product.price.toFixed(2)})`;
+        }
+
         // --- 2. ELEMENTOS DEL DOM y ESTADO ---
         const salesDetailBody = document.getElementById('sales-detail-body');
         const addRowBtn = document.getElementById('add-row-btn');
         const generatePdfBtn = document.getElementById('generate-pdf-btn');
+        const productOptionsDatalist = document.getElementById('product-options');
         
         const grandTotalVal = document.getElementById('grand-total-val');
         
@@ -509,48 +520,35 @@
         
         let rowCounter = 0;
         
-        // --- FUNCIÓN DE MODO OSCURO ---
+        // --- LÓGICA DE MODO OSCURO PREDETERMINADO ---
         function toggleDarkMode() {
-            const isDarkMode = document.body.classList.toggle('dark-mode');
-            localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
-            // Actualizar icono
-            darkModeToggle.querySelector('i').className = isDarkMode ? 'fas fa-sun' : 'fas fa-moon';
+            // Alterna entre el modo oscuro (default) y light-mode (clase opuesta)
+            const isLightMode = document.body.classList.toggle('light-mode');
+            
+            if (isLightMode) {
+                // Estamos en modo claro -> cambiar a icono Luna para volver a oscuro
+                darkModeToggle.querySelector('i').className = 'fas fa-moon'; 
+                localStorage.setItem('darkMode', 'disabled');
+            } else { 
+                // Estamos en modo oscuro -> cambiar a icono Sol para volver a claro
+                darkModeToggle.querySelector('i').className = 'fas fa-sun'; 
+                localStorage.setItem('darkMode', 'enabled');
+            }
         }
+        
+        // --- FUNCIÓN PARA LLENAR EL DATALIST (LA LISTA DE BÚSQUEDA) ---
+        function populateDatalist() {
+            productOptionsDatalist.innerHTML = '';
+            products.forEach(product => {
+                const option = document.createElement('option');
+                // El valor es el texto completo que se buscará y seleccionará
+                option.value = getFormattedProductName(product);
+                productOptionsDatalist.appendChild(option);
+            });
+        }
+
 
         // --- 3. LÓGICA DE DETALLE DE VENTA ---
-
-        // Función para poblar el <select> de productos
-        function createProductSelect() {
-            const select = document.createElement('select');
-            select.className = 'form-select product-select';
-            select.name = 'product';
-            select.required = true;
-            
-            // Agrupar productos por categoría para mejorar la interfaz
-            const categories = products.reduce((acc, product) => {
-                acc[product.category] = acc[product.category] || [];
-                acc[product.category].push(product);
-                return acc;
-            }, {});
-            
-            select.innerHTML = '<option value="" data-price="0" disabled selected>-- Seleccione un producto --</option>';
-            
-            for (const category in categories) {
-                const optgroup = document.createElement('optgroup');
-                optgroup.label = category;
-                
-                categories[category].forEach(product => {
-                    const option = document.createElement('option');
-                    option.value = product.id;
-                    option.textContent = `${product.name} ($${product.price.toFixed(2)})`;
-                    option.setAttribute('data-price', product.price);
-                    optgroup.appendChild(option);
-                });
-                select.appendChild(optgroup);
-            }
-            
-            return select;
-        }
 
         // Función para añadir una nueva fila de producto
         function addRow() {
@@ -558,11 +556,18 @@
             const newRow = salesDetailBody.insertRow();
             newRow.id = `row-${rowCounter}`;
             
-            // Columna 1: Producto (Select)
+            // Columna 1: Producto (Input con Datalist para búsqueda)
             const cellProduct = newRow.insertCell();
-            const productSelect = createProductSelect();
-            productSelect.addEventListener('change', updateRowTotals);
-            cellProduct.appendChild(productSelect);
+            const productInput = document.createElement('input');
+            productInput.type = 'text';
+            productInput.setAttribute('list', 'product-options'); // Asociar con la datalist
+            productInput.className = 'form-control product-search-input product-input';
+            productInput.name = 'product';
+            productInput.placeholder = 'Buscar o seleccionar producto...';
+            productInput.required = true;
+            // Usamos 'change' para asegurar que el precio se actualice solo al seleccionar un valor de la lista
+            productInput.addEventListener('change', updateRowTotals); 
+            cellProduct.appendChild(productInput);
             
             // Columna 2: Cantidad (Input)
             const cellQuantity = newRow.insertCell();
@@ -600,11 +605,8 @@
             };
             cellAction.appendChild(deleteButton);
             
-            // Asociar evento para recalcular al cambiar la fila
-            newRow.querySelectorAll('.product-select, .quantity-input').forEach(element => {
-                element.onchange = () => updateRowTotals({ target: element });
-                element.oninput = () => updateRowTotals({ target: element });
-            });
+            // Aseguramos que se actualicen los totales
+            newRow.querySelector('.quantity-input').oninput = updateRowTotals;
 
             calculateTotal(); 
         }
@@ -612,14 +614,19 @@
         // Función para actualizar los totales de una fila
         function updateRowTotals(event) {
             const row = event.target.closest('tr');
-            const productSelect = row.querySelector('.product-select');
+            const productInput = row.querySelector('.product-input');
             const quantityInput = row.querySelector('.quantity-input');
             const unitPriceCell = row.querySelector('.unit-price');
             const rowSubtotalCell = row.querySelector('.row-subtotal');
             
-            const selectedOption = productSelect.options[productSelect.selectedIndex];
-            // Obtener el precio del atributo data-price del <option> seleccionado
-            const price = parseFloat(selectedOption.getAttribute('data-price')) || 0;
+            const productName = productInput.value;
+            const product = getProductByName(productName); 
+            
+            let price = 0;
+            if (product) {
+                price = product.price;
+            }
+            
             const quantity = parseInt(quantityInput.value) || 0;
             
             // Validación simple de cantidad
@@ -629,7 +636,7 @@
                 quantityInput.value = 1;
             }
             
-            const totalRowPrice = price * actualQuantity; // Es el total de la fila
+            const totalRowPrice = price * actualQuantity; 
             unitPriceCell.textContent = `$${price.toFixed(2)}`;
             rowSubtotalCell.textContent = `$${totalRowPrice.toFixed(2)}`;
             
@@ -638,17 +645,14 @@
         
         // Función para calcular el total de la venta
         function calculateTotal() {
-            let grandTotal = 0; // Ahora es el total directo
+            let grandTotal = 0; 
             const rows = salesDetailBody.querySelectorAll('tr');
             
             rows.forEach(row => {
                 const rowSubtotalCell = row.querySelector('.row-subtotal');
-                // Extraer el valor numérico
                 const subtotalText = rowSubtotalCell.textContent.replace('$', '');
                 grandTotal += parseFloat(subtotalText) || 0;
             });
-            
-            // Ya no se calcula ni se muestra el IVA
             
             grandTotalVal.textContent = `$${grandTotal.toFixed(2)}`;
         }
@@ -657,7 +661,7 @@
         async function generatePDF() {
             // Validación de campos obligatorios
             const studentName = document.getElementById('student-name').value.trim();
-            const paymentType = document.getElementById('payment-type').value; // OBTENER FORMA DE PAGO
+            const paymentType = document.getElementById('payment-type').value; 
             
             if (studentName === '') {
                 alert('ERROR: Por favor, complete el Nombre Completo del Estudiante/Cliente.');
@@ -669,36 +673,50 @@
                 return;
             }
             
+            // Validación de que todos los productos seleccionados son válidos de la lista
+            const rows = salesDetailBody.querySelectorAll('tr');
+            let allProductsValid = true;
+            rows.forEach(row => {
+                const productInput = row.querySelector('.product-input');
+                const product = getProductByName(productInput.value);
+                // Si el valor del input no corresponde a un producto en el array (por nombre formateado)
+                if (!product) { 
+                    allProductsValid = false;
+                }
+            });
+            
+            if (!allProductsValid) {
+                 alert('ERROR: Uno o más productos seleccionados no son válidos. Por favor, asegúrese de seleccionar un producto de la lista sugerida (datalist) usando el buscador.');
+                 return;
+            }
+            
             // 1. Preparar el contenedor oculto con los datos
             const now = new Date();
             const invoiceDate = now.toLocaleDateString('es-EC');
             const invoiceTime = now.toLocaleTimeString('es-EC', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            const invoiceNumber = Date.now().toString().slice(-8); // Número de factura simple de 8 dígitos
+            const invoiceNumber = Date.now().toString().slice(-8); 
 
             document.getElementById('invoice-date').textContent = invoiceDate;
             document.getElementById('invoice-time').textContent = invoiceTime;
             document.getElementById('invoice-number').textContent = invoiceNumber;
             
             document.getElementById('pdf-student-name').textContent = studentName;
-            document.getElementById('pdf-payment-type').textContent = paymentType; // MOSTRAR FORMA DE PAGO
+            document.getElementById('pdf-payment-type').textContent = paymentType; 
             
             // Llenar tabla de detalles para el PDF
             const pdfDetailBody = document.getElementById('pdf-sales-detail-body');
             pdfDetailBody.innerHTML = '';
             
-            const rows = salesDetailBody.querySelectorAll('tr');
             let pdfGrandTotal = 0;
             
             rows.forEach(row => {
-                const productSelect = row.querySelector('.product-select');
+                const productInput = row.querySelector('.product-input');
                 const quantityInput = row.querySelector('.quantity-input');
                 const unitPriceCell = row.querySelector('.unit-price');
                 const rowSubtotalCell = row.querySelector('.row-subtotal');
                 
-                // Obtener el nombre del producto correctamente
-                const selectedOption = productSelect.options[productSelect.selectedIndex];
-                const productNameWithPrice = selectedOption.textContent;
-                const productName = productNameWithPrice.substring(0, productNameWithPrice.lastIndexOf('($')).trim();
+                // El valor del input ya es el nombre formateado
+                const productName = productInput.value; 
 
                 const quantity = parseInt(quantityInput.value) || 0;
                 const unitPrice = parseFloat(unitPriceCell.textContent.replace('$', '')) || 0;
@@ -716,7 +734,6 @@
             });
             
             // Llenar totales para el PDF
-            // Solo queda la fila de Total
             document.getElementById('pdf-grand-total-row').innerHTML = `<td>TOTAL A PAGAR:</td><td>$${pdfGrandTotal.toFixed(2)}</td>`;
             
             // 2. Mostrar contenedor oculto para la captura
@@ -765,21 +782,25 @@
 
         // --- 5. INICIALIZACIÓN Y EVENT LISTENERS ---
         document.addEventListener('DOMContentLoaded', () => {
-            // ************ Lógica Modo Oscuro al Cargar ************
+            
+            // 1. Llenar la lista de opciones para el buscador (datalist)
+            populateDatalist();
+            
+            // 2. Lógica del Modo Oscuro al Cargar
             const storedDarkMode = localStorage.getItem('darkMode');
-            if (storedDarkMode === 'enabled') {
-                document.body.classList.add('dark-mode');
-                darkModeToggle.querySelector('i').className = 'fas fa-sun';
-            } else {
+            
+            // Si el modo almacenado es 'disabled', forzamos el modo claro, sino se mantiene el default (dark-mode)
+            if (storedDarkMode === 'disabled') {
+                document.body.classList.add('light-mode'); 
                 darkModeToggle.querySelector('i').className = 'fas fa-moon';
+            } else {
+                // Si no hay nada en storage o es 'enabled', se asume dark-mode (default CSS)
+                localStorage.setItem('darkMode', 'enabled');
             }
             
+            // 3. Configurar eventos
             darkModeToggle.addEventListener('click', toggleDarkMode);
-            // *******************************************************
-            
-            // Añadir la primera fila al cargar
-            addRow();
-
+            addRow(); // Añadir la primera fila al cargar
             addRowBtn.addEventListener('click', addRow);
             generatePdfBtn.addEventListener('click', generatePDF);
         });
