@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CETA Stream - Plataforma de Cursos</title>
     <link rel="icon" type="image/x-icon" href="icono.png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CV086J7sY25wF073kQ1J/oW7I0R+iM8f9g9S+i2dFwK4rE7+Jp6z1tW9/3/8a6P2t2B0q5+Lw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         :root {
             --primary: #1a73e8;
@@ -46,6 +46,9 @@
             background-color: var(--light);
             color: var(--text-dark);
             line-height: 1.6;
+            min-height: 100vh; /* Asegura que el cuerpo ocupe al menos la altura de la ventana */
+            display: flex;
+            flex-direction: column;
         }
 
         /* Header */
@@ -163,6 +166,7 @@
             max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
+            flex: 1; /* Permite que el contenedor principal crezca para llenar el espacio */
         }
 
         /* Sidebar */
@@ -174,6 +178,7 @@
             padding: 20px;
             margin-right: 20px;
             height: fit-content;
+            flex-shrink: 0; /* Evita que la barra lateral se encoja */
         }
 
         .sidebar h3 {
@@ -241,6 +246,7 @@
             overflow: hidden;
             box-shadow: var(--shadow);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer; /* Añadido para mejor UX */
         }
 
         .course-card:hover {
@@ -290,6 +296,7 @@
         .course-meta {
             display: flex;
             justify-content: space-between;
+            align-items: center; /* Alineación vertical */
             color: var(--text-dark);
             opacity: 0.7;
             font-size: 0.85rem;
@@ -308,6 +315,7 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
+            overflow-y: auto; /* Para asegurar el scroll en caso de contenido largo */
         }
 
         .video-container {
@@ -377,14 +385,15 @@
             background-color: var(--secondary);
             color: white;
             padding: 40px 20px;
-            margin-top: 40px;
+            margin-top: auto; /* Empuja el footer hacia la parte inferior */
         }
 
         .footer-container {
             max-width: 1400px;
             margin: 0 auto;
+            /* Mejora: Se usa grid-template-columns y gap para mejor adaptabilidad */
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Ajustado a 200px para móviles */
             gap: 30px;
         }
 
@@ -452,7 +461,8 @@
             }
             
             .courses-container {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                /* Reduce el minmax para permitir 2 columnas si es posible */
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
             }
             
             .category-header {
@@ -465,6 +475,16 @@
         @media (max-width: 480px) {
             .header-container {
                 justify-content: center;
+                padding: 1rem;
+            }
+
+            .logo, .header-controls {
+                flex-basis: 100%;
+                justify-content: space-between;
+            }
+
+            .logo {
+                margin-bottom: 10px;
             }
             
             .logo h1 {
@@ -472,15 +492,31 @@
             }
             
             .user-menu {
-                display: none;
+                /* Se mantiene visible para esta versión, pero se puede ocultar si es necesario */
+                display: flex; 
             }
             
             .courses-container {
+                /* Una sola columna en pantallas muy pequeñas */
                 grid-template-columns: 1fr;
             }
             
             .video-info h3 {
                 font-size: 1.2rem;
+            }
+
+            /* Footer: Se asegura que se apilen correctamente */
+            .footer-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .copyright {
+                font-size: 0.8rem;
+            }
+
+            .category-item {
+                 min-width: 100px;
             }
         }
 
@@ -516,11 +552,11 @@
             color: white;
         }
 
-        /* Google Drive Embed Fix */
-        .drive-embed-container {
+        /* Google Drive Embed Fix (No es necesario el contenedor extra si se usa la URL correcta) */
+        /* .drive-embed-container {
             width: 100%;
             height: 100%;
-        }
+        } */
 
         /* No courses message */
         .no-courses {
@@ -581,7 +617,7 @@
             <div class="category-header">
                 <h2 id="current-category">Todos los cursos</h2>
                 <div class="course-count">
-                    <span id="course-count">8</span> cursos disponibles
+                    <span id="course-count">0</span> cursos disponibles
                 </div>
             </div>
 
@@ -600,7 +636,7 @@
             </div>
             
             <div class="video-wrapper">
-                <iframe class="video-player" id="video-player" src="" frameborder="0" allowfullscreen></iframe>
+                <iframe class="video-player" id="video-player" src="" allow="autoplay; encrypted-media" frameborder="0" allowfullscreen></iframe>
             </div>
             
             <div class="video-info">
@@ -614,7 +650,7 @@
         <div class="footer-container">
             <div class="footer-section">
                 <h3>CETA Stream</h3>
-                <p>Plataforma educativa con cursos de Física-Matemáticas e Inglés. Videos compatibles con YouTube.</p>
+                <p>Plataforma educativa con cursos de Física-Matemáticas e Inglés. Videos compatibles con YouTube y Google Drive.</p>
             </div>
             
             <div class="footer-section">
@@ -623,6 +659,12 @@
                 <a href="#" class="category-link" data-category="ingles">Inglés</a>
             </div>
             
+            <div class="footer-section">
+                <h3>Contacto</h3>
+                <p>Email: info@cetastream.com</p>
+                <p>Tel: +593 99 999 9999</p>
+            </div>
+        </div>
         
         <div class="copyright">
             &copy; 2025 CETA Stream. Todos los derechos reservados. | Plataforma educativa
@@ -630,10 +672,9 @@
     </footer>
 
     <script>
-        // Base de datos de cursos (Ahora compatible con YouTube)
-        const cursos = {
-            "all": [
-                {
+        // Base de datos de cursos (Ahora compatible con YouTube y Google Drive)
+        const allCourses = [
+            {
                     id: 1,
                     title: "Primera Clase Virtual",
                     description: "Conceptos fundamentales.",
@@ -660,7 +701,10 @@
                         url: "https://www.youtube.com/watch?v=jH0wGRG1flE"
                     }
                 }
-            ],
+        ];
+
+        const cursos = {
+            "all": allCourses,
             "fisica-matematicas": [],
             "ingles": []
         };
@@ -679,7 +723,6 @@
         const courseCountElement = document.getElementById('course-count');
         const videoModal = document.getElementById('video-modal');
         const closeModalBtn = document.getElementById('close-modal');
-        // 'videoPlayer' es el iframe
         const videoPlayer = document.getElementById('video-player'); 
         const videoTitle = document.getElementById('video-title');
         const videoDescription = document.getElementById('video-description');
@@ -729,11 +772,10 @@
                     currentCategoryElement.textContent = getCategoryName(category);
                     
                     // Mostrar cursos de la categoría seleccionada
-                    if (category === 'all') {
-                        displayCourses(cursos["all"]);
-                    } else {
-                        displayCourses(cursos[category]);
-                    }
+                    displayCourses(cursos[category] || cursos["all"]);
+                    
+                    // Limpiar la caja de búsqueda al cambiar de categoría
+                    searchBox.value = ''; 
                 });
             });
 
@@ -747,16 +789,21 @@
                     categoryItems.forEach(i => i.classList.remove('active'));
                     
                     // Agregar clase active al item correspondiente
-                    document.querySelector(`.category-item[data-category="${category}"]`).classList.add('active');
+                    const activeItem = document.querySelector(`.category-item[data-category="${category}"]`);
+                    if (activeItem) {
+                        activeItem.classList.add('active');
+                    }
                     
                     // Actualizar la categoría actual
                     currentCategoryElement.textContent = getCategoryName(category);
                     
                     // Mostrar cursos de la categoría seleccionada
-                    displayCourses(cursos[category]);
+                    displayCourses(cursos[category] || cursos["all"]);
                     
                     // Scroll hacia arriba
                     window.scrollTo({ top: 0, behavior: 'smooth' });
+                     // Limpiar la caja de búsqueda al cambiar de categoría
+                    searchBox.value = ''; 
                 });
             });
 
@@ -788,7 +835,7 @@
         }
 
         // -------------------------------------------------------------------
-        // FUNCIONES AÑADIDAS/MODIFICADAS PARA SOPORTE DE YOUTUBE
+        // FUNCIONES DE VIDEO
         // -------------------------------------------------------------------
 
         /**
@@ -797,9 +844,10 @@
          * @returns {string|null} El ID del video o null si no se encuentra.
          */
         function getYoutubeVideoId(url) {
-            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            // Expresión regular mejorada para capturar IDs de varios formatos de YouTube
+            const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
             const match = url.match(regExp);
-            return (match && match[2].length === 11) ? match[2] : null;
+            return (match && match[1].length === 11) ? match[1] : null;
         }
 
         /**
@@ -815,7 +863,11 @@
         function playVideo(videoData) {
             videoTitle.textContent = videoData.title;
             videoDescription.textContent = videoData.description;
-            videoSource.textContent = getSourceName(videoData.source);
+            
+            // Actualizar la fuente del badge
+            const sourceName = getSourceName(videoData.source);
+            videoSource.textContent = sourceName;
+            videoSource.className = getSourceClass(videoData.source);
             
             let finalUrl = '';
             const sourceLower = videoData.source.toLowerCase();
@@ -823,21 +875,25 @@
             if (sourceLower.includes('youtube')) {
                 const videoId = getYoutubeVideoId(videoData.url);
                 if (videoId) {
-                    // URL de incrustación de YouTube con autoplay
+                    // URL de incrustación de YouTube con autoplay, rel=0 (no mostrar videos relacionados)
                     finalUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
                 } else {
                     console.error("URL de YouTube no válida:", videoData.url);
+                    // Opcional: mostrar un mensaje de error en el modal
                     return;
                 }
+            } else if (sourceLower.includes('googledrive')) {
+                // Asumiendo que se usa el formato de URL de "vista previa/embed" de Google Drive
+                finalUrl = videoData.url;
             } else {
-                // Asumir que es Google Drive o cualquier otra fuente que usa la URL directa
+                // Fuente genérica/directa
                 finalUrl = videoData.url;
             }
 
             // Configurar URL del video
             videoPlayer.src = finalUrl;
             
-            // Mostrar modal
+            // Mostrar modal con animación
             videoModal.style.display = 'flex';
         }
 
@@ -849,8 +905,8 @@
         function displayCourses(courses) {
             coursesContainer.innerHTML = '';
             
-            if (courses.length === 0) {
-                coursesContainer.innerHTML = '<div class="no-courses"><i class="fas fa-video-slash fa-3x"></i><h3>No hay cursos disponibles en esta categoría</h3></div>';
+            if (!courses || courses.length === 0) {
+                coursesContainer.innerHTML = '<div class="no-courses fade-in"><i class="fas fa-video-slash fa-3x"></i><h3>No hay cursos disponibles en esta categoría</h3></div>';
                 courseCountElement.textContent = '0';
                 return;
             }
@@ -891,13 +947,7 @@
         // Filtrar cursos por término de búsqueda
         function filterCourses(searchTerm) {
             const activeCategory = document.querySelector('.category-item.active').getAttribute('data-category');
-            let coursesToFilter = [];
-            
-            if (activeCategory === 'all') {
-                coursesToFilter = cursos["all"];
-            } else {
-                coursesToFilter = cursos[activeCategory];
-            }
+            let coursesToFilter = cursos[activeCategory] || cursos["all"];
             
             if (searchTerm.trim() === '') {
                 displayCourses(coursesToFilter);
@@ -905,8 +955,10 @@
             }
             
             const filteredCourses = coursesToFilter.filter(course => {
-                return course.title.toLowerCase().includes(searchTerm) || 
-                       course.description.toLowerCase().includes(searchTerm);
+                const term = searchTerm.toLowerCase();
+                return course.title.toLowerCase().includes(term) || 
+                       course.description.toLowerCase().includes(term) ||
+                       course.category.toLowerCase().includes(term); // También buscar por categoría
             });
             
             displayCourses(filteredCourses);
@@ -923,7 +975,7 @@
             return categoryNames[categoryKey] || categoryKey;
         }
 
-        // Obtener clase CSS para la fuente del video (Actualizada)
+        // Obtener clase CSS para la fuente del video
         function getSourceClass(source) {
             const sourceLower = source.toLowerCase();
             if (sourceLower.includes('youtube')) return 'source-youtube';
@@ -931,7 +983,7 @@
             return '';
         }
 
-        // Obtener nombre legible de la fuente (Actualizada)
+        // Obtener nombre legible de la fuente
         function getSourceName(source) {
             const sourceLower = source.toLowerCase();
             if (sourceLower.includes('youtube')) return 'YouTube';
