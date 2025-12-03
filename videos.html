@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CETA Stream - Plataforma de Cursos</title>
+    <link rel="icon" type="image/x-icon" href="icono.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1a73e8;
+            --secondary: #0d47a1;
+            --accent: #ff5722;
+            --light: #f8f9fa;
+            --dark: #202124;
+            --text-light: #f8f9fa;
+            --text-dark: #202124;
+            --card-bg: #ffffff;
+            --sidebar-bg: #ffffff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --radius: 8px;
+        }
+
+        /* Modo oscuro */
+        .dark-mode {
+            --primary: #8ab4f8;
+            --secondary: #5f7b9c;
+            --light: #202124;
+            --dark: #f8f9fa;
+            --text-light: #202124;
+            --text-dark: #f8f9fa;
+            --card-bg: #303134;
+            --sidebar-bg: #303134;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            font-size: 2.2rem;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            width: 50px;
+            height: 26px;
+            border-radius: 13px;
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 0 3px;
+        }
+
+        .theme-toggle::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            transition: transform 0.3s;
+        }
+
+        .dark-mode .theme-toggle::after {
+            transform: translateX(24px);
+        }
+
+        .theme-toggle i {
+            font-size: 0.9rem;
+            color: white;
+            position: absolute;
+            z-index: 1;
+        }
+
+        .theme-toggle .fa-sun {
+            left: 5px;
+        }
+
+        .theme-toggle .fa-moon {
+            right: 5px;
+        }
+
+        .search-container {
+            flex-grow: 1;
+            max-width: 500px;
+            margin: 0 20px;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 10px 15px;
+            border-radius: 30px;
+            border: none;
+            font-size: 1rem;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #333;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-menu i {
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Main Layout */
+        .container {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: var(--sidebar-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            margin-right: 20px;
+            height: fit-content;
+        }
+
+        .sidebar h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .categories {
+            list-style: none;
+        }
+
+        .category-item {
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .category-item:hover {
+            background-color: rgba(26, 115, 232, 0.1);
+        }
+
+        .category-item.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .category-item i {
+            font-size: 1.2rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex-grow: 1;
+        }
+
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .category-header h2 {
+            color: var(--primary);
+            font-size: 1.8rem;
+        }
+
+        .courses-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .course-card {
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .course-thumbnail {
+            width: 100%;
+            height: 180px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .course-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .course-card:hover .course-thumbnail img {
+            transform: scale(1.05);
+        }
+
+        .course-info {
+            padding: 20px;
+        }
+
+        .course-info h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+        }
+
+        .course-info p {
+            color: var(--text-dark);
+            opacity: 0.8;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .course-meta {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-dark);
+            opacity: 0.7;
+            font-size: 0.85rem;
+        }
+
+        /* Video Player Modal */
+        .video-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .video-container {
+            width: 100%;
+            max-width: 900px;
+            background-color: #111;
+            border-radius: var(--radius);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .video-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: #222;
+            color: white;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close-modal:hover {
+            color: var(--accent);
+        }
+
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+        }
+
+        .video-player {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .video-info {
+            padding: 20px;
+            color: white;
+        }
+
+        .video-info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .video-info p {
+            color: #ccc;
+            font-size: 1rem;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--secondary);
+            color: white;
+            padding: 40px 20px;
+            margin-top: 40px;
+        }
+
+        .footer-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .footer-section h3 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .footer-section p, .footer-section a {
+            color: #bbb;
+            margin-bottom: 10px;
+            display: block;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            margin-top: 30px;
+            border-top: 1px solid #444;
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+            
+            .categories {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            
+            .category-item {
+                flex: 1;
+                min-width: 150px;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-container {
+                flex-wrap: wrap;
+            }
+            
+            .search-container {
+                order: 3;
+                margin: 15px 0 0 0;
+                max-width: 100%;
+            }
+            
+            .courses-container {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            .category-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-container {
+                justify-content: center;
+            }
+            
+            .logo h1 {
+                font-size: 1.5rem;
+            }
+            
+            .user-menu {
+                display: none;
+            }
+            
+            .courses-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .video-info h3 {
+                font-size: 1.2rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* Video Source Badge */
+        .video-source {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+
+        .source-googledrive {
+            background-color: #34a853;
+            color: white;
+        }
+        
+        /* Nuevo estilo para la fuente YouTube */
+        .source-youtube {
+            background-color: #ff0000;
+            color: white;
+        }
+
+        /* Google Drive Embed Fix */
+        .drive-embed-container {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* No courses message */
+        .no-courses {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px;
+            color: var(--text-dark);
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <h1>CETA Stream</h1>
+            </div>
+            
+            <div class="search-container">
+                <input type="text" class="search-box" placeholder="Buscar cursos, videos, temas...">
+            </div>
+            
+            <div class="header-controls">
+                <button class="theme-toggle" id="theme-toggle" title="Cambiar modo claro/oscuro">
+                    <i class="fas fa-sun"></i>
+                    <i class="fas fa-moon"></i>
+                </button>
+                
+                <div class="user-menu">
+                    <i class="fas fa-bell" title="Notificaciones"></i>
+                    <i class="fas fa-user-circle" title="Mi cuenta"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <aside class="sidebar">
+            <h3>Categorías</h3>
+            <ul class="categories">
+                <li class="category-item active" data-category="all">
+                    <i class="fas fa-th-large"></i>
+                    <span>Todos los cursos</span>
+                </li>
+                <li class="category-item" data-category="fisica-matematicas">
+                    <i class="fas fa-atom"></i>
+                    <span>Física - Matemáticas</span>
+                </li>
+                <li class="category-item" data-category="ingles">
+                    <i class="fas fa-language"></i>
+                    <span>Inglés</span>
+                </li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="category-header">
+                <h2 id="current-category">Todos los cursos</h2>
+                <div class="course-count">
+                    <span id="course-count">8</span> cursos disponibles
+                </div>
+            </div>
+
+            <div class="courses-container" id="courses-container">
+                </div>
+        </main>
+    </div>
+
+    <div class="video-modal" id="video-modal">
+        <div class="video-container">
+            <div class="video-header">
+                <h3 id="video-title">Título del video</h3>
+                <button class="close-modal" id="close-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="video-wrapper">
+                <iframe class="video-player" id="video-player" src="" frameborder="0" allowfullscreen></iframe>
+            </div>
+            
+            <div class="video-info">
+                <p id="video-description">Descripción del video seleccionado.</p>
+                <p><strong>Fuente:</strong> <span id="video-source">Google Drive</span></p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>CETA Stream</h3>
+                <p>Plataforma educativa con cursos de Física-Matemáticas e Inglés. Videos compatibles con YouTube.</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Categorías</h3>
+                <a href="#" class="category-link" data-category="fisica-matematicas">Física - Matemáticas</a>
+                <a href="#" class="category-link" data-category="ingles">Inglés</a>
+            </div>
+            
+        
+        <div class="copyright">
+            &copy; 2025 CETA Stream. Todos los derechos reservados. | Plataforma educativa
+        </div>
+    </footer>
+
+    <script>
+        // Base de datos de cursos (Ahora compatible con YouTube)
+        const cursos = {
+            "all": [
+                {
+                    id: 1,
+                    title: "Primera Clase Virtual",
+                    description: "Conceptos fundamentales.",
+                    category: "fisica-matematicas",
+                    thumbnail: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                    video: {
+                        title: "Primera Clase Virtual",
+                        description: "Explicación de ejercicios.",
+                        source: "YouTube",
+                        url: "https://youtu.be/y0rcSk7CcDU"
+                    }
+                },
+                {
+                    id: 2,
+                    title: "Primera Clase Virtual - Ingles",
+                    description: "Curso de inglés.",
+                    category: "ingles",
+                    thumbnail: "https://images.unsplash.com/photo-1545235617-9465d2a55698?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                    video: {
+                       title: "Primera Clase Virtual - Ingles",
+                    description: "Curso de inglés.",
+                        // Corregido "YouTubr" a "YouTube"
+                        source: "YouTube", 
+                        url: "https://www.youtube.com/watch?v=jH0wGRG1flE"
+                    }
+                }
+            ],
+            "fisica-matematicas": [],
+            "ingles": []
+        };
+
+        // Organizar cursos por categoría
+        function organizeCourses() {
+            cursos["all"].forEach(course => {
+                cursos[course.category].push(course);
+            });
+        }
+
+        // Variables globales
+        const coursesContainer = document.getElementById('courses-container');
+        const categoryItems = document.querySelectorAll('.category-item');
+        const currentCategoryElement = document.getElementById('current-category');
+        const courseCountElement = document.getElementById('course-count');
+        const videoModal = document.getElementById('video-modal');
+        const closeModalBtn = document.getElementById('close-modal');
+        // 'videoPlayer' es el iframe
+        const videoPlayer = document.getElementById('video-player'); 
+        const videoTitle = document.getElementById('video-title');
+        const videoDescription = document.getElementById('video-description');
+        const videoSource = document.getElementById('video-source');
+        const searchBox = document.querySelector('.search-box');
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+
+        // Verificar y aplicar modo oscuro guardado
+        function checkDarkMode() {
+            const darkMode = localStorage.getItem('darkMode') === 'true';
+            if (darkMode) {
+                body.classList.add('dark-mode');
+            }
+        }
+
+        // Alternar modo oscuro
+        function toggleDarkMode() {
+            body.classList.toggle('dark-mode');
+            const isDarkMode = body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDarkMode);
+        }
+
+        // Inicializar la plataforma
+        function init() {
+            organizeCourses();
+            displayCourses(cursos["all"]);
+            setupEventListeners();
+            checkDarkMode();
+        }
+
+        // Configurar event listeners
+        function setupEventListeners() {
+            // Navegación por categorías
+            categoryItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    // Remover clase active de todos los items
+                    categoryItems.forEach(i => i.classList.remove('active'));
+                    
+                    // Agregar clase active al item clickeado
+                    item.classList.add('active');
+                    
+                    // Obtener la categoría seleccionada
+                    const category = item.getAttribute('data-category');
+                    
+                    // Actualizar la categoría actual
+                    currentCategoryElement.textContent = getCategoryName(category);
+                    
+                    // Mostrar cursos de la categoría seleccionada
+                    if (category === 'all') {
+                        displayCourses(cursos["all"]);
+                    } else {
+                        displayCourses(cursos[category]);
+                    }
+                });
+            });
+
+            // Categorías en el footer
+            document.querySelectorAll('.category-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const category = link.getAttribute('data-category');
+                    
+                    // Remover clase active de todos los items
+                    categoryItems.forEach(i => i.classList.remove('active'));
+                    
+                    // Agregar clase active al item correspondiente
+                    document.querySelector(`.category-item[data-category="${category}"]`).classList.add('active');
+                    
+                    // Actualizar la categoría actual
+                    currentCategoryElement.textContent = getCategoryName(category);
+                    
+                    // Mostrar cursos de la categoría seleccionada
+                    displayCourses(cursos[category]);
+                    
+                    // Scroll hacia arriba
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            });
+
+            // Cerrar modal de video
+            closeModalBtn.addEventListener('click', closeVideoModal);
+
+            // Cerrar modal haciendo clic fuera del video
+            videoModal.addEventListener('click', (e) => {
+                if (e.target === videoModal) {
+                    closeVideoModal();
+                }
+            });
+
+            // Buscador de cursos
+            searchBox.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                filterCourses(searchTerm);
+            });
+
+            // Cerrar modal con tecla Escape
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && videoModal.style.display === 'flex') {
+                    closeVideoModal();
+                }
+            });
+
+            // Toggle modo oscuro
+            themeToggle.addEventListener('click', toggleDarkMode);
+        }
+
+        // -------------------------------------------------------------------
+        // FUNCIONES AÑADIDAS/MODIFICADAS PARA SOPORTE DE YOUTUBE
+        // -------------------------------------------------------------------
+
+        /**
+         * Extrae el ID de video de YouTube a partir de una URL.
+         * @param {string} url - La URL del video de YouTube.
+         * @returns {string|null} El ID del video o null si no se encuentra.
+         */
+        function getYoutubeVideoId(url) {
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+
+        /**
+         * Detiene la reproducción del video y cierra el modal.
+         */
+        function closeVideoModal() {
+            // Detener la reproducción limpiando la fuente del iframe
+            videoPlayer.src = ''; 
+            videoModal.style.display = 'none';
+        }
+
+        // Reproducir video en modal
+        function playVideo(videoData) {
+            videoTitle.textContent = videoData.title;
+            videoDescription.textContent = videoData.description;
+            videoSource.textContent = getSourceName(videoData.source);
+            
+            let finalUrl = '';
+            const sourceLower = videoData.source.toLowerCase();
+
+            if (sourceLower.includes('youtube')) {
+                const videoId = getYoutubeVideoId(videoData.url);
+                if (videoId) {
+                    // URL de incrustación de YouTube con autoplay
+                    finalUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+                } else {
+                    console.error("URL de YouTube no válida:", videoData.url);
+                    return;
+                }
+            } else {
+                // Asumir que es Google Drive o cualquier otra fuente que usa la URL directa
+                finalUrl = videoData.url;
+            }
+
+            // Configurar URL del video
+            videoPlayer.src = finalUrl;
+            
+            // Mostrar modal
+            videoModal.style.display = 'flex';
+        }
+
+        // -------------------------------------------------------------------
+        // OTRAS FUNCIONES AUXILIARES
+        // -------------------------------------------------------------------
+        
+        // Mostrar cursos en el contenedor
+        function displayCourses(courses) {
+            coursesContainer.innerHTML = '';
+            
+            if (courses.length === 0) {
+                coursesContainer.innerHTML = '<div class="no-courses"><i class="fas fa-video-slash fa-3x"></i><h3>No hay cursos disponibles en esta categoría</h3></div>';
+                courseCountElement.textContent = '0';
+                return;
+            }
+            
+            courseCountElement.textContent = courses.length;
+            
+            courses.forEach(course => {
+                const courseCard = document.createElement('div');
+                courseCard.className = 'course-card fade-in';
+                courseCard.setAttribute('data-category', course.category);
+                
+                const sourceClass = getSourceClass(course.video.source);
+                const sourceName = getSourceName(course.video.source);
+                
+                courseCard.innerHTML = `
+                    <div class="course-thumbnail">
+                        <img src="${course.thumbnail}" alt="${course.title}" onerror="this.src='https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'">
+                    </div>
+                    <div class="course-info">
+                        <h3>${course.title}</h3>
+                        <p>${course.description}</p>
+                        <div class="course-meta">
+                            <span><i class="fas fa-play-circle"></i> Ver video</span>
+                            <span class="video-source ${sourceClass}">${sourceName}</span>
+                        </div>
+                    </div>
+                `;
+                
+                // Agregar evento para reproducir video
+                courseCard.addEventListener('click', () => {
+                    playVideo(course.video);
+                });
+                
+                coursesContainer.appendChild(courseCard);
+            });
+        }
+
+        // Filtrar cursos por término de búsqueda
+        function filterCourses(searchTerm) {
+            const activeCategory = document.querySelector('.category-item.active').getAttribute('data-category');
+            let coursesToFilter = [];
+            
+            if (activeCategory === 'all') {
+                coursesToFilter = cursos["all"];
+            } else {
+                coursesToFilter = cursos[activeCategory];
+            }
+            
+            if (searchTerm.trim() === '') {
+                displayCourses(coursesToFilter);
+                return;
+            }
+            
+            const filteredCourses = coursesToFilter.filter(course => {
+                return course.title.toLowerCase().includes(searchTerm) || 
+                       course.description.toLowerCase().includes(searchTerm);
+            });
+            
+            displayCourses(filteredCourses);
+        }
+
+        // Obtener nombre legible de la categoría
+        function getCategoryName(categoryKey) {
+            const categoryNames = {
+                'all': 'Todos los cursos',
+                'fisica-matematicas': 'Física - Matemáticas',
+                'ingles': 'Inglés'
+            };
+            
+            return categoryNames[categoryKey] || categoryKey;
+        }
+
+        // Obtener clase CSS para la fuente del video (Actualizada)
+        function getSourceClass(source) {
+            const sourceLower = source.toLowerCase();
+            if (sourceLower.includes('youtube')) return 'source-youtube';
+            if (sourceLower.includes('googledrive')) return 'source-googledrive';
+            return '';
+        }
+
+        // Obtener nombre legible de la fuente (Actualizada)
+        function getSourceName(source) {
+            const sourceLower = source.toLowerCase();
+            if (sourceLower.includes('youtube')) return 'YouTube';
+            if (sourceLower.includes('googledrive')) return 'Google Drive';
+            return source;
+        }
+
+        // Inicializar la aplicación cuando se carga la página
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
