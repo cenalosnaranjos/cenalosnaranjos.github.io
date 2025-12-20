@@ -12,20 +12,20 @@
         /* Variables CSS para modos claro y oscuro */
         :root {
             /* Light Mode */
-            --bg-color: #f8f9fa; /* Light Gray */
-            --text-color: #343a40; /* Dark Gray */
-            --primary-color: #007bff; /* Blue */
-            --accent-color: #28a745; /* Green */
+            --bg-color: #f8f9fa;
+            --text-color: #343a40;
+            --primary-color: #007bff;
+            --accent-color: #28a745;
             --card-bg: #ffffff;
             --border-color: #e9ecef;
             --shadow-light: rgba(0, 0, 0, 0.05);
             --input-bg: #f2f4f7;
             --input-border-focus: #007bff;
             --button-text-color: #ffffff;
-            --error-bg: #ffebee; /* Light Red */
-            --error-text: #c62828; /* Dark Red */
-            --success-bg: #e8f5e9; /* Light Green */
-            --success-text: #2e7d32; /* Dark Green */
+            --error-bg: #ffebee;
+            --error-text: #c62828;
+            --success-bg: #e8f5e9;
+            --success-text: #2e7d32;
             --correct-input-border: #28a745;
             --incorrect-input-border: #dc3545;
             --toggle-bg: #007bff;
@@ -33,7 +33,7 @@
             --gradient-start: #007bff;
             --gradient-end: #0056b3;
             --h1-shadow-color: rgba(0, 0, 0, 0.1);
-            --selected-table-bg: #e0f2f7; /* Light blue for selected table */
+            --selected-table-bg: #e0f2f7;
             --selected-table-border: #007bff;
             --table-option-hover: #e9ecef;
             --checkbox-checked-bg: #007bff;
@@ -48,32 +48,34 @@
             --license-bg: #fff3cd;
             --license-border: #ffc107;
             --license-text: #856404;
+            --license-timer-bg: rgba(0, 0, 0, 0.85);
+            --license-timer-text: #ffffff;
         }
  
         [data-theme="dark"] {
             /* Dark Mode */
-            --bg-color: #212529; /* Dark Gray */
-            --text-color: #e9ecef; /* Light Gray */
-            --primary-color: #66afe1; /* Lighter Blue */
-            --accent-color: #ffc107; /* Yellow */
+            --bg-color: #212529;
+            --text-color: #e9ecef;
+            --primary-color: #66afe1;
+            --accent-color: #ffc107;
             --card-bg: #343a40;
             --border-color: #495057;
             --shadow-light: rgba(0, 0, 0, 0.3);
             --input-bg: #495057;
             --input-border-focus: #66afe1;
-            --button-text-color: #212529; /* Dark text on bright button */
-            --error-bg: #b71c1c; /* Dark Red */
-            --error-text: #ffebee; /* Light Red */
-            --success-bg: #1b5e20; /* Dark Green */
-            --success-text: #e8f5e9; /* Light Green */
-            --correct-input-border: #ffc107; /* Yellowish for dark mode */
-            --incorrect-input-border: #ef5350; /* Lighter red for dark mode */
+            --button-text-color: #212529;
+            --error-bg: #b71c1c;
+            --error-text: #ffebee;
+            --success-bg: #1b5e20;
+            --success-text: #e8f5e9;
+            --correct-input-border: #ffc107;
+            --incorrect-input-border: #ef5350;
             --toggle-bg: #ffc107;
             --toggle-icon: #212529;
             --gradient-start: #ffc107;
             --gradient-end: #ffa000;
             --h1-shadow-color: rgba(255, 255, 255, 0.1);
-            --selected-table-bg: #4f5b66; /* Darker blue-gray for selected table */
+            --selected-table-bg: #4f5b66;
             --selected-table-border: #ffc107;
             --table-option-hover: #495057;
             --checkbox-checked-bg: #ffc107;
@@ -88,6 +90,8 @@
             --license-bg: #332701;
             --license-border: #ffc107;
             --license-text: #ffc107;
+            --license-timer-bg: rgba(0, 0, 0, 0.9);
+            --license-timer-text: #ffffff;
         }
 
         /* General Styles */
@@ -106,45 +110,157 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 2rem 1rem 100px; /* Space for the theme toggle button */
+            padding: 2rem 1rem 100px;
             transition: background-color 0.4s ease, color 0.4s ease;
             line-height: 1.6;
             position: relative;
         }
 
-        .container {
-            width: 100%;
-            max-width: 800px; /* Slightly larger for more content */
-            margin: 0 auto;
-            padding: 2rem;
-            background-color: var(--card-bg);
-            border-radius: 20px; /* More rounded */
-            box-shadow: 0 10px 30px var(--shadow-light);
-            transition: background-color 0.4s ease, box-shadow 0.4s ease;
-            position: relative; /* For animations */
-        }
-
-        /* License Info Banner */
-        .license-info {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: var(--license-bg);
-            color: var(--license-text);
-            border: 1px solid var(--license-border);
-            border-radius: 8px;
-            padding: 8px 12px;
-            font-size: 0.85rem;
-            z-index: 100;
+        /* License Timer Banner - Centered and Big */
+        .license-timer-banner {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            border-radius: 15px;
+            padding: 15px 30px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            z-index: 1001;
             display: flex;
             align-items: center;
-            gap: 8px;
-            max-width: 250px;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            gap: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            border: 3px solid #ffffff;
+            min-width: 350px;
+            text-align: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            display: none;
         }
 
-        .license-info i {
-            font-size: 1rem;
+        [data-theme="dark"] .license-timer-banner {
+            background: linear-gradient(45deg, #ffc107, #ffa000);
+            color: #212529;
+            border: 3px solid #ffc107;
+        }
+
+        .license-timer-banner i {
+            font-size: 2rem;
+            animation: pulse 2s infinite;
+        }
+
+        .license-timer {
+            font-family: 'Montserrat', sans-serif;
+            letter-spacing: 2px;
+            font-size: 2rem;
+        }
+
+        .license-timer span {
+            margin: 0 5px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 10px;
+            border-radius: 8px;
+            min-width: 60px;
+            display: inline-block;
+        }
+
+        [data-theme="dark"] .license-timer span {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        /* Permission Modal */
+        .permission-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .permission-content {
+            background-color: var(--card-bg);
+            padding: 3rem;
+            border-radius: 20px;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            border: 3px solid var(--primary-color);
+        }
+
+        .permission-content h2 {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .permission-content p {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .permission-options {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .permission-btn {
+            padding: 1.2rem 2.5rem;
+            font-size: 1.3rem;
+            font-weight: 700;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .permission-btn.yes {
+            background: linear-gradient(45deg, #28a745, #1e7e34);
+            color: white;
+        }
+
+        .permission-btn.yes:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(40, 167, 69, 0.3);
+        }
+
+        .permission-btn.no {
+            background: linear-gradient(45deg, #dc3545, #c82333);
+            color: white;
+        }
+
+        .permission-btn.no:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(220, 53, 69, 0.3);
+        }
+
+        .permission-note {
+            margin-top: 2rem;
+            padding: 1rem;
+            background-color: var(--input-bg);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            color: var(--text-color);
+            border-left: 4px solid var(--primary-color);
         }
 
         /* Blocked Overlay */
@@ -154,8 +270,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.85);
-            z-index: 9999;
+            background-color: rgba(0, 0, 0, 0.95);
+            z-index: 9998;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -172,6 +288,7 @@
             text-align: center;
             box-shadow: 0 15px 35px rgba(0,0,0,0.5);
             animation: fadeIn 0.8s ease-out;
+            border: 3px solid #dc3545;
         }
 
         .blocked-content h2 {
@@ -234,6 +351,19 @@
             display: inline-block;
         }
 
+        /* Container */
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px var(--shadow-light);
+            transition: background-color 0.4s ease, box-shadow 0.4s ease;
+            position: relative;
+        }
+
         /* Header */
         .header {
             text-align: center;
@@ -268,7 +398,7 @@
             font-family: 'Montserrat', sans-serif;
             color: var(--primary-color);
             margin-bottom: 0.5rem;
-            font-size: 2.8rem; /* Larger */
+            font-size: 2.8rem;
             position: relative;
             display: inline-block;
             text-shadow: 2px 2px 5px var(--h1-shadow-color);
@@ -278,7 +408,7 @@
         h1::after {
             content: '';
             display: block;
-            width: 70%; /* Wider underline */
+            width: 70%;
             height: 4px;
             background: var(--accent-color);
             margin: 8px auto 0;
@@ -286,7 +416,7 @@
             transition: background 0.4s ease;
         }
 
-        .form-init h1 { /* Adjusted for the inner h1 in form-init */
+        .form-init h1 {
             font-size: 1.6rem;
             margin-bottom: 1.5rem;
             color: var(--text-color);
@@ -306,9 +436,9 @@
 
         input[type="text"] {
             width: 100%;
-            padding: 0.9rem 1.2rem; /* More padding */
+            padding: 0.9rem 1.2rem;
             border: 2px solid var(--border-color);
-            border-radius: 12px; /* More rounded */
+            border-radius: 12px;
             font-size: 1.1rem;
             margin-bottom: 1.5rem;
             background-color: var(--input-bg);
@@ -323,7 +453,7 @@
         input[type="number"]:focus {
             outline: none;
             border-color: var(--input-border-focus);
-            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2); /* Focus ring */
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
         }
         [data-theme="dark"] input[type="text"]:focus,
         [data-theme="dark"] input[type="number"]:focus {
@@ -400,7 +530,7 @@
         }
 
         #timer {
-            font-size: 2.2rem; /* Larger timer */
+            font-size: 2.2rem;
             font-weight: 700;
             text-align: center;
             margin-bottom: 2rem;
@@ -411,7 +541,7 @@
 
         #tabla-seleccionada {
             text-align: center;
-            margin-bottom: 1.8rem; /* More space */
+            margin-bottom: 1.8rem;
             color: var(--text-color);
             transition: color 0.4s ease;
             font-family: 'Montserrat', sans-serif;
@@ -420,11 +550,11 @@
         }
 
         .pregunta {
-            background-color: var(--input-bg); /* Use input background for questions for consistency */
+            background-color: var(--input-bg);
             padding: 1rem 1.5rem;
             border-radius: 15px;
             margin: 0.8rem 0;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -432,13 +562,13 @@
             border: 1px solid var(--border-color);
         }
         .pregunta:hover {
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Lift on hover */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
         .pregunta span {
             flex-grow: 1;
             margin-right: 1rem;
-            font-size: 1.25rem; /* Larger font */
+            font-size: 1.25rem;
             font-weight: 500;
             color: var(--text-color);
         }
@@ -450,7 +580,7 @@
             text-align: center;
             margin: 0;
             font-size: 1.1rem;
-            border-width: 2px; /* Ensure border is visible */
+            border-width: 2px;
             border-style: solid;
             border-color: var(--border-color);
             box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
@@ -459,7 +589,7 @@
         #resultado {
             text-align: center;
             margin-top: 3rem;
-            animation: fadeIn 0.5s ease-out; /* Fade in effect */
+            animation: fadeIn 0.5s ease-out;
         }
 
         #resultado h2 {
@@ -478,12 +608,12 @@
 
         .theme-toggle {
             position: fixed;
-            bottom: 30px; /* Higher from bottom */
+            bottom: 30px;
             right: 30px;
             background-color: var(--toggle-bg);
             color: var(--toggle-icon);
-            width: 65px; /* Larger */
-            height: 65px; /* Larger */
+            width: 65px;
+            height: 65px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -497,7 +627,7 @@
         }
 
         .theme-toggle:hover {
-            transform: translateY(-5px) rotate(15deg); /* More dynamic hover */
+            transform: translateY(-5px) rotate(15deg);
             box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
         }
 
@@ -530,13 +660,13 @@
 
         .errores-lista p {
             margin-bottom: 0.5rem;
-            padding-left: 1.2rem; /* More indent */
+            padding-left: 1.2rem;
             position: relative;
             font-size: 1.05rem;
         }
 
         .errores-lista p::before {
-            content: '✖'; /* X symbol */
+            content: '✖';
             position: absolute;
             left: 0;
             color: var(--error-text);
@@ -547,7 +677,7 @@
 
         /* Animation for timer when time is low */
         #timer.low-time {
-            color: #dc3545 !important; /* Fixed red */
+            color: #dc3545 !important;
             animation: pulse 1s infinite;
         }
 
@@ -619,17 +749,17 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
-            width: 100%; /* Ensure they take full width in their grid cell */
+            width: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
-            margin: 0.5rem 0; /* Margin between buttons when stacked */
+            margin: 0.5rem 0;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             -webkit-appearance: none;
             -moz-appearance: none;
             appearance: none;
-            text-transform: none; /* Remove uppercase for these buttons */
+            text-transform: none;
             letter-spacing: normal;
         }
 
@@ -663,15 +793,15 @@
 
         .table-options-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* Two columns */
-            gap: 1rem; /* Space between grid items */
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
             margin-top: 1rem;
             margin-bottom: 1.5rem;
         }
 
         .table-options-grid.single-column {
-            grid-template-columns: 1fr; /* Single column for random mode */
-            max-width: 300px; /* Limit width for single column options */
+            grid-template-columns: 1fr;
+            max-width: 300px;
             margin-left: auto;
             margin-right: auto;
         }
@@ -683,7 +813,7 @@
         }
 
         .random-mode-options .table-option-button {
-            font-size: 1.3rem; /* Slightly larger for random button */
+            font-size: 1.3rem;
             font-weight: 700;
             padding: 1.2rem;
         }
@@ -697,7 +827,7 @@
 
         .checkbox-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr); /* 3 columns for checkboxes */
+            grid-template-columns: repeat(3, 1fr);
             gap: 0.8rem;
             margin-top: 1rem;
         }
@@ -741,7 +871,7 @@
             transform: scale(0);
             transition: transform .1s ease-in-out;
             box-shadow: inset 1em 1em var(--checkbox-checked-bg);
-            background-color: CanvasText; /* Fallback for older browsers */
+            background-color: CanvasText;
             clip-path: polygon(14% 44%, 0 65%, 34% 80%, 100% 10%);
         }
 
@@ -900,7 +1030,7 @@
                 font-size: 0.95rem;
             }
             .table-options-grid {
-                grid-template-columns: 1fr; /* Stack columns on small screens */
+                grid-template-columns: 1fr;
             }
             .table-selection-area h2 {
                 font-size: 1.3rem;
@@ -909,23 +1039,36 @@
                 font-size: 0.9rem;
             }
             .checkbox-grid {
-                grid-template-columns: repeat(2, 1fr); /* 2 columns for checkboxes on smaller screens */
+                grid-template-columns: repeat(2, 1fr);
             }
             .ai-insights-content {
                 grid-template-columns: 1fr;
             }
-            .license-info {
-                position: relative;
-                top: 0;
-                right: 0;
-                margin-bottom: 1rem;
-                max-width: 100%;
+            .license-timer-banner {
+                font-size: 1.4rem;
+                min-width: 300px;
+                padding: 12px 20px;
+                top: 10px;
             }
-            .blocked-content {
+            .license-timer {
+                font-size: 1.6rem;
+            }
+            .license-timer span {
+                min-width: 50px;
+                padding: 3px 8px;
+            }
+            .permission-content {
                 padding: 2rem;
             }
-            .blocked-content h2 {
+            .permission-content h2 {
                 font-size: 2rem;
+            }
+            .permission-options {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .permission-btn {
+                width: 100%;
             }
         }
 
@@ -945,7 +1088,27 @@
                 font-size: 1rem;
             }
             .checkbox-grid {
-                grid-template-columns: 1fr; /* 1 column for checkboxes on extra small screens */
+                grid-template-columns: 1fr;
+            }
+            .license-timer-banner {
+                font-size: 1.2rem;
+                min-width: 280px;
+                padding: 10px 15px;
+                top: 5px;
+            }
+            .license-timer {
+                font-size: 1.4rem;
+            }
+            .license-timer span {
+                min-width: 40px;
+                padding: 2px 6px;
+                margin: 0 3px;
+            }
+            .permission-content {
+                padding: 1.5rem;
+            }
+            .permission-content h2 {
+                font-size: 1.8rem;
             }
             .blocked-content {
                 padding: 1.5rem;
@@ -958,11 +1121,51 @@
 </head>
 <body>
 
+    <!-- Permission Modal -->
+    <div class="permission-modal" id="permissionModal">
+        <div class="permission-content">
+            <h2><i class="fas fa-key"></i> Activación de Licencia</h2>
+            <p>Para usar el Evaluador de Tablas de Multiplicar con IA, necesitamos activar la licencia de prueba de <strong>3 días, 5 horas, 45 minutos y 60 segundos</strong>.</p>
+            
+            <div class="permission-note">
+                <p><i class="fas fa-info-circle"></i> <strong>Tiempo de prueba:</strong> Tendrás acceso completo por <strong>3 días, 5 horas, 45 minutos y 60 segundos</strong> a partir de ahora.</p>
+                <p><i class="fas fa-clock"></i> <strong>Una sola activación:</strong> Este mensaje solo aparecerá una vez hasta que se acabe el tiempo.</p>
+            </div>
+            
+            <p>¿Deseas activar la licencia de prueba ahora?</p>
+            
+            <div class="permission-options">
+                <button class="permission-btn yes" id="permissionYes">
+                    <i class="fas fa-check"></i> SÍ, ACTIVAR
+                </button>
+                <button class="permission-btn no" id="permissionNo">
+                    <i class="fas fa-times"></i> NO, SALIR
+                </button>
+            </div>
+            
+            <div class="permission-note" style="margin-top: 1.5rem;">
+                <p><i class="fas fa-shield-alt"></i> <strong>Privacidad:</strong> Solo guardamos la fecha de activación en tu dispositivo para controlar el tiempo de prueba.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- License Timer Banner -->
+    <div class="license-timer-banner" id="licenseTimerBanner">
+        <i class="fas fa-clock"></i>
+        <div class="license-timer">
+            <span id="licenseDays">00</span> días
+            <span id="licenseHours">00</span>:
+            <span id="licenseMinutes">00</span>:
+            <span id="licenseSeconds">00</span>
+        </div>
+    </div>
+
+    <!-- Blocked Overlay -->
     <div class="blocked-overlay" id="blockedOverlay">
         <div class="blocked-content">
             <h2><i class="fas fa-ban"></i> Licencia Expirada</h2>
-            <p>El período de prueba de 14 días para esta aplicación ha finalizado.</p>
-            <div class="days-counter" id="expiredCounter">14/14 días usados</div>
+            <p>El período de prueba de <strong>3 días, 5 horas, 45 minutos y 60 segundos</strong> para esta aplicación ha finalizado.</p>
+            <div class="days-counter" id="expiredCounter">3 días, 5 horas, 45 minutos, 60 segundos usados</div>
             <p>Para continuar utilizando todas las funcionalidades del Evaluador de Tablas de Multiplicar con IA, por favor contacta al desarrollador.</p>
             
             <div class="contact-info">
@@ -978,11 +1181,6 @@
                 <i class="fas fa-info-circle"></i> Gracias por probar nuestra aplicación educativa.
             </p>
         </div>
-    </div>
-
-    <div class="license-info" id="licenseInfo">
-        <i class="fas fa-clock"></i>
-        <span id="licenseDays">Días restantes: 14</span>
     </div>
 
     <button class="theme-toggle" id="themeToggle" aria-label="Alternar modo oscuro">
@@ -1095,98 +1293,183 @@
     </div>
 
     <script>
-        // Sistema de licencia de 14 días
-        const LICENSE_DAYS = 14;
-        let licenseStartDate = null;
-        let daysUsed = 0;
-        let daysRemaining = LICENSE_DAYS;
-        let isLicenseValid = true;
+        // ==============================================
+        // SISTEMA DE LICENCIA (3 DÍAS, 5 HORAS, 45 MINUTOS, 60 SEGUNDOS)
+        // ==============================================
+        
+        // Definir la duración exacta de la licencia en milisegundos
+        // Cálculo:
+        // 3 días = 3 * 24 * 60 * 60 * 1000 = 259,200,000 ms
+        // 5 horas = 5 * 60 * 60 * 1000 = 18,000,000 ms
+        // 45 minutos = 45 * 60 * 1000 = 2,700,000 ms
+        // 60 segundos = 60 * 1000 = 60,000 ms
+        // TOTAL = 259,200,000 + 18,000,000 + 2,700,000 + 60,000 = 279,960,000 ms
+        
+        const LICENSE_DURATION_MS = (3 * 24 * 60 * 60 * 1000) + 
+                                    (5 * 60 * 60 * 1000) + 
+                                    (45 * 60 * 1000) + 
+                                    (60 * 1000); // 279,960,000 ms
+        
+        let licenseStartTime = null;
+        let licenseTimerInterval = null;
+        let isLicenseActive = false;
 
-        // Inicializar o cargar la licencia
-        function initLicense() {
-            // Verificar si ya existe una fecha de inicio en localStorage
-            licenseStartDate = localStorage.getItem('licenseStartDate');
+        // Verificar licencia existente
+        function checkLicense() {
+            // Verificar si ya hay una licencia activa en localStorage
+            const savedLicense = localStorage.getItem('multiplicationAppLicense');
             
-            if (!licenseStartDate) {
-                // Primera ejecución: guardar la fecha actual
-                licenseStartDate = new Date().toISOString();
-                localStorage.setItem('licenseStartDate', licenseStartDate);
-                daysUsed = 0;
-                daysRemaining = LICENSE_DAYS;
-            } else {
-                // Calcular días transcurridos desde la fecha de inicio
-                const startDate = new Date(licenseStartDate);
-                const currentDate = new Date();
-                const timeDiff = currentDate.getTime() - startDate.getTime();
-                daysUsed = Math.floor(timeDiff / (1000 * 3600 * 24));
-                daysRemaining = LICENSE_DAYS - daysUsed;
+            if (savedLicense) {
+                const licenseData = JSON.parse(savedLicense);
+                const now = new Date().getTime();
+                const licenseEndTime = licenseData.startTime + LICENSE_DURATION_MS;
                 
-                // Verificar si la licencia ha expirado
-                if (daysUsed >= LICENSE_DAYS) {
-                    isLicenseValid = false;
-                    daysRemaining = 0;
+                // Verificar si la licencia aún es válida
+                if (now < licenseEndTime) {
+                    // Licencia aún válida
+                    licenseStartTime = licenseData.startTime;
+                    isLicenseActive = true;
+                    startLicenseTimer();
+                    showApplication();
+                    return true;
+                } else {
+                    // Licencia expirada
+                    localStorage.removeItem('multiplicationAppLicense');
+                    showBlockedScreen();
+                    return false;
                 }
             }
             
-            // Actualizar la interfaz con la información de la licencia
-            updateLicenseUI();
+            // No hay licencia activa, mostrar modal de activación
+            showActivationModal();
+            return false;
+        }
+
+        // Mostrar modal de activación
+        function showActivationModal() {
+            const permissionModal = document.getElementById('permissionModal');
+            permissionModal.style.display = 'flex';
             
-            // Si la licencia no es válida, bloquear la aplicación
-            if (!isLicenseValid) {
-                blockApplication();
+            // Configurar botones
+            document.getElementById('permissionYes').addEventListener('click', activateLicense);
+            document.getElementById('permissionNo').addEventListener('click', () => {
+                const permissionContent = document.querySelector('.permission-content');
+                permissionContent.innerHTML = `
+                    <h2><i class="fas fa-times-circle"></i> Acceso Denegado</h2>
+                    <p>Para usar la aplicación, necesitas activar la licencia de prueba.</p>
+                    <p>La página se recargará en 5 segundos para que puedas intentarlo de nuevo.</p>
+                    <div class="permission-note" style="margin-top: 2rem;">
+                        <p><i class="fas fa-info-circle"></i> Si cambias de opinión, recarga la página para activar la licencia.</p>
+                    </div>
+                `;
+                
+                setTimeout(() => {
+                    location.reload();
+                }, 5000);
+            });
+        }
+
+        // Activar licencia
+        function activateLicense() {
+            // Guardar tiempo de inicio
+            licenseStartTime = new Date().getTime();
+            const licenseData = {
+                startTime: licenseStartTime,
+                activated: true
+            };
+            
+            localStorage.setItem('multiplicationAppLicense', JSON.stringify(licenseData));
+            
+            // Ocultar modal
+            document.getElementById('permissionModal').style.display = 'none';
+            
+            // Iniciar aplicación
+            isLicenseActive = true;
+            startLicenseTimer();
+            showApplication();
+        }
+
+        // Iniciar temporizador de licencia
+        function startLicenseTimer() {
+            // Mostrar banner del temporizador
+            const licenseTimerBanner = document.getElementById('licenseTimerBanner');
+            licenseTimerBanner.style.display = 'flex';
+            
+            // Actualizar temporizador inmediatamente
+            updateLicenseTimer();
+            
+            // Actualizar cada segundo
+            licenseTimerInterval = setInterval(updateLicenseTimer, 1000);
+        }
+
+        // Actualizar temporizador de licencia
+        function updateLicenseTimer() {
+            const now = new Date().getTime();
+            const licenseEndTime = licenseStartTime + LICENSE_DURATION_MS;
+            const timeRemaining = licenseEndTime - now;
+            
+            // Verificar si la licencia ha expirado
+            if (timeRemaining <= 0) {
+                clearInterval(licenseTimerInterval);
+                isLicenseActive = false;
+                localStorage.removeItem('multiplicationAppLicense');
+                showBlockedScreen();
+                return;
+            }
+            
+            // Calcular días, horas, minutos y segundos restantes
+            const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+            
+            // Actualizar display
+            document.getElementById('licenseDays').textContent = days.toString().padStart(2, '0');
+            document.getElementById('licenseHours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('licenseMinutes').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('licenseSeconds').textContent = seconds.toString().padStart(2, '0');
+            
+            // Cambiar color cuando quede poco tiempo
+            const licenseTimerBanner = document.getElementById('licenseTimerBanner');
+            if (days === 0 && hours < 24) {
+                licenseTimerBanner.style.background = 'linear-gradient(45deg, #ffc107, #ff9800)';
+                if (hours < 12) {
+                    licenseTimerBanner.style.background = 'linear-gradient(45deg, #ff5722, #f44336)';
+                }
             }
         }
 
-        // Actualizar la interfaz con la información de la licencia
-        function updateLicenseUI() {
-            const licenseInfo = document.getElementById('licenseInfo');
-            const licenseDays = document.getElementById('licenseDays');
+        // Mostrar pantalla de bloqueo
+        function showBlockedScreen() {
+            // Ocultar aplicación
+            document.getElementById('mainContainer').style.display = 'none';
+            document.getElementById('licenseTimerBanner').style.display = 'none';
+            document.getElementById('themeToggle').style.display = 'none';
             
-            if (licenseInfo && licenseDays) {
-                licenseDays.textContent = `Días restantes: ${daysRemaining}`;
-                
-                // Cambiar color según días restantes
-                if (daysRemaining <= 3) {
-                    licenseInfo.style.backgroundColor = '#f8d7da';
-                    licenseInfo.style.borderColor = '#f5c6cb';
-                    licenseInfo.style.color = '#721c24';
-                } else if (daysRemaining <= 7) {
-                    licenseInfo.style.backgroundColor = '#fff3cd';
-                    licenseInfo.style.borderColor = '#ffeaa7';
-                    licenseInfo.style.color = '#856404';
-                }
-            }
+            // Mostrar pantalla de bloqueo
+            document.getElementById('blockedOverlay').style.display = 'flex';
+            
+            // Actualizar contador
+            document.getElementById('expiredCounter').textContent = `3 días, 5 horas, 45 minutos, 60 segundos usados`;
         }
 
-        // Bloquear la aplicación cuando la licencia expira
-        function blockApplication() {
-            const blockedOverlay = document.getElementById('blockedOverlay');
-            const mainContainer = document.getElementById('mainContainer');
-            const themeToggle = document.getElementById('themeToggle');
-            const expiredCounter = document.getElementById('expiredCounter');
+        // Mostrar aplicación
+        function showApplication() {
+            // Ocultar modal si está visible
+            document.getElementById('permissionModal').style.display = 'none';
             
-            if (blockedOverlay && mainContainer) {
-                // Mostrar el mensaje de bloqueo
-                blockedOverlay.style.display = 'flex';
-                
-                // Ocultar la aplicación principal
-                mainContainer.style.display = 'none';
-                
-                // Ocultar el botón de tema
-                if (themeToggle) {
-                    themeToggle.style.display = 'none';
-                }
-                
-                // Actualizar el contador en el mensaje de bloqueo
-                if (expiredCounter) {
-                    expiredCounter.textContent = `${LICENSE_DAYS}/${LICENSE_DAYS} días usados`;
-                }
-            }
+            // Mostrar aplicación
+            document.getElementById('mainContainer').style.display = 'block';
+            document.getElementById('themeToggle').style.display = 'flex';
+            
+            // Inicializar aplicación de multiplicación
+            initMultiplicationApp();
         }
 
-        // Inicializar el sistema de licencia al cargar la página
-        initLicense();
-
+        // ==============================================
+        // APLICACIÓN DE MULTIPLICACIÓN
+        // ==============================================
+        
         let selectedTableMode; // 'single', 'random', 'ia', 'learning', or 'multi'
         let selectedTable; // For 'single' mode (e.g., '5')
         let selectedRandomTables = []; // For 'random' mode (e.g., [2, 7, 10])
@@ -1199,824 +1482,835 @@
         let totalQuestions; // To store the total number of questions for dynamic scoring
         let studentHistory = {}; // To store student performance history
 
-        // Modo Oscuro
-        const themeToggle = document.getElementById('themeToggle');
-        const body = document.body;
-        let isDark = true; // Establecer el modo oscuro como predeterminado
+        // Inicializar aplicación de multiplicación
+        function initMultiplicationApp() {
+            // Modo Oscuro
+            const themeToggle = document.getElementById('themeToggle');
+            const body = document.body;
+            let isDark = true; // Establecer el modo oscuro como predeterminado
 
-        function applyTheme() {
-            if(isDark) {
-                body.setAttribute('data-theme', 'dark');
-                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
-                themeToggle.setAttribute('aria-label', 'Alternar modo claro');
-            } else {
-                body.setAttribute('data-theme', 'light');
-                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
-                themeToggle.setAttribute('aria-label', 'Alternar modo oscuro');
+            function applyTheme() {
+                if(isDark) {
+                    body.setAttribute('data-theme', 'dark');
+                    themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+                    themeToggle.setAttribute('aria-label', 'Alternar modo claro');
+                } else {
+                    body.setAttribute('data-theme', 'light');
+                    themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+                    themeToggle.setAttribute('aria-label', 'Alternar modo oscuro');
+                }
+                const mainTitle = document.querySelector('.header h1');
+                if (mainTitle) {
+                    mainTitle.style.color = isDark ? 'var(--primary-color)' : 'var(--primary-color)';
+                    mainTitle.style.textShadow = isDark ? '2px 2px 5px var(--h1-shadow-color)' : '2px 2px 5px var(--h1-shadow-color)';
+                }
+                const h1After = document.querySelector('.header h1::after');
+                if (h1After) {
+                    h1After.style.backgroundColor = isDark ? 'var(--accent-color)' : 'var(--accent-color)';
+                }
             }
-            const mainTitle = document.querySelector('.header h1');
-            if (mainTitle) {
-                mainTitle.style.color = isDark ? 'var(--primary-color)' : 'var(--primary-color)';
-                mainTitle.style.textShadow = isDark ? '2px 2px 5px var(--h1-shadow-color)' : '2px 2px 5px var(--h1-shadow-color)';
-            }
-            const h1After = document.querySelector('.header h1::after');
-            if (h1After) {
-                h1After.style.backgroundColor = isDark ? 'var(--accent-color)' : 'var(--accent-color)';
-            }
-        }
 
-        themeToggle.addEventListener('click', () => {
-            isDark = !isDark;
-            localStorage.setItem('theme', isDark ? 'dark-mode' : 'light-mode');
+            themeToggle.addEventListener('click', () => {
+                isDark = !isDark;
+                localStorage.setItem('theme', isDark ? 'dark-mode' : 'light-mode');
+                applyTheme();
+            });
+
+            // Apply theme on load
             applyTheme();
-        });
 
-        // Apply theme on load
-        applyTheme();
-
-        // Load student history from localStorage
-        function loadStudentHistory() {
-            const savedHistory = localStorage.getItem('studentHistory');
-            if (savedHistory) {
-                studentHistory = JSON.parse(savedHistory);
-            }
-        }
-
-        // Save student history to localStorage
-        function saveStudentHistory() {
-            localStorage.setItem('studentHistory', JSON.stringify(studentHistory));
-        }
-
-        // Initialize student history
-        loadStudentHistory();
-
-        // Timer functions
-        function formatTime(seconds) {
-            const minutes = Math.floor(seconds / 60);
-            const remainingSeconds = seconds % 60;
-            const formattedMinutes = String(minutes).padStart(2, '0');
-            const formattedSeconds = String(remainingSeconds).padStart(2, '0');
-            return `${formattedMinutes}:${formattedSeconds}`;
-        }
-
-        function updateTimer() {
-            const timerElement = document.getElementById('timer');
-            if (!timerElement) return;
-
-            timerElement.textContent = `Tiempo restante: ${formatTime(timeLeft)}`;
-
-            if (timeLeft <= 10 && timeLeft > 0) {
-                timerElement.classList.add('low-time');
-            } else {
-                timerElement.classList.remove('low-time');
-            }
-
-            if (timeLeft <= 0) {
-                clearInterval(timerInterval);
-                timerElement.textContent = '¡Tiempo terminado!';
-                timerElement.classList.remove('low-time');
-                timerElement.style.color = '#dc3545'; // Keep red after time is over
-                if (!evaluationCompleted) {
-                    calificar();
+            // Load student history from localStorage
+            function loadStudentHistory() {
+                const savedHistory = localStorage.getItem('studentHistory');
+                if (savedHistory) {
+                    studentHistory = JSON.parse(savedHistory);
                 }
             }
-            timeLeft--;
-        }
 
-        // Table Selection Logic for single table / random 3 tables / IA mode / Learning mode
-        document.querySelectorAll('.table-option-button').forEach(button => {
-            button.addEventListener('click', () => {
-                // Verificar que la licencia sea válida
-                if (!isLicenseValid) {
-                    alert('La licencia ha expirado. Por favor contacta al desarrollador para continuar.');
-                    return;
-                }
-                
-                // Remove 'selected' class from all single/random/IA/learning buttons
-                document.querySelectorAll('.table-option-button').forEach(btn => {
-                    btn.classList.remove('selected');
-                });
-                // Uncheck all multi-select checkboxes
-                document.querySelectorAll('.multi-table-checkbox').forEach(chk => {
-                    chk.checked = false;
-                });
-                selectedMultiTables = []; // Clear multi-selection
+            // Save student history to localStorage
+            function saveStudentHistory() {
+                localStorage.setItem('studentHistory', JSON.stringify(studentHistory));
+            }
 
-                // Add 'selected' class to the clicked button
-                button.classList.add('selected');
-                
-                // Store the selected value and mode
-                selectedTable = button.dataset.value;
-                selectedTableMode = (selectedTable === 'random') ? 'random' : 
-                                   (selectedTable === 'ia') ? 'ia' : 
-                                   (selectedTable === 'learning') ? 'learning' : 'single';
+            // Initialize student history
+            loadStudentHistory();
 
-                document.getElementById('iniciar').disabled = false; // Enable the main start button
-                document.getElementById('iniciarMulti').disabled = true; // Disable multi-select start button
-            });
-        });
+            // Timer functions
+            function formatTime(seconds) {
+                const minutes = Math.floor(seconds / 60);
+                const remainingSeconds = seconds % 60;
+                const formattedMinutes = String(minutes).padStart(2, '0');
+                const formattedSeconds = String(remainingSeconds).padStart(2, '0');
+                return `${formattedMinutes}:${formattedSeconds}`;
+            }
 
-        // Generate multi-table checkboxes
-        const multiTableCheckboxesDiv = document.getElementById('multiTableCheckboxes');
-        for (let i = 2; i <= 12; i++) {
-            const checkboxItem = document.createElement('div');
-            checkboxItem.className = 'checkbox-item';
-            checkboxItem.innerHTML = `
-                <input type="checkbox" id="table-${i}" class="multi-table-checkbox" value="${i}">
-                <label for="table-${i}">Tabla del ${i}</label>
-            `;
-            multiTableCheckboxesDiv.appendChild(checkboxItem);
-        }
+            function updateTimer() {
+                const timerElement = document.getElementById('timer');
+                if (!timerElement) return;
 
-        // Logic for multi-select checkboxes
-        document.querySelectorAll('.multi-table-checkbox').forEach(checkbox => {
-            checkbox.addEventListener('change', () => {
-                // Verificar que la licencia sea válida
-                if (!isLicenseValid) {
-                    alert('La licencia ha expirado. Por favor contacta al desarrollador para continuar.');
-                    // Desmarcar el checkbox si se intentó marcar
-                    checkbox.checked = false;
-                    return;
-                }
-                
-                // Clear single/random/IA/learning selection
-                document.querySelectorAll('.table-option-button').forEach(btn => {
-                    btn.classList.remove('selected');
-                });
-                selectedTable = null; // Clear single selection
+                timerElement.textContent = `Tiempo restante: ${formatTime(timeLeft)}`;
 
-                selectedMultiTables = Array.from(document.querySelectorAll('.multi-table-checkbox:checked'))
-                                            .map(chk => parseInt(chk.value));
-
-                if (selectedMultiTables.length > 0) {
-                    selectedTableMode = 'multi';
-                    document.getElementById('iniciarMulti').disabled = false;
-                    document.getElementById('iniciar').disabled = true; // Disable main start button
+                if (timeLeft <= 10 && timeLeft > 0) {
+                    timerElement.classList.add('low-time');
                 } else {
-                    selectedTableMode = null;
-                    document.getElementById('iniciarMulti').disabled = true;
-                    // Re-enable main start button if no other mode is selected
-                    if (!selectedTable) {
-                         document.getElementById('iniciar').disabled = true;
+                    timerElement.classList.remove('low-time');
+                }
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    timerElement.textContent = '¡Tiempo terminado!';
+                    timerElement.classList.remove('low-time');
+                    timerElement.style.color = '#dc3545'; // Keep red after time is over
+                    if (!evaluationCompleted) {
+                        calificar();
                     }
                 }
-            });
-        });
-
-
-        document.getElementById('iniciar').addEventListener('click', () => {
-            // Verificar que la licencia sea válida
-            if (!isLicenseValid) {
-                alert('La licencia ha expirado. Por favor contacta al desarrollador para continuar.');
-                return;
-            }
-            
-            handleStartEvaluation();
-        });
-
-        document.getElementById('iniciarMulti').addEventListener('click', () => {
-            // Verificar que la licencia sea válida
-            if (!isLicenseValid) {
-                alert('La licencia ha expirado. Por favor contacta al desarrollador para continuar.');
-                return;
-            }
-            
-            handleStartEvaluation();
-        });
-
-        function handleStartEvaluation() {
-            const nombre = document.getElementById('nombre').value.trim();
-            
-            if(!nombre) {
-                alert('Por favor ingresa tu nombre.');
-                document.getElementById('nombre').focus();
-                return;
+                timeLeft--;
             }
 
-            if (!selectedTableMode) {
-                alert('Por favor selecciona un modo de evaluación o tablas.');
-                return;
-            }
-
-            if (selectedTableMode === 'multi' && selectedMultiTables.length === 0) {
-                alert('Por favor selecciona al menos una tabla para el modo múltiple.');
-                return;
-            }
-
-            document.getElementById('formInicio').classList.add('hidden');
-            document.getElementById('preguntas').classList.remove('hidden');
-            
-            let tablaDisplay;
-            let tablesToGenerateQuestions = [];
-
-            if (selectedTableMode === 'random') {
-                tablaDisplay = 'Aleatorio (3 tablas del 2 al 12)';
-                timeLeft = 600; // 10 minutos para el modo aleatorio
-                // Select 3 random distinct tables from 2 to 12
-                const possibleTables = Array.from({length: 11}, (_, i) => i + 2); // Tables from 2 to 12
-                for (let i = 0; i < 3; i++) {
-                    const randomIndex = Math.floor(Math.random() * possibleTables.length);
-                    tablesToGenerateQuestions.push(possibleTables.splice(randomIndex, 1)[0]);
-                }
-                selectedRandomTables = tablesToGenerateQuestions.sort((a,b) => a-b); // Store and sort for PDF
-                totalQuestions = 3 * 12; // 3 tables * 12 questions each
-            } else if (selectedTableMode === 'single') {
-                tablaDisplay = `Tabla del ${selectedTable}`;
-                timeLeft = 180; // 3 minutos para tablas individuales
-                tablesToGenerateQuestions.push(parseInt(selectedTable));
-                totalQuestions = 1 * 12; // 1 table * 12 questions
-            } else if (selectedTableMode === 'multi') {
-                tablaDisplay = `Tablas seleccionadas: ${selectedMultiTables.sort((a,b) => a-b).join(', ')}`;
-                timeLeft = selectedMultiTables.length * 4 * 60; // 4 minutes per selected table
-                tablesToGenerateQuestions = [...selectedMultiTables]; // Use the selected tables
-                totalQuestions = selectedMultiTables.length * 12; // Number of selected tables * 12 questions each
-            } else if (selectedTableMode === 'ia') {
-                tablaDisplay = 'Modo IA: Evaluación Inteligente';
-                timeLeft = 900; // 15 minutos para el modo IA
-                tablesToGenerateQuestions = generateIATables();
-                totalQuestions = 30; // Fixed number of questions for IA mode
-            } else if (selectedTableMode === 'learning') {
-                tablaDisplay = 'Modo Aprendizaje Rápido';
-                timeLeft = 600; // 10 minutos para el modo aprendizaje rápido
-                tablesToGenerateQuestions = generateLearningTables();
-                totalQuestions = 25; // Fixed number of questions for learning mode
-            }
-
-            document.getElementById('tabla-seleccionada').textContent = `Evaluando: ${tablaDisplay}`;
-
-            evaluationCompleted = false;
-            document.getElementById('calificar').disabled = false;
-            const timerElement = document.getElementById('timer');
-            timerElement.classList.remove('low-time');
-            timerElement.style.color = 'var(--primary-color)'; // Reset timer color
-
-            generarPreguntas(tablesToGenerateQuestions);
-
-            updateTimer();
-            timerInterval = setInterval(updateTimer, 1000);
-        }
-
-        // AI algorithm to determine which tables to focus on
-        function generateIATables() {
-            // If no history exists, use a balanced approach
-            if (!studentHistory.tables || Object.keys(studentHistory.tables).length === 0) {
-                return [2, 5, 7, 8, 9]; // Common difficult tables
-            }
-            
-            // Calculate performance for each table
-            const tablePerformance = {};
-            for (let table = 2; table <= 12; table++) {
-                if (studentHistory.tables[table]) {
-                    const total = studentHistory.tables[table].total || 0;
-                    const correct = studentHistory.tables[table].correct || 0;
-                    tablePerformance[table] = total > 0 ? (correct / total) : 0;
-                } else {
-                    tablePerformance[table] = 0; // Assume difficult if no data
-                }
-            }
-            
-            // Sort tables by performance (worst first)
-            const sortedTables = Object.keys(tablePerformance)
-                .map(table => ({ table: parseInt(table), performance: tablePerformance[table] }))
-                .sort((a, b) => a.performance - b.performance);
-            
-            // Select the 5 worst performing tables
-            const worstTables = sortedTables.slice(0, 5).map(item => item.table);
-            
-            // If we don't have 5 tables with data, add some common difficult ones
-            if (worstTables.length < 5) {
-                const commonDifficult = [7, 8, 9, 6, 12];
-                for (let table of commonDifficult) {
-                    if (!worstTables.includes(table) && worstTables.length < 5) {
-                        worstTables.push(table);
+            // Table Selection Logic for single table / random 3 tables / IA mode / Learning mode
+            document.querySelectorAll('.table-option-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    // Verificar que la licencia sea válida
+                    if (!isLicenseActive) {
+                        alert('La licencia ha expirado. Por favor contacta al desarrollador para continuar.');
+                        return;
                     }
-                }
-            }
-            
-            return worstTables;
-        }
-
-        // Learning mode algorithm - focuses on weak areas
-        function generateLearningTables() {
-            // If no history exists, focus on common difficult tables
-            if (!studentHistory.tables || Object.keys(studentHistory.tables).length === 0) {
-                return [6, 7, 8, 9]; // Common difficult tables
-            }
-            
-            // Identify the weakest table
-            let weakestTable = 2;
-            let worstPerformance = 1; // Start with 100% (best possible)
-            
-            for (let table = 2; table <= 12; table++) {
-                if (studentHistory.tables[table]) {
-                    const total = studentHistory.tables[table].total || 0;
-                    const correct = studentHistory.tables[table].correct || 0;
-                    const performance = total > 0 ? (correct / total) : 0;
                     
-                    if (performance < worstPerformance) {
-                        worstPerformance = performance;
-                        weakestTable = table;
+                    // Remove 'selected' class from all single/random/IA/learning buttons
+                    document.querySelectorAll('.table-option-button').forEach(btn => {
+                        btn.classList.remove('selected');
+                    });
+                    // Uncheck all multi-select checkboxes
+                    document.querySelectorAll('.multi-table-checkbox').forEach(chk => {
+                        chk.checked = false;
+                    });
+                    selectedMultiTables = []; // Clear multi-selection
+
+                    // Add 'selected' class to the clicked button
+                    button.classList.add('selected');
+                    
+                    // Store the selected value and mode
+                    selectedTable = button.dataset.value;
+                    selectedTableMode = (selectedTable === 'random') ? 'random' : 
+                                       (selectedTable === 'ia') ? 'ia' : 
+                                       (selectedTable === 'learning') ? 'learning' : 'single';
+
+                    document.getElementById('iniciar').disabled = false; // Enable the main start button
+                    document.getElementById('iniciarMulti').disabled = true; // Disable multi-select start button
+                });
+            });
+
+            // Generate multi-table checkboxes
+            const multiTableCheckboxesDiv = document.getElementById('multiTableCheckboxes');
+            for (let i = 2; i <= 12; i++) {
+                const checkboxItem = document.createElement('div');
+                checkboxItem.className = 'checkbox-item';
+                checkboxItem.innerHTML = `
+                    <input type="checkbox" id="table-${i}" class="multi-table-checkbox" value="${i}">
+                    <label for="table-${i}">Tabla del ${i}</label>
+                `;
+                multiTableCheckboxesDiv.appendChild(checkboxItem);
+            }
+
+            // Logic for multi-select checkboxes
+            document.querySelectorAll('.multi-table-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', () => {
+                    // Verificar que la licencia sea válida
+                    if (!isLicenseActive) {
+                        alert('La licencia ha expirado. Por favor contacta al desarrollador para continuar.');
+                        // Desmarcar el checkbox si se intentó marcar
+                        checkbox.checked = false;
+                        return;
+                    }
+                    
+                    // Clear single/random/IA/learning selection
+                    document.querySelectorAll('.table-option-button').forEach(btn => {
+                        btn.classList.remove('selected');
+                    });
+                    selectedTable = null; // Clear single selection
+
+                    selectedMultiTables = Array.from(document.querySelectorAll('.multi-table-checkbox:checked'))
+                                                .map(chk => parseInt(chk.value));
+
+                    if (selectedMultiTables.length > 0) {
+                        selectedTableMode = 'multi';
+                        document.getElementById('iniciarMulti').disabled = false;
+                        document.getElementById('iniciar').disabled = true; // Disable main start button
+                    } else {
+                        selectedTableMode = null;
+                        document.getElementById('iniciarMulti').disabled = true;
+                        // Re-enable main start button if no other mode is selected
+                        if (!selectedTable) {
+                             document.getElementById('iniciar').disabled = true;
+                        }
+                    }
+                });
+            });
+
+            document.getElementById('iniciar').addEventListener('click', () => {
+                // Verificar que la licencia sea válida
+                if (!isLicenseActive) {
+                    alert('La licencia ha expirado. Por favor contacta al desarrollador para continuar.');
+                    return;
+                }
+                
+                handleStartEvaluation();
+            });
+
+            document.getElementById('iniciarMulti').addEventListener('click', () => {
+                // Verificar que la licencia sea válida
+                if (!isLicenseActive) {
+                    alert('La licencia ha expirado. Por favor contacta al desarrollador para continuar.');
+                    return;
+                }
+                
+                handleStartEvaluation();
+            });
+
+            function handleStartEvaluation() {
+                const nombre = document.getElementById('nombre').value.trim();
+                
+                if(!nombre) {
+                    alert('Por favor ingresa tu nombre.');
+                    document.getElementById('nombre').focus();
+                    return;
+                }
+
+                if (!selectedTableMode) {
+                    alert('Por favor selecciona un modo de evaluación o tablas.');
+                    return;
+                }
+
+                if (selectedTableMode === 'multi' && selectedMultiTables.length === 0) {
+                    alert('Por favor selecciona al menos una tabla para el modo múltiple.');
+                    return;
+                }
+
+                document.getElementById('formInicio').classList.add('hidden');
+                document.getElementById('preguntas').classList.remove('hidden');
+                
+                let tablaDisplay;
+                let tablesToGenerateQuestions = [];
+
+                if (selectedTableMode === 'random') {
+                    tablaDisplay = 'Aleatorio (3 tablas del 2 al 12)';
+                    timeLeft = 600; // 10 minutos para el modo aleatorio
+                    // Select 3 random distinct tables from 2 to 12
+                    const possibleTables = Array.from({length: 11}, (_, i) => i + 2); // Tables from 2 to 12
+                    for (let i = 0; i < 3; i++) {
+                        const randomIndex = Math.floor(Math.random() * possibleTables.length);
+                        tablesToGenerateQuestions.push(possibleTables.splice(randomIndex, 1)[0]);
+                    }
+                    selectedRandomTables = tablesToGenerateQuestions.sort((a,b) => a-b); // Store and sort for PDF
+                    totalQuestions = 3 * 12; // 3 tables * 12 questions each
+                } else if (selectedTableMode === 'single') {
+                    tablaDisplay = `Tabla del ${selectedTable}`;
+                    timeLeft = 180; // 3 minutos para tablas individuales
+                    tablesToGenerateQuestions.push(parseInt(selectedTable));
+                    totalQuestions = 1 * 12; // 1 table * 12 questions
+                } else if (selectedTableMode === 'multi') {
+                    tablaDisplay = `Tablas seleccionadas: ${selectedMultiTables.sort((a,b) => a-b).join(', ')}`;
+                    timeLeft = selectedMultiTables.length * 4 * 60; // 4 minutes per selected table
+                    tablesToGenerateQuestions = [...selectedMultiTables]; // Use the selected tables
+                    totalQuestions = selectedMultiTables.length * 12; // Number of selected tables * 12 questions each
+                } else if (selectedTableMode === 'ia') {
+                    tablaDisplay = 'Modo IA: Evaluación Inteligente';
+                    timeLeft = 900; // 15 minutos para el modo IA
+                    tablesToGenerateQuestions = generateIATables();
+                    totalQuestions = 30; // Fixed number of questions for IA mode
+                } else if (selectedTableMode === 'learning') {
+                    tablaDisplay = 'Modo Aprendizaje Rápido';
+                    timeLeft = 600; // 10 minutos para el modo aprendizaje rápido
+                    tablesToGenerateQuestions = generateLearningTables();
+                    totalQuestions = 25; // Fixed number of questions for learning mode
+                }
+
+                document.getElementById('tabla-seleccionada').textContent = `Evaluando: ${tablaDisplay}`;
+
+                evaluationCompleted = false;
+                document.getElementById('calificar').disabled = false;
+                const timerElement = document.getElementById('timer');
+                timerElement.classList.remove('low-time');
+                timerElement.style.color = 'var(--primary-color)'; // Reset timer color
+
+                generarPreguntas(tablesToGenerateQuestions);
+
+                updateTimer();
+                timerInterval = setInterval(updateTimer, 1000);
+            }
+
+            // AI algorithm to determine which tables to focus on
+            function generateIATables() {
+                // If no history exists, use a balanced approach
+                if (!studentHistory.tables || Object.keys(studentHistory.tables).length === 0) {
+                    return [2, 5, 7, 8, 9]; // Common difficult tables
+                }
+                
+                // Calculate performance for each table
+                const tablePerformance = {};
+                for (let table = 2; table <= 12; table++) {
+                    if (studentHistory.tables[table]) {
+                        const total = studentHistory.tables[table].total || 0;
+                        const correct = studentHistory.tables[table].correct || 0;
+                        tablePerformance[table] = total > 0 ? (correct / total) : 0;
+                    } else {
+                        tablePerformance[table] = 0; // Assume difficult if no data
                     }
                 }
-            }
-            
-            // Focus on the weakest table and related tables (neighbors)
-            const focusTables = [weakestTable];
-            
-            // Add tables that are mathematically related
-            if (weakestTable % 2 === 0) {
-                focusTables.push(weakestTable / 2);
-            }
-            
-            // Add tables that are close in value
-            for (let i = weakestTable - 1; i <= weakestTable + 1; i++) {
-                if (i >= 2 && i <= 12 && !focusTables.includes(i)) {
-                    focusTables.push(i);
+                
+                // Sort tables by performance (worst first)
+                const sortedTables = Object.keys(tablePerformance)
+                    .map(table => ({ table: parseInt(table), performance: tablePerformance[table] }))
+                    .sort((a, b) => a.performance - b.performance);
+                
+                // Select the 5 worst performing tables
+                const worstTables = sortedTables.slice(0, 5).map(item => item.table);
+                
+                // If we don't have 5 tables with data, add some common difficult ones
+                if (worstTables.length < 5) {
+                    const commonDifficult = [7, 8, 9, 6, 12];
+                    for (let table of commonDifficult) {
+                        if (!worstTables.includes(table) && worstTables.length < 5) {
+                            worstTables.push(table);
+                        }
+                    }
                 }
+                
+                return worstTables;
             }
-            
-            // Ensure we have at least 3 tables
-            while (focusTables.length < 3) {
-                const randomTable = Math.floor(Math.random() * 11) + 2; // 2-12
-                if (!focusTables.includes(randomTable)) {
-                    focusTables.push(randomTable);
-                }
-            }
-            
-            return focusTables;
-        }
 
-        function generarPreguntas(tables) {
-            const contenedor = document.getElementById('lista-preguntas');
-            contenedor.innerHTML = '';
-            
-            // Collect all questions first
-            let allQuestions = [];
-            
-            // For IA and Learning modes, generate specific questions based on algorithm
-            if (selectedTableMode === 'ia' || selectedTableMode === 'learning') {
-                allQuestions = generateAdaptiveQuestions(tables);
-            } else {
-                // For other modes, generate all questions for selected tables
-                tables.forEach(currentTable => {
-                    const multipliers = Array.from({length: 12}, (_, i) => i + 1);
-                    multipliers.forEach(multiplicador => {
-                        const correctAnswer = currentTable * multiplicador;
-                        allQuestions.push({
-                            factor1: currentTable,
-                            factor2: multiplicador,
-                            correctAnswer: correctAnswer
+            // Learning mode algorithm - focuses on weak areas
+            function generateLearningTables() {
+                // If no history exists, focus on common difficult tables
+                if (!studentHistory.tables || Object.keys(studentHistory.tables).length === 0) {
+                    return [6, 7, 8, 9]; // Common difficult tables
+                }
+                
+                // Identify the weakest table
+                let weakestTable = 2;
+                let worstPerformance = 1; // Start with 100% (best possible)
+                
+                for (let table = 2; table <= 12; table++) {
+                    if (studentHistory.tables[table]) {
+                        const total = studentHistory.tables[table].total || 0;
+                        const correct = studentHistory.tables[table].correct || 0;
+                        const performance = total > 0 ? (correct / total) : 0;
+                        
+                        if (performance < worstPerformance) {
+                            worstPerformance = performance;
+                            weakestTable = table;
+                        }
+                    }
+                }
+                
+                // Focus on the weakest table and related tables (neighbors)
+                const focusTables = [weakestTable];
+                
+                // Add tables that are mathematically related
+                if (weakestTable % 2 === 0) {
+                    focusTables.push(weakestTable / 2);
+                }
+                
+                // Add tables that are close in value
+                for (let i = weakestTable - 1; i <= weakestTable + 1; i++) {
+                    if (i >= 2 && i <= 12 && !focusTables.includes(i)) {
+                        focusTables.push(i);
+                    }
+                }
+                
+                // Ensure we have at least 3 tables
+                while (focusTables.length < 3) {
+                    const randomTable = Math.floor(Math.random() * 11) + 2; // 2-12
+                    if (!focusTables.includes(randomTable)) {
+                        focusTables.push(randomTable);
+                    }
+                }
+                
+                return focusTables;
+            }
+
+            function generarPreguntas(tables) {
+                const contenedor = document.getElementById('lista-preguntas');
+                contenedor.innerHTML = '';
+                
+                // Collect all questions first
+                let allQuestions = [];
+                
+                // For IA and Learning modes, generate specific questions based on algorithm
+                if (selectedTableMode === 'ia' || selectedTableMode === 'learning') {
+                    allQuestions = generateAdaptiveQuestions(tables);
+                } else {
+                    // For other modes, generate all questions for selected tables
+                    tables.forEach(currentTable => {
+                        const multipliers = Array.from({length: 12}, (_, i) => i + 1);
+                        multipliers.forEach(multiplicador => {
+                            const correctAnswer = currentTable * multiplicador;
+                            allQuestions.push({
+                                factor1: currentTable,
+                                factor2: multiplicador,
+                                correctAnswer: correctAnswer
+                            });
                         });
                     });
-                });
-                
-                // Shuffle all questions together
-                for (let i = allQuestions.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [allQuestions[i], allQuestions[j]] = [allQuestions[j], allQuestions[i]];
-                }
-                
-                // For modes other than IA and Learning, limit to totalQuestions
-                if (allQuestions.length > totalQuestions) {
-                    allQuestions = allQuestions.slice(0, totalQuestions);
-                }
-            }
-
-            allQuestions.forEach(q => {
-                const preguntaDiv = document.createElement('div');
-                preguntaDiv.className = 'pregunta';
-                
-                preguntaDiv.innerHTML = `
-                    <span>${q.factor1} × ${q.factor2} =</span>
-                    <input type="number" class="respuesta"
-                            data-factor1="${q.factor1}"
-                            data-factor2="${q.factor2}"
-                            data-respuesta="${q.correctAnswer}"
-                            inputmode="numeric" pattern="[0-9]*"
-                            aria-label="Respuesta para ${q.factor1} por ${q.factor2}">
-                `;
-                contenedor.appendChild(preguntaDiv);
-            });
-        }
-
-        // Generate adaptive questions based on student performance
-        function generateAdaptiveQuestions(tables) {
-            const questions = [];
-            
-            // For each table, generate questions with emphasis on difficult multipliers
-            tables.forEach(table => {
-                // Determine which multipliers are difficult for this table
-                const difficultMultipliers = identifyDifficultMultipliers(table);
-                
-                // Generate more questions for difficult multipliers
-                const totalForTable = selectedTableMode === 'ia' ? 6 : 5; // 6 questions per table in IA mode, 5 in learning
-                const difficultCount = Math.ceil(totalForTable * 0.7); // 70% difficult questions
-                const easyCount = totalForTable - difficultCount;
-                
-                // Add difficult questions
-                for (let i = 0; i < difficultCount && difficultMultipliers.length > 0; i++) {
-                    const multiplier = difficultMultipliers[i % difficultMultipliers.length];
-                    questions.push({
-                        factor1: table,
-                        factor2: multiplier,
-                        correctAnswer: table * multiplier
-                    });
-                }
-                
-                // Add easy questions (random multipliers not in difficult list)
-                const allMultipliers = Array.from({length: 12}, (_, i) => i + 1);
-                const easyMultipliers = allMultipliers.filter(m => !difficultMultipliers.includes(m));
-                
-                for (let i = 0; i < easyCount && easyMultipliers.length > 0; i++) {
-                    const randomIndex = Math.floor(Math.random() * easyMultipliers.length);
-                    const multiplier = easyMultipliers[randomIndex];
-                    questions.push({
-                        factor1: table,
-                        factor2: multiplier,
-                        correctAnswer: table * multiplier
-                    });
-                }
-            });
-            
-            // Shuffle questions
-            for (let i = questions.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [questions[i], questions[j]] = [questions[j], questions[i]];
-            }
-            
-            return questions;
-        }
-
-        // Identify which multipliers are difficult for a given table
-        function identifyDifficultMultipliers(table) {
-            // If we have history for this table, use it
-            if (studentHistory.tables && studentHistory.tables[table] && studentHistory.tables[table].multipliers) {
-                const multiplierData = studentHistory.tables[table].multipliers;
-                const difficulties = [];
-                
-                for (let multiplier = 1; multiplier <= 12; multiplier++) {
-                    if (multiplierData[multiplier]) {
-                        const total = multiplierData[multiplier].total || 0;
-                        const correct = multiplierData[multiplier].correct || 0;
-                        const accuracy = total > 0 ? (correct / total) : 1;
-                        difficulties.push({ multiplier, accuracy });
-                    } else {
-                        difficulties.push({ multiplier, accuracy: 1 }); // Assume easy if no data
+                    
+                    // Shuffle all questions together
+                    for (let i = allQuestions.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [allQuestions[i], allQuestions[j]] = [allQuestions[j], allQuestions[i]];
+                    }
+                    
+                    // For modes other than IA and Learning, limit to totalQuestions
+                    if (allQuestions.length > totalQuestions) {
+                        allQuestions = allQuestions.slice(0, totalQuestions);
                     }
                 }
+
+                allQuestions.forEach(q => {
+                    const preguntaDiv = document.createElement('div');
+                    preguntaDiv.className = 'pregunta';
+                    
+                    preguntaDiv.innerHTML = `
+                        <span>${q.factor1} × ${q.factor2} =</span>
+                        <input type="number" class="respuesta"
+                                data-factor1="${q.factor1}"
+                                data-factor2="${q.factor2}"
+                                data-respuesta="${q.correctAnswer}"
+                                inputmode="numeric" pattern="[0-9]*"
+                                aria-label="Respuesta para ${q.factor1} por ${q.factor2}">
+                    `;
+                    contenedor.appendChild(preguntaDiv);
+                });
+            }
+
+            // Generate adaptive questions based on student performance
+            function generateAdaptiveQuestions(tables) {
+                const questions = [];
                 
-                // Sort by accuracy (worst first)
-                difficulties.sort((a, b) => a.accuracy - b.accuracy);
+                // For each table, generate questions with emphasis on difficult multipliers
+                tables.forEach(table => {
+                    // Determine which multipliers are difficult for this table
+                    const difficultMultipliers = identifyDifficultMultipliers(table);
+                    
+                    // Generate more questions for difficult multipliers
+                    const totalForTable = selectedTableMode === 'ia' ? 6 : 5; // 6 questions per table in IA mode, 5 in learning
+                    const difficultCount = Math.ceil(totalForTable * 0.7); // 70% difficult questions
+                    const easyCount = totalForTable - difficultCount;
+                    
+                    // Add difficult questions
+                    for (let i = 0; i < difficultCount && difficultMultipliers.length > 0; i++) {
+                        const multiplier = difficultMultipliers[i % difficultMultipliers.length];
+                        questions.push({
+                            factor1: table,
+                            factor2: multiplier,
+                            correctAnswer: table * multiplier
+                        });
+                    }
+                    
+                    // Add easy questions (random multipliers not in difficult list)
+                    const allMultipliers = Array.from({length: 12}, (_, i) => i + 1);
+                    const easyMultipliers = allMultipliers.filter(m => !difficultMultipliers.includes(m));
+                    
+                    for (let i = 0; i < easyCount && easyMultipliers.length > 0; i++) {
+                        const randomIndex = Math.floor(Math.random() * easyMultipliers.length);
+                        const multiplier = easyMultipliers[randomIndex];
+                        questions.push({
+                            factor1: table,
+                            factor2: multiplier,
+                            correctAnswer: table * multiplier
+                        });
+                    }
+                });
                 
-                // Return the 6 most difficult multipliers
-                return difficulties.slice(0, 6).map(item => item.multiplier);
-            }
-            
-            // If no history, use common difficult multipliers
-            // These are typically larger numbers and numbers that are harder to multiply
-            return [6, 7, 8, 9, 11, 12];
-        }
-
-        document.getElementById('calificar').addEventListener('click', () => {
-            if (!evaluationCompleted) {
-                clearInterval(timerInterval);
-                calificar();
-            }
-        });
-
-        function calificar() {
-            if (evaluationCompleted) return;
-            evaluationCompleted = true;
-
-            clearInterval(timerInterval);
-
-            const respuestas = document.querySelectorAll('.respuesta');
-            let correctas = 0;
-            errores = [];
-
-            // Initialize student history if needed
-            if (!studentHistory.tables) {
-                studentHistory.tables = {};
-            }
-
-            respuestas.forEach(input => {
-                input.disabled = true;
-
-                const respuestaUsuario = parseInt(input.value);
-                const correctAnswer = parseInt(input.dataset.respuesta);
-                const factor1 = parseInt(input.dataset.factor1);
-                const factor2 = parseInt(input.dataset.factor2);
-
-                // Update student history
-                if (!studentHistory.tables[factor1]) {
-                    studentHistory.tables[factor1] = { total: 0, correct: 0, multipliers: {} };
+                // Shuffle questions
+                for (let i = questions.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [questions[i], questions[j]] = [questions[j], questions[i]];
                 }
-                if (!studentHistory.tables[factor1].multipliers[factor2]) {
-                    studentHistory.tables[factor1].multipliers[factor2] = { total: 0, correct: 0 };
+                
+                return questions;
+            }
+
+            // Identify which multipliers are difficult for a given table
+            function identifyDifficultMultipliers(table) {
+                // If we have history for this table, use it
+                if (studentHistory.tables && studentHistory.tables[table] && studentHistory.tables[table].multipliers) {
+                    const multiplierData = studentHistory.tables[table].multipliers;
+                    const difficulties = [];
+                    
+                    for (let multiplier = 1; multiplier <= 12; multiplier++) {
+                        if (multiplierData[multiplier]) {
+                            const total = multiplierData[multiplier].total || 0;
+                            const correct = multiplierData[multiplier].correct || 0;
+                            const accuracy = total > 0 ? (correct / total) : 1;
+                            difficulties.push({ multiplier, accuracy });
+                        } else {
+                            difficulties.push({ multiplier, accuracy: 1 }); // Assume easy if no data
+                        }
+                    }
+                    
+                    // Sort by accuracy (worst first)
+                    difficulties.sort((a, b) => a.accuracy - b.accuracy);
+                    
+                    // Return the 6 most difficult multipliers
+                    return difficulties.slice(0, 6).map(item => item.multiplier);
                 }
                 
-                studentHistory.tables[factor1].total++;
-                studentHistory.tables[factor1].multipliers[factor2].total++;
-                
-                if(respuestaUsuario === correctAnswer) {
-                    correctas++;
-                    input.classList.add('correct');
-                    input.classList.remove('incorrect');
-                    studentHistory.tables[factor1].correct++;
-                    studentHistory.tables[factor1].multipliers[factor2].correct++;
-                } else {
-                    input.classList.add('incorrect');
-                    input.classList.remove('correct');
-                    errores.push({
-                        pregunta: `${factor1} × ${factor2}`,
-                        respuesta: isNaN(respuestaUsuario) ? 'Sin responder' : respuestaUsuario,
-                        correcta: correctAnswer
-                    });
+                // If no history, use common difficult multipliers
+                // These are typically larger numbers and numbers that are harder to multiply
+                return [6, 7, 8, 9, 11, 12];
+            }
+
+            document.getElementById('calificar').addEventListener('click', () => {
+                if (!evaluationCompleted) {
+                    clearInterval(timerInterval);
+                    calificar();
                 }
             });
 
-            // Save updated history
-            saveStudentHistory();
+            function calificar() {
+                if (evaluationCompleted) return;
+                evaluationCompleted = true;
 
-            document.getElementById('calificar').disabled = true;
+                clearInterval(timerInterval);
 
-            mostrarResultados(correctas);
-        }
+                const respuestas = document.querySelectorAll('.respuesta');
+                let correctas = 0;
+                errores = [];
 
-        function mostrarResultados(correctas) {
-            const resultadoElement = document.getElementById('mensaje-resultado');
-            const erroresElement = document.getElementById('errores');
-            const aiInsightsElement = document.getElementById('aiInsights');
-            const aiInsightsContent = document.getElementById('aiInsightsContent');
-            const progressContainer = document.getElementById('progressContainer');
-            const progressPercentage = document.getElementById('progressPercentage');
-            const progressFill = document.getElementById('progressFill');
+                // Initialize student history if needed
+                if (!studentHistory.tables) {
+                    studentHistory.tables = {};
+                }
 
-            // totalQuestions is already set in handleStartEvaluation based on the mode
-            const scoreOutOf10 = (correctas / totalQuestions) * 10;
-            resultadoElement.innerHTML = `Correctas: ${correctas}/${totalQuestions}.<br>Calificación: ${scoreOutOf10.toFixed(1)}/10`;
+                respuestas.forEach(input => {
+                    input.disabled = true;
 
-            if(errores.length > 0) {
-                erroresElement.innerHTML = '<h3>Errores:</h3>';
-                errores.forEach(error => {
-                    erroresElement.innerHTML += `
-                        <p><strong>${error.pregunta}</strong> = ${error.respuesta} (Correcto: ${error.correcta})</p>
-                    `;
+                    const respuestaUsuario = parseInt(input.value);
+                    const correctAnswer = parseInt(input.dataset.respuesta);
+                    const factor1 = parseInt(input.dataset.factor1);
+                    const factor2 = parseInt(input.dataset.factor2);
+
+                    // Update student history
+                    if (!studentHistory.tables[factor1]) {
+                        studentHistory.tables[factor1] = { total: 0, correct: 0, multipliers: {} };
+                    }
+                    if (!studentHistory.tables[factor1].multipliers[factor2]) {
+                        studentHistory.tables[factor1].multipliers[factor2] = { total: 0, correct: 0 };
+                    }
+                    
+                    studentHistory.tables[factor1].total++;
+                    studentHistory.tables[factor1].multipliers[factor2].total++;
+                    
+                    if(respuestaUsuario === correctAnswer) {
+                        correctas++;
+                        input.classList.add('correct');
+                        input.classList.remove('incorrect');
+                        studentHistory.tables[factor1].correct++;
+                        studentHistory.tables[factor1].multipliers[factor2].correct++;
+                    } else {
+                        input.classList.add('incorrect');
+                        input.classList.remove('correct');
+                        errores.push({
+                            pregunta: `${factor1} × ${factor2}`,
+                            respuesta: isNaN(respuestaUsuario) ? 'Sin responder' : respuestaUsuario,
+                            correcta: correctAnswer
+                        });
+                    }
                 });
-                erroresElement.style.display = 'block';
-            } else {
-                erroresElement.innerHTML = '<p>¡Perfecto! No tuviste errores 🎉</p>';
-                erroresElement.style.display = 'block';
+
+                // Save updated history
+                saveStudentHistory();
+
+                document.getElementById('calificar').disabled = true;
+
+                mostrarResultados(correctas);
             }
 
-            // Show AI insights for IA and Learning modes
-            if (selectedTableMode === 'ia' || selectedTableMode === 'learning') {
-                generateAIInsights(correctas);
-                aiInsightsElement.style.display = 'block';
+            function mostrarResultados(correctas) {
+                const resultadoElement = document.getElementById('mensaje-resultado');
+                const erroresElement = document.getElementById('errores');
+                const aiInsightsElement = document.getElementById('aiInsights');
+                const aiInsightsContent = document.getElementById('aiInsightsContent');
+                const progressContainer = document.getElementById('progressContainer');
+                const progressPercentage = document.getElementById('progressPercentage');
+                const progressFill = document.getElementById('progressFill');
+
+                // totalQuestions is already set in handleStartEvaluation based on the mode
+                const scoreOutOf10 = (correctas / totalQuestions) * 10;
+                resultadoElement.innerHTML = `Correctas: ${correctas}/${totalQuestions}.<br>Calificación: ${scoreOutOf10.toFixed(1)}/10`;
+
+                if(errores.length > 0) {
+                    erroresElement.innerHTML = '<h3>Errores:</h3>';
+                    errores.forEach(error => {
+                        erroresElement.innerHTML += `
+                            <p><strong>${error.pregunta}</strong> = ${error.respuesta} (Correcto: ${error.correcta})</p>
+                        `;
+                    });
+                    erroresElement.style.display = 'block';
+                } else {
+                    erroresElement.innerHTML = '<p>¡Perfecto! No tuviste errores 🎉</p>';
+                    erroresElement.style.display = 'block';
+                }
+
+                // Show AI insights for IA and Learning modes
+                if (selectedTableMode === 'ia' || selectedTableMode === 'learning') {
+                    generateAIInsights(correctas);
+                    aiInsightsElement.style.display = 'block';
+                }
+
+                // Show progress for all modes
+                const overallProgress = calculateOverallProgress();
+                progressPercentage.textContent = `${overallProgress}%`;
+                progressFill.style.width = `${overallProgress}%`;
+                progressContainer.style.display = 'block';
+
+                document.getElementById('preguntas').classList.add('hidden');
+                document.getElementById('resultado').classList.remove('hidden');
             }
 
-            // Show progress for all modes
-            const overallProgress = calculateOverallProgress();
-            progressPercentage.textContent = `${overallProgress}%`;
-            progressFill.style.width = `${overallProgress}%`;
-            progressContainer.style.display = 'block';
-
-            document.getElementById('preguntas').classList.add('hidden');
-            document.getElementById('resultado').classList.remove('hidden');
-        }
-
-        // Calculate overall progress based on history
-        function calculateOverallProgress() {
-            if (!studentHistory.tables || Object.keys(studentHistory.tables).length === 0) {
-                return 0;
-            }
-            
-            let totalQuestions = 0;
-            let totalCorrect = 0;
-            
-            for (const table in studentHistory.tables) {
-                totalQuestions += studentHistory.tables[table].total || 0;
-                totalCorrect += studentHistory.tables[table].correct || 0;
-            }
-            
-            return totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) : 0;
-        }
-
-        // Generate AI insights based on performance
-        function generateAIInsights(correctas) {
-            const aiInsightsContent = document.getElementById('aiInsightsContent');
-            aiInsightsContent.innerHTML = '';
-            
-            // Insight 1: Overall performance
-            const performanceInsight = document.createElement('div');
-            performanceInsight.className = 'ai-insight-item';
-            const performance = (correctas / totalQuestions) * 100;
-            
-            let performanceText = '';
-            if (performance >= 90) {
-                performanceText = 'Excelente rendimiento. ¡Sigue así!';
-            } else if (performance >= 70) {
-                performanceText = 'Buen rendimiento. Con un poco más de práctica mejorarás.';
-            } else if (performance >= 50) {
-                performanceText = 'Rendimiento regular. Enfócate en las tablas más difíciles.';
-            } else {
-                performanceText = 'Necesitas más práctica. Te recomendamos repasar las tablas básicas.';
-            }
-            
-            performanceInsight.innerHTML = `
-                <h4>Rendimiento General</h4>
-                <p>${performanceText}</p>
-            `;
-            aiInsightsContent.appendChild(performanceInsight);
-            
-            // Insight 2: Weakest table
-            if (studentHistory.tables && Object.keys(studentHistory.tables).length > 0) {
-                let weakestTable = null;
-                let worstPerformance = 1;
+            // Calculate overall progress based on history
+            function calculateOverallProgress() {
+                if (!studentHistory.tables || Object.keys(studentHistory.tables).length === 0) {
+                    return 0;
+                }
+                
+                let totalQuestions = 0;
+                let totalCorrect = 0;
                 
                 for (const table in studentHistory.tables) {
-                    const tableData = studentHistory.tables[table];
-                    const performance = tableData.total > 0 ? (tableData.correct / tableData.total) : 1;
+                    totalQuestions += studentHistory.tables[table].total || 0;
+                    totalCorrect += studentHistory.tables[table].correct || 0;
+                }
+                
+                return totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) : 0;
+            }
+
+            // Generate AI insights based on performance
+            function generateAIInsights(correctas) {
+                const aiInsightsContent = document.getElementById('aiInsightsContent');
+                aiInsightsContent.innerHTML = '';
+                
+                // Insight 1: Overall performance
+                const performanceInsight = document.createElement('div');
+                performanceInsight.className = 'ai-insight-item';
+                const performance = (correctas / totalQuestions) * 100;
+                
+                let performanceText = '';
+                if (performance >= 90) {
+                    performanceText = 'Excelente rendimiento. ¡Sigue así!';
+                } else if (performance >= 70) {
+                    performanceText = 'Buen rendimiento. Con un poco más de práctica mejorarás.';
+                } else if (performance >= 50) {
+                    performanceText = 'Rendimiento regular. Enfócate en las tablas más difíciles.';
+                } else {
+                    performanceText = 'Necesitas más práctica. Te recomendamos repasar las tablas básicas.';
+                }
+                
+                performanceInsight.innerHTML = `
+                    <h4>Rendimiento General</h4>
+                    <p>${performanceText}</p>
+                `;
+                aiInsightsContent.appendChild(performanceInsight);
+                
+                // Insight 2: Weakest table
+                if (studentHistory.tables && Object.keys(studentHistory.tables).length > 0) {
+                    let weakestTable = null;
+                    let worstPerformance = 1;
                     
-                    if (performance < worstPerformance) {
-                        worstPerformance = performance;
-                        weakestTable = table;
+                    for (const table in studentHistory.tables) {
+                        const tableData = studentHistory.tables[table];
+                        const performance = tableData.total > 0 ? (tableData.correct / tableData.total) : 1;
+                        
+                        if (performance < worstPerformance) {
+                            worstPerformance = performance;
+                            weakestTable = table;
+                        }
+                    }
+                    
+                    if (weakestTable) {
+                        const weakTableInsight = document.createElement('div');
+                        weakTableInsight.className = 'ai-insight-item';
+                        weakTableInsight.innerHTML = `
+                            <h4>Área de Mejora</h4>
+                            <p>Tu tabla más débil es la del ${weakestTable}. Te recomendamos practicarla más.</p>
+                        `;
+                        aiInsightsContent.appendChild(weakTableInsight);
                     }
                 }
                 
-                if (weakestTable) {
-                    const weakTableInsight = document.createElement('div');
-                    weakTableInsight.className = 'ai-insight-item';
-                    weakTableInsight.innerHTML = `
-                        <h4>Área de Mejora</h4>
-                        <p>Tu tabla más débil es la del ${weakestTable}. Te recomendamos practicarla más.</p>
-                    `;
-                    aiInsightsContent.appendChild(weakTableInsight);
+                // Insight 3: Progress over time
+                const progressInsight = document.createElement('div');
+                progressInsight.className = 'ai-insight-item';
+                const overallProgress = calculateOverallProgress();
+                
+                let progressText = '';
+                if (overallProgress >= 80) {
+                    progressText = '¡Vas muy bien! Tu progreso es excelente.';
+                } else if (overallProgress >= 60) {
+                    progressText = 'Buen progreso. Continúa practicando regularmente.';
+                } else {
+                    progressText = 'Necesitas practicar más frecuentemente para mejorar.';
                 }
+                
+                progressInsight.innerHTML = `
+                    <h4>Progreso General</h4>
+                    <p>${progressText}</p>
+                `;
+                aiInsightsContent.appendChild(progressInsight);
+                
+                // Insight 4: Recommendation
+                const recommendationInsight = document.createElement('div');
+                recommendationInsight.className = 'ai-insight-item';
+                
+                let recommendation = '';
+                if (selectedTableMode === 'ia') {
+                    recommendation = 'Te recomendamos usar el Modo Aprendizaje Rápido para enfocarte en tus áreas más débiles.';
+                } else {
+                    recommendation = 'Te recomendamos probar el Modo IA para una evaluación más personalizada.';
+                }
+                
+                recommendationInsight.innerHTML = `
+                    <h4>Próximo Paso</h4>
+                    <p>${recommendation}</p>
+                `;
+                aiInsightsContent.appendChild(recommendationInsight);
             }
-            
-            // Insight 3: Progress over time
-            const progressInsight = document.createElement('div');
-            progressInsight.className = 'ai-insight-item';
-            const overallProgress = calculateOverallProgress();
-            
-            let progressText = '';
-            if (overallProgress >= 80) {
-                progressText = '¡Vas muy bien! Tu progreso es excelente.';
-            } else if (overallProgress >= 60) {
-                progressText = 'Buen progreso. Continúa practicando regularmente.';
-            } else {
-                progressText = 'Necesitas practicar más frecuentemente para mejorar.';
-            }
-            
-            progressInsight.innerHTML = `
-                <h4>Progreso General</h4>
-                <p>${progressText}</p>
-            `;
-            aiInsightsContent.appendChild(progressInsight);
-            
-            // Insight 4: Recommendation
-            const recommendationInsight = document.createElement('div');
-            recommendationInsight.className = 'ai-insight-item';
-            
-            let recommendation = '';
-            if (selectedTableMode === 'ia') {
-                recommendation = 'Te recomendamos usar el Modo Aprendizaje Rápido para enfocarte en tus áreas más débiles.';
-            } else {
-                recommendation = 'Te recomendamos probar el Modo IA para una evaluación más personalizada.';
-            }
-            
-            recommendationInsight.innerHTML = `
-                <h4>Próximo Paso</h4>
-                <p>${recommendation}</p>
-            `;
-            aiInsightsContent.appendChild(recommendationInsight);
+
+            document.getElementById('reiniciar').addEventListener('click', () => {
+                clearInterval(timerInterval);
+                location.reload();
+            });
+
+            document.getElementById('descargar').addEventListener('click', () => {
+                // Verificar que la licencia sea válida
+                if (!isLicenseActive) {
+                    alert('La licencia ha expirado. Por favor contacta al desarrollador para continuar.');
+                    return;
+                }
+                
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+
+                const nombreEstudiante = document.getElementById('nombre').value.trim();
+                const finalTimeDisplay = document.getElementById('timer').textContent;
+                const timeStatus = finalTimeDisplay.includes('Tiempo terminado') ? 'Tiempo terminado' : `Tiempo restante al finalizar: ${finalTimeDisplay.replace('Tiempo restante: ', '')}`;
+
+                const finalResultText = document.getElementById('mensaje-resultado').textContent.replace('.<br>', ', ').replace('<br>', ' ');
+
+                doc.setFontSize(18);
+                doc.text('Reporte de Evaluación', 20, 20);
+                doc.setFontSize(12);
+                doc.text(`Nombre del estudiante: ${nombreEstudiante}`, 20, 30);
+                
+                let tablaEvaluadaPDF;
+                let totalMinutesForPDF;
+
+                if (selectedTableMode === 'random') {
+                    tablaEvaluadaPDF = `Aleatorio (Tablas: ${selectedRandomTables.join(', ')})`;
+                    totalMinutesForPDF = '10 minutos';
+                } else if (selectedTableMode === 'single') {
+                    tablaEvaluadaPDF = `Tabla del ${selectedTable}`;
+                    totalMinutesForPDF = '3 minutos';
+                } else if (selectedTableMode === 'multi') {
+                    tablaEvaluadaPDF = `Múltiples Tablas (Seleccionadas: ${selectedMultiTables.sort((a,b) => a-b).join(', ')})`;
+                    totalMinutesForPDF = `${selectedMultiTables.length * 4} minutos`;
+                } else if (selectedTableMode === 'ia') {
+                    tablaEvaluadaPDF = 'Modo IA: Evaluación Inteligente';
+                    totalMinutesForPDF = '15 minutos';
+                } else if (selectedTableMode === 'learning') {
+                    tablaEvaluadaPDF = 'Modo Aprendizaje Rápido';
+                    totalMinutesForPDF = '10 minutos';
+                }
+                doc.text(`Tabla(s) evaluada(s): ${tablaEvaluadaPDF}`, 20, 40);
+                
+                doc.text(`Duración estimada de la evaluación: ${totalMinutesForPDF}`, 20, 50);
+                doc.text(`Estado del tiempo: ${timeStatus}`, 20, 60);
+
+                doc.text(`Calificación: ${finalResultText}`, 20, 70);
+                let yPosition = 80;
+
+                if (errores.length > 0) {
+                    doc.text('Errores:', 20, yPosition);
+                    yPosition += 10;
+                    errores.forEach((error, index) => {
+                        if (yPosition > 280) { // Check for page overflow
+                            doc.addPage();
+                            yPosition = 20;
+                        } 
+                        doc.text(`${error.pregunta} = ${error.respuesta} (Correcto: ${error.correcta})`, 20, yPosition);
+                        yPosition += 7;
+                    });
+                } else {
+                    if (yPosition > 280) { // Check for page overflow
+                        doc.addPage();
+                        yPosition = 20;
+                    }
+                    doc.text('¡Perfecto! No tuviste errores 🎉', 20, yPosition);
+                    yPosition += 10;
+                }
+
+                // Add AI insights to PDF if available
+                if (selectedTableMode === 'ia' || selectedTableMode === 'learning') {
+                    if (yPosition > 250) { // Check for page overflow
+                        doc.addPage();
+                        yPosition = 20;
+                    }
+                    doc.text('Análisis de IA:', 20, yPosition);
+                    yPosition += 10;
+                    
+                    const aiInsights = document.querySelectorAll('.ai-insight-item');
+                    aiInsights.forEach(insight => {
+                        if (yPosition > 280) { // Check for page overflow
+                            doc.addPage();
+                            yPosition = 20;
+                        }
+                        const title = insight.querySelector('h4').textContent;
+                        const text = insight.querySelector('p').textContent;
+                        doc.setFont(undefined, 'bold');
+                        doc.text(`${title}:`, 20, yPosition);
+                        doc.setFont(undefined, 'normal');
+                        yPosition += 7;
+                        doc.text(text, 25, yPosition);
+                        yPosition += 10;
+                    });
+                }
+
+                // Add progress to PDF
+                if (yPosition > 270) { // Check for page overflow
+                    doc.addPage();
+                    yPosition = 20;
+                }
+                const overallProgress = calculateOverallProgress();
+                doc.text(`Progreso general: ${overallProgress}%`, 20, yPosition);
+
+                const safeStudentName = nombreEstudiante.replace(/[^a-zA-Z0-9_\-]/g, '_').replace(/__+/g, '_');
+                let filenameTablePart;
+                if (selectedTableMode === 'random') {
+                    filenameTablePart = 'aleatorio';
+                } else if (selectedTableMode === 'single') {
+                    filenameTablePart = `tabla_${selectedTable}`;
+                } else if (selectedTableMode === 'multi') {
+                    filenameTablePart = `tablas_multi_${selectedMultiTables.sort((a,b) => a-b).join('_')}`;
+                } else if (selectedTableMode === 'ia') {
+                    filenameTablePart = 'modo_ia';
+                } else if (selectedTableMode === 'learning') {
+                    filenameTablePart = 'modo_aprendizaje';
+                } else {
+                    filenameTablePart = 'evaluacion';
+                }
+
+                doc.save(`reporte-evaluacion-${safeStudentName}_${filenameTablePart}.pdf`);
+            });
         }
 
-        document.getElementById('reiniciar').addEventListener('click', () => {
-            clearInterval(timerInterval);
-            location.reload();
-        });
-
-        document.getElementById('descargar').addEventListener('click', () => {
-            // Verificar que la licencia sea válida
-            if (!isLicenseValid) {
-                alert('La licencia ha expirado. Por favor contacta al desarrollador para continuar.');
-                return;
-            }
-            
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-
-            const nombreEstudiante = document.getElementById('nombre').value.trim();
-            const finalTimeDisplay = document.getElementById('timer').textContent;
-            const timeStatus = finalTimeDisplay.includes('Tiempo terminado') ? 'Tiempo terminado' : `Tiempo restante al finalizar: ${finalTimeDisplay.replace('Tiempo restante: ', '')}`;
-
-            const finalResultText = document.getElementById('mensaje-resultado').textContent.replace('.<br>', ', ').replace('<br>', ' ');
-
-            doc.setFontSize(18);
-            doc.text('Reporte de Evaluación', 20, 20);
-            doc.setFontSize(12);
-            doc.text(`Nombre del estudiante: ${nombreEstudiante}`, 20, 30);
-            
-            let tablaEvaluadaPDF;
-            let totalMinutesForPDF;
-
-            if (selectedTableMode === 'random') {
-                tablaEvaluadaPDF = `Aleatorio (Tablas: ${selectedRandomTables.join(', ')})`;
-                totalMinutesForPDF = '10 minutos';
-            } else if (selectedTableMode === 'single') {
-                tablaEvaluadaPDF = `Tabla del ${selectedTable}`;
-                totalMinutesForPDF = '3 minutos';
-            } else if (selectedTableMode === 'multi') {
-                tablaEvaluadaPDF = `Múltiples Tablas (Seleccionadas: ${selectedMultiTables.sort((a,b) => a-b).join(', ')})`;
-                totalMinutesForPDF = `${selectedMultiTables.length * 4} minutos`;
-            } else if (selectedTableMode === 'ia') {
-                tablaEvaluadaPDF = 'Modo IA: Evaluación Inteligente';
-                totalMinutesForPDF = '15 minutos';
-            } else if (selectedTableMode === 'learning') {
-                tablaEvaluadaPDF = 'Modo Aprendizaje Rápido';
-                totalMinutesForPDF = '10 minutos';
-            }
-            doc.text(`Tabla(s) evaluada(s): ${tablaEvaluadaPDF}`, 20, 40);
-            
-            doc.text(`Duración estimada de la evaluación: ${totalMinutesForPDF}`, 20, 50);
-            doc.text(`Estado del tiempo: ${timeStatus}`, 20, 60);
-
-            doc.text(`Calificación: ${finalResultText}`, 20, 70);
-            let yPosition = 80;
-
-            if (errores.length > 0) {
-                doc.text('Errores:', 20, yPosition);
-                yPosition += 10;
-                errores.forEach((error, index) => {
-                    if (yPosition > 280) { // Check for page overflow
-                        doc.addPage();
-                        yPosition = 20;
-                    } 
-                    doc.text(`${error.pregunta} = ${error.respuesta} (Correcto: ${error.correcta})`, 20, yPosition);
-                    yPosition += 7;
-                });
-            } else {
-                if (yPosition > 280) { // Check for page overflow
-                    doc.addPage();
-                    yPosition = 20;
-                }
-                doc.text('¡Perfecto! No tuviste errores 🎉', 20, yPosition);
-                yPosition += 10;
-            }
-
-            // Add AI insights to PDF if available
-            if (selectedTableMode === 'ia' || selectedTableMode === 'learning') {
-                if (yPosition > 250) { // Check for page overflow
-                    doc.addPage();
-                    yPosition = 20;
-                }
-                doc.text('Análisis de IA:', 20, yPosition);
-                yPosition += 10;
-                
-                const aiInsights = document.querySelectorAll('.ai-insight-item');
-                aiInsights.forEach(insight => {
-                    if (yPosition > 280) { // Check for page overflow
-                        doc.addPage();
-                        yPosition = 20;
-                    }
-                    const title = insight.querySelector('h4').textContent;
-                    const text = insight.querySelector('p').textContent;
-                    doc.setFont(undefined, 'bold');
-                    doc.text(`${title}:`, 20, yPosition);
-                    doc.setFont(undefined, 'normal');
-                    yPosition += 7;
-                    doc.text(text, 25, yPosition);
-                    yPosition += 10;
-                });
-            }
-
-            // Add progress to PDF
-            if (yPosition > 270) { // Check for page overflow
-                doc.addPage();
-                yPosition = 20;
-            }
-            const overallProgress = calculateOverallProgress();
-            doc.text(`Progreso general: ${overallProgress}%`, 20, yPosition);
-
-            const safeStudentName = nombreEstudiante.replace(/[^a-zA-Z0-9_\-]/g, '_').replace(/__+/g, '_');
-            let filenameTablePart;
-            if (selectedTableMode === 'random') {
-                filenameTablePart = 'aleatorio';
-            } else if (selectedTableMode === 'single') {
-                filenameTablePart = `tabla_${selectedTable}`;
-            } else if (selectedTableMode === 'multi') {
-                filenameTablePart = `tablas_multi_${selectedMultiTables.sort((a,b) => a-b).join('_')}`;
-            } else if (selectedTableMode === 'ia') {
-                filenameTablePart = 'modo_ia';
-            } else if (selectedTableMode === 'learning') {
-                filenameTablePart = 'modo_aprendizaje';
-            } else {
-                filenameTablePart = 'evaluacion';
-            }
-
-            doc.save(`reporte-evaluacion-${safeStudentName}_${filenameTablePart}.pdf`);
+        // ==============================================
+        // INICIALIZAR SISTEMA COMPLETO
+        // ==============================================
+        
+        // Al cargar la página, verificar la licencia
+        document.addEventListener('DOMContentLoaded', () => {
+            checkLicense();
         });
     </script>
 </body>
