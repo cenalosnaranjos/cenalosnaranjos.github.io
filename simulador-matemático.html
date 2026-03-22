@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador IA Elite | Clover Technology</title>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    
+    <style>
+        :root {
+            --primary: #1e5631;
+            --bg: #f4f7f6;
+            --card: #ffffff;
+            --text: #333333;
+            --border: #e0e0e0;
+        }
+
+        body.dark-mode {
+            --bg: #121212;
+            --card: #1e1e1e;
+            --text: #e0e0e0;
+            --border: #333333;
+        }
+
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; transition: 0.3s; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        
+        .header { 
+            background: linear-gradient(135deg, #0b2f1f 0%, #1e5631 100%); 
+            color: white; padding: 30px; border-radius: 20px; text-align: center; margin-bottom: 25px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .navbar { 
+            background: var(--card); padding: 15px; border-radius: 15px; display: flex; gap: 10px; 
+            align-items: center; position: sticky; top: 10px; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-bottom: 20px; border: 1px solid var(--border); flex-wrap: wrap;
+        }
+
+        .btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; transition: 0.2s; display: flex; align-items: center; gap: 8px; }
+        .btn-dark { background: var(--text); color: var(--bg); }
+        .btn-green { background: #27ae60; color: white; }
+        .btn-red { background: #e74c3c; color: white; }
+        .btn-blue { background: #3498db; color: white; }
+        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        .setup-section { background: var(--card); padding: 50px; border-radius: 20px; text-align: center; border: 1px solid var(--border); }
+        input[type="text"] { padding: 15px; border-radius: 10px; border: 2px solid var(--border); width: 80%; max-width: 400px; background: var(--card); color: var(--text); font-size: 1rem; }
+
+        .card { background: var(--card); padding: 25px; border-radius: 15px; margin-bottom: 20px; border: 1px solid var(--border); border-left: 6px solid var(--primary); position: relative; overflow: hidden; }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
+        
+        @media (max-width: 600px) { .options-grid { grid-template-columns: 1fr; } }
+
+        .option { border: 2px solid var(--border); padding: 15px; border-radius: 10px; cursor: pointer; transition: 0.2s; background: var(--card); }
+        .option:hover { border-color: var(--primary); background: rgba(30, 86, 49, 0.05); }
+        .option.selected { border-color: var(--primary); background: rgba(30, 86, 49, 0.15); font-weight: bold; }
+        .option.disabled { pointer-events: none; }
+
+        .ia-report { background: #e8f4fd; color: #2c3e50; padding: 25px; border-radius: 15px; margin-top: 20px; border-left: 6px solid #3498db; display: none; line-height: 1.6; }
+        body.dark-mode .ia-report { background: #1a2633; color: #d1d8e0; }
+
+        #timer { font-weight: bold; font-size: 1.4rem; color: #e74c3c; margin-left: 10px; font-family: 'Courier New', Courier, monospace; }
+        .locked-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; display: none; background: rgba(255,255,255,0); }
+    </style>
+</head>
+<body class="dark-mode"> 
+<div class="container">
+    <div class="header">
+        <h1 style="margin:0; font-size: 2.5rem;">Clover Technology</h1>
+        <p style="margin: 10px 0 0 0; opacity: 0.9;">Simulador de Evaluación Matemática - Tutorías "Los Naranjos"</p>
+    </div>
+
+    <div id="welcomeScreen" class="setup-section">
+        <h2 style="margin-bottom: 10px;">Evaluación de Ingeniería y Ciencias</h2>
+        <p style="color: #888; margin-bottom: 30px;">Diagnóstico de habilidades asistido por IA</p>
+        <input type="text" id="studentName" placeholder="Nombre completo del estudiante...">
+        <br><br>
+        <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+            <button class="btn btn-green" style="padding: 15px 40px;" onclick="initTest()">🚀 Iniciar Evaluación</button>
+            <button class="btn btn-dark" onclick="toggleDark()">🌓 Modo Visual</button>
+        </div>
+        <p style="margin-top: 25px; font-size: 0.9rem; color: #888;">⏱️ 20 Minutos | 📝 15 Preguntas | 📄 Reporte PDF Automático</p>
+    </div>
+
+    <div id="examInterface" style="display: none;">
+        <nav class="navbar">
+            <button class="btn btn-blue" onclick="goHome()">🏠 Inicio</button>
+            <div id="timer">20:00</div>
+            <div id="finalScore" style="margin-left: auto; font-weight: 800; font-size: 1.3rem; color: var(--primary);"></div>
+            <button class="btn btn-green" id="gradeBtn" onclick="gradeTest()">✅ Calificar Examen</button>
+            <button class="btn btn-red" id="pdfBtn" onclick="downloadPDF()" style="display:none">📄 Descargar Reporte Clover</button>
+        </nav>
+
+        <div id="quizArea"></div>
+        <div id="iaAnalysis" class="ia-report"></div>
+    </div>
+
+    <footer style="text-align:center; padding:40px; color:#888; border-top: 1px solid var(--border); margin-top: 40px;">
+        <strong>Ing. Teddy Valencia Castro. Mgtr</strong><br>
+        Innovación Pedagógica & Desarrollo de Sistemas<br>
+        Tumbaco el Arenal, Quito, Ecuador
+    </footer>
+</div>
+
+<script>
+    const BANK = [
+        { q: "Simplifica la expresión: \\(2^3 \\cdot 2^4\\)", o: ["\\(2^7\\)", "\\(2^{12}\\)", "14", "49"], a: 0, cat: "Leyes de Exponentes" },
+        { q: "Calcula el valor del logaritmo: \\(\\log_2 16\\)", o: ["2", "8", "4", "16"], a: 2, cat: "Logaritmos" },
+        { q: "Identifica el grado del polinomio: \\(P(x) = 5x^3 + 2x^2 + 1\\)", o: ["1", "5", "3", "0"], a: 2, cat: "Polinomios" },
+        { q: "Factoriza la diferencia de cuadrados: \\(x^2 - 16\\)", o: ["(x-4)(x+4)", "(x-4)^2", "(x-8)(x+2)", "x(x-16)"], a: 0, cat: "Factorización" },
+        { q: "Resuelve la potencia: \\(5^0 + 10^0\\)", o: ["15", "1", "2", "0"], a: 2, cat: "Leyes de Exponentes" },
+        { q: "Simplifica el radical: \\(\\sqrt{x^{10}}\\)", o: ["x^2", "x^5", "x^{10}", "x^0"], a: 1, cat: "Radicación" },
+        { q: "Halla el valor numérico de \\(P(2)\\) si \\(P(x)=x^2+1\\)", o: ["3", "5", "4", "2"], a: 1, cat: "Polinomios" },
+        { q: "Logaritmo decimal: \\(\\log_{10} 1000\\)", o: ["1", "2", "3", "10"], a: 2, cat: "Logaritmos" },
+        { q: "Resuelve el binomio al cuadrado: \\((a+b)^2\\)", o: ["a^2+b^2", "a^2+2ab+b^2", "2a+2b", "a^2+ab+b^2"], a: 1, cat: "Productos Notables" },
+        { q: "Calcula el módulo del número complejo \\(z = 3+4i\\)", o: ["7", "5", "25", "1"], a: 1, cat: "Números Complejos" },
+        { q: "Resuelve la ecuación lineal: \\(3x - 12 = 0\\)", o: ["x=3", "x=4", "x=12", "x=0"], a: 1, cat: "Ecuaciones" },
+        { q: "Simplifica el radical: \\(\\sqrt{18}\\)", o: ["9", "3", "3\\sqrt{2}", "2\\sqrt{3}"], a: 2, cat: "Radicación" },
+        { q: "Calcula la potencia negativa: \\(10^{-2}\\)", o: ["100", "-20", "0.01", "0.1"], a: 2, cat: "Leyes de Exponentes" },
+        { q: "Resuelve: \\(\\log_5 125\\)", o: ["5", "25", "3", "1"], a: 2, cat: "Logaritmos" },
+        { q: "Factor común de la expresión: \\(ax + bx\\)", o: ["a", "b", "x", "ab"], a: 2, cat: "Factorización" }
+    ];
+
+    let current = [];
+    let time = 1200;
+    let timer;
+    let studentName = "";
+
+    function toggleDark() { document.body.classList.toggle('dark-mode'); }
+
+    function goHome() {
+        if(confirm("¿Deseas salir? Perderás el progreso de esta evaluación.")) {
+            location.reload();
+        }
+    }
+
+    function initTest() {
+        studentName = document.getElementById('studentName').value;
+        if (studentName.trim().length < 5) return alert("Por favor, ingrese el nombre completo del estudiante para el registro.");
+        
+        document.getElementById('welcomeScreen').style.display = 'none';
+        document.getElementById('examInterface').style.display = 'block';
+        
+        current = [...BANK].sort(() => 0.5 - Math.random()).map(i => ({...i, user: null}));
+        render();
+        startTimer();
+    }
+
+    function startTimer() {
+        timer = setInterval(() => {
+            time--;
+            let m = Math.floor(time/60), s = time%60;
+            document.getElementById('timer').innerText = `${m}:${s<10?'0':''}${s}`;
+            if (time <= 0) { gradeTest(); alert("El tiempo ha concluido. Se procederá a la calificación automática."); }
+        }, 1000);
+    }
+
+    function render() {
+        const area = document.getElementById('quizArea');
+        area.innerHTML = current.map((item, i) => `
+            <div class="card" id="card-${i}">
+                <div class="locked-overlay" id="overlay-${i}"></div>
+                <div style="font-size:0.75rem; color:var(--primary); font-weight:bold; text-transform:uppercase; letter-spacing:1px;">Unidad: ${item.cat}</div>
+                <div style="font-size:1.25rem; margin:15px 0; line-height:1.4;">${i+1}. ${item.q}</div>
+                <div class="options-grid">
+                    ${item.o.map((o, oi) => `
+                        <div class="option" id="o-${i}-${oi}" onclick="select(${i},${oi})">
+                            <span style="color:var(--primary); margin-right:8px; font-weight:bold;">${String.fromCharCode(97+oi)})</span> ${o}
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `).join('');
+        MathJax.typeset();
+    }
+
+    function select(qI, oI) {
+        current[qI].user = oI;
+        document.querySelectorAll(`[id^="o-${qI}-"]`).forEach(el => el.classList.remove('selected'));
+        document.getElementById(`o-${qI}-${oI}`).classList.add('selected');
+    }
+
+    function gradeTest() {
+        clearInterval(timer);
+        document.getElementById('gradeBtn').style.display = 'none';
+        document.getElementById('pdfBtn').style.display = 'inline-flex';
+        
+        let score = 0;
+        let stats = {};
+
+        current.forEach((item, i) => {
+            document.getElementById(`overlay-${i}`).style.display = 'block';
+            document.querySelectorAll(`[id^="o-${i}-"]`).forEach(opt => opt.classList.add('disabled'));
+
+            if (!stats[item.cat]) stats[item.cat] = { total: 0, correct: 0 };
+            stats[item.cat].total++;
+
+            const card = document.getElementById(`card-${i}`);
+            if (item.user === item.a) {
+                score += (100/15);
+                stats[item.cat].correct++;
+                card.style.borderColor = "#27ae60";
+            } else {
+                card.style.borderColor = "#e74c3c";
+                const feedback = document.createElement('div');
+                feedback.style.cssText = "margin-top:15px; padding:10px; background:rgba(231,76,60,0.1); border-radius:8px; font-size:0.95rem;";
+                feedback.innerHTML = `<strong style="color:#e74c3c">✘ Incorrecto.</strong> Respuesta correcta: <b style="color:var(--text)">${String.fromCharCode(97+item.a)}) ${item.o[item.a]}</b>`;
+                card.appendChild(feedback);
+            }
+        });
+
+        const finalNota = Math.round(score);
+        document.getElementById('finalScore').innerText = `RESULTADO: ${finalNota}/100`;
+
+        // LÓGICA DE DIAGNÓSTICO IA
+        let iaBox = document.getElementById('iaAnalysis');
+        let strong = [], weak = [];
+        for (let c in stats) {
+            let res = stats[c].correct / stats[c].total;
+            if (res >= 0.8) strong.push(c);
+            else if (res <= 0.5) weak.push(c);
+        }
+
+        iaBox.innerHTML = `<h3>🤖 Diagnóstico Pedagógico IA - Clover</h3>
+            <p><b>Fortalezas:</b> ${strong.length ? strong.join(', ') : 'Ninguna identificada aún'}.</p>
+            <p><b>Oportunidades de mejora:</b> <span style="color:#e74c3c">${weak.length ? weak.join(', ') : '¡Excelente nivel académico!'}</span>.</p>
+            <p><i>Recomendación Clover Technology:</i> ${weak.length > 0 ? 'Se recomienda profundizar en técnicas de ' + weak[0] + ' mediante tutorías personalizadas.' : 'Nivel óptimo para avanzar a temas de Cálculo Superior.'}</p>`;
+        iaBox.style.display = 'block';
+        MathJax.typeset();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function downloadPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        const fecha = new Date().toLocaleDateString();
+        const nota = document.getElementById('finalScore').innerText;
+        
+        // Colores de marca Clover
+        const colorPrimario = [30, 86, 49]; 
+        const colorSecundario = [44, 62, 80];
+
+        // Encabezado
+        doc.setFillColor(...colorPrimario);
+        doc.rect(0, 0, 210, 45, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(22);
+        doc.setFont("helvetica", "bold");
+        doc.text("CLOVER TECHNOLOGY", 105, 20, { align: "center" });
+        doc.setFontSize(11);
+        doc.setFont("helvetica", "normal");
+        doc.text("Centro de Especialidades y Tutorías Académicas 'Los Naranjos'", 105, 30, { align: "center" });
+        doc.text("REPORTE PROFESIONAL DE EVALUACIÓN", 105, 38, { align: "center" });
+
+        // Datos del Estudiante
+        doc.setTextColor(...colorSecundario);
+        doc.setFontSize(11);
+        doc.line(15, 52, 195, 52); 
+        doc.setFont("helvetica", "bold");
+        doc.text("INFORMACIÓN GENERAL:", 15, 62);
+        doc.setFont("helvetica", "normal");
+        doc.text(`Estudiante: ${studentName.toUpperCase()}`, 15, 70);
+        doc.text(`Docente: Ing. Teddy Valencia Castro. Mgtr`, 15, 77);
+        doc.text(`Fecha: ${fecha}`, 130, 70);
+        doc.text(`Ubicación: Tumbaco el Arenal, Quito`, 130, 77);
+
+        // Calificación
+        doc.setFillColor(245, 245, 245);
+        doc.roundedRect(15, 85, 180, 15, 2, 2, 'F');
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(14);
+        doc.setTextColor(...colorPrimario);
+        doc.text(`${nota}`, 105, 95, { align: "center" });
+
+        // Diagnóstico IA
+        doc.setTextColor(...colorSecundario);
+        doc.setFontSize(12);
+        doc.text("ANÁLISIS DE COMPETENCIAS (DIAGNÓSTICO IA):", 15, 115);
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "italic");
+        const iaRawText = document.getElementById('iaAnalysis').innerText.replace('🤖 Diagnóstico Pedagógico IA - Clover', '');
+        const splitIA = doc.splitTextToSize(iaRawText.trim(), 175);
+        doc.text(splitIA, 18, 123);
+
+        // Tabla de Resultados
+        const tableData = current.map((item, i) => [
+            i + 1,
+            item.cat,
+            item.user !== null ? String.fromCharCode(97 + item.user).toUpperCase() : "N/A",
+            String.fromCharCode(97 + item.a).toUpperCase(),
+            item.user === item.a ? "CORRECTO" : "INCORRECTO"
+        ]);
+
+        doc.autoTable({
+            startY: 145,
+            head: [['#', 'UNIDAD TEMÁTICA', 'RPTA', 'CORRECTA', 'ESTADO']],
+            body: tableData,
+            theme: 'striped',
+            headStyles: { fillColor: colorPrimario, halign: 'center' },
+            columnStyles: {
+                0: { cellWidth: 10, halign: 'center' },
+                2: { halign: 'center' },
+                3: { halign: 'center' },
+                4: { halign: 'center', fontStyle: 'bold' }
+            },
+            didDrawCell: (data) => {
+                if (data.section === 'body' && data.column.index === 4) {
+                    if (data.cell.raw === "CORRECTO") doc.setTextColor(39, 174, 96);
+                    else doc.setTextColor(231, 76, 60);
+                }
+            }
+        });
+
+        // Pie de página
+        const pages = doc.internal.getNumberOfPages();
+        for(let i = 1; i <= pages; i++) {
+            doc.setPage(i);
+            doc.setFontSize(8);
+            doc.setTextColor(150);
+            doc.text("© 2026 Clover Technology - Innovación Educativa. Generado de forma segura.", 105, 285, { align: "center" });
+            doc.text(`Página ${i} de ${pages}`, 105, 290, { align: "center" });
+        }
+
+        doc.save(`Reporte_Clover_${studentName.replace(/ /g, '_')}.pdf`);
+    }
+</script>
+</body>
+</html>
