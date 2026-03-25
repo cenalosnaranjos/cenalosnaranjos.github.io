@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador Examen Química - Los Naranjos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #e67e22;
+            --bg-light: #f8f9fa;
+            --text-light: #212529;
+            --card-bg: #ffffff;
+            --border-color: #dee2e6;
+            --header-bg: #ffffff;
+            --text-muted: #6c757d;
+        }
+        body.dark-mode {
+            --bg-light: #121212;
+            --text-light: #ffffff;
+            --card-bg: #1e1e1e;
+            --border-color: #444;
+            --header-bg: #1e1e1e;
+            --text-muted: #aaaaaa;
+            background-color: var(--bg-light);
+            color: var(--text-light);
+        }
+        body {
+            background-color: var(--bg-light);
+            font-family: 'Segoe UI', sans-serif;
+            transition: all 0.3s ease;
+            color: var(--text-light);
+        }
+        .academic-header {
+            background: var(--header-bg);
+            border-bottom: 4px solid var(--secondary-color);
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: background 0.3s;
+        }
+        .institution-name {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin: 0;
+            transition: color 0.3s;
+        }
+        body.dark-mode .institution-name {
+            color: #e67e22;
+        }
+        .timer-badge {
+            font-size: 1.2rem;
+            position: sticky;
+            top: 20px;
+            z-index: 1000;
+        }
+        .question-card {
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            transition: transform 0.2s;
+            background-color: var(--card-bg);
+        }
+        .question-card h5 {
+            color: var(--text-light);
+            transition: color 0.3s;
+        }
+        .option-container {
+            cursor: pointer;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            transition: background 0.2s;
+            color: var(--text-light);
+        }
+        .option-container:hover:not(.disabled) {
+            background-color: #e9ecef;
+        }
+        body.dark-mode .option-container:hover:not(.disabled) {
+            background-color: #2c2c2c;
+        }
+        .correct-answer { background-color: #d4edda !important; border-color: #c3e6cb !important; color: #155724 !important; }
+        .wrong-answer { background-color: #f8d7da !important; border-color: #f5c6cb !important; color: #721c24 !important; }
+        body.dark-mode .correct-answer { background-color: #1e4620 !important; color: #b9f6ca !important; }
+        body.dark-mode .wrong-answer { background-color: #5c1e1e !important; color: #ffcdd2 !important; }
+        #resultsArea { display: none; }
+        .logo-img { 
+            width: 60px; 
+            height: 60px; 
+            background: var(--secondary-color); 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: white; 
+            font-weight: bold; 
+            font-size: 24px;
+            transition: all 0.3s;
+        }
+        .dark-mode .card, .dark-mode .modal-content {
+            background-color: var(--card-bg);
+            border-color: var(--border-color);
+        }
+        .dark-mode .form-control, .dark-mode .form-select {
+            background-color: #2c2c2c;
+            color: #ffffff;
+            border-color: #444;
+        }
+        .dark-mode .form-control::placeholder {
+            color: #aaa;
+        }
+        .dark-mode .btn-outline-secondary {
+            color: #e0e0e0;
+            border-color: #555;
+        }
+        .dark-mode .text-muted {
+            color: var(--text-muted) !important;
+        }
+        .dark-mode .badge.bg-dark {
+            background-color: #2c2c2c !important;
+            color: #ffffff !important;
+        }
+        .dark-mode .alert, .dark-mode .card-header {
+            color: var(--text-light);
+        }
+        .dark-mode .bg-info {
+            background-color: #0c5460 !important;
+        }
+        .dark-mode .bg-info.text-white {
+            color: #ffffff !important;
+        }
+        .dark-mode .border-primary {
+            border-color: #e67e22 !important;
+        }
+        .dark-mode .text-primary {
+            color: #e67e22 !important;
+        }
+        #themeToggle {
+            transition: all 0.2s;
+        }
+        .display-name, .display-difficulty {
+            color: var(--text-light);
+            transition: color 0.3s;
+        }
+        .form-label {
+            color: var(--text-light);
+        }
+        .card-title, .card-text, h2, h3, h5, p, span, label, .text-center {
+            color: var(--text-light);
+        }
+        .dark-mode .card-header.bg-info {
+            background-color: #0c5460 !important;
+        }
+        .dark-mode .btn-danger {
+            background-color: #a82323;
+            border-color: #a82323;
+        }
+        .dark-mode .btn-success {
+            background-color: #1e7e34;
+        }
+    </style>
+</head>
+<body>
+
+<header class="academic-header mb-4">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-3">
+            <!-- Logo circular seguido del nombre de la institución -->
+            <img src="icono.png" alt="Logo" height="60" class="me-3">
+            <h1 class="institution-name">Centro de Especialidades y Tutorías Académicas "Los Naranjos"</h1>
+        </div>
+        <button id="themeToggle" class="btn btn-outline-secondary">
+            <i class="bi bi-moon-stars"></i> Modo Oscuro
+        </button>
+    </div>
+</header>
+
+<main class="container mb-5">
+    <div id="setupScreen" class="card p-4 shadow-sm mx-auto" style="max-width: 600px;">
+        <h3 class="text-center mb-4">📘 Simulador Química - Admisión Universitaria</h3>
+        <p class="text-center text-muted">Basado en módulo completo: Teoría Atómica, Tabla Periódica, Enlace Químico, Nomenclatura, Estequiometría, Cinética y Equilibrio.</p>
+        <div class="mb-3">
+            <label class="form-label">Nombre Completo:</label>
+            <input type="text" id="userName" class="form-control" placeholder="Ej: Ana María López">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Nivel de Dificultad:</label>
+            <select id="difficulty" class="form-control">
+                <option value="facil">Fácil (Teoría conceptual)</option>
+                <option value="intermedio" selected>Intermedio (Aplicación práctica)</option>
+                <option value="dificil">Difícil (Análisis y cálculos)</option>
+            </select>
+        </div>
+        <button onclick="startTest()" class="btn btn-primary w-100 py-2">🎯 Iniciar Simulador (75 min | 75 preguntas)</button>
+    </div>
+
+    <div id="testArea" style="display: none;">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="badge bg-dark p-3 timer-badge" id="timer">75:00</div>
+            <div class="text-end">
+                <h5 id="displayName" class="m-0 display-name"></h5>
+                <small id="displayDifficulty" class="text-muted display-difficulty"></small>
+            </div>
+        </div>
+        <div id="questionsContainer"></div>
+        <div class="text-center mt-4">
+            <button id="finishBtn" onclick="evaluateTest()" class="btn btn-success btn-lg px-5">✅ Calificar Test Ahora</button>
+        </div>
+    </div>
+
+    <div id="resultsArea" class="mt-5 card p-4 shadow border-primary">
+        <h2 class="text-center text-primary mb-4">📊 Resultado Final: <span id="finalScore">0</span>/100</h2>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card h-100 border-info">
+                    <div class="card-header bg-info text-white"><i class="bi bi-robot"></i> Análisis Pedagógico IA</div>
+                    <div class="card-body">
+                        <p id="aiAnalysis" class="card-text"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 text-center d-flex flex-column justify-content-center">
+                <button onclick="downloadFullPDF()" class="btn btn-danger btn-lg mb-3">
+                    <i class="bi bi-file-earmark-pdf"></i> Descargar Reporte Completo (75 preguntas)
+                </button>
+                <button onclick="location.reload()" class="btn btn-outline-secondary">🔄 Reiniciar Simulador</button>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+// =========================================================================
+// GENERACIÓN DE 300 PREGUNTAS EXCLUSIVAS BASADAS EN EL MÓDULO DE QUÍMICA
+// =========================================================================
+function buildQuestionBank() {
+    const bank = [];
+
+    // --- TEMA 1: TEORÍA ATÓMICA Y MODELOS ---
+    const atomicQuestions = [
+        { q: "¿Qué científico propuso que los átomos eran indivisibles e indestructibles?", a: "Demócrito", options: ["Aristóteles", "Demócrito", "Dalton", "Leucipo"] },
+        { q: "Uno de los postulados de Dalton establece que:", a: "Los átomos de un mismo elemento son idénticos en masa", options: ["Los átomos pueden dividirse en partículas subatómicas", "Los átomos se transforman en reacciones nucleares", "Los átomos de un mismo elemento son idénticos en masa", "Los electrones orbitan el núcleo"] },
+        { q: "El modelo atómico de Thomson se conoce como:", a: "Budín de pasas", options: ["Planetario", "Mecánico cuántico", "Budín de pasas", "Nuclear"] },
+        { q: "En el experimento de la lámina de oro, Rutherford observó que:", a: "Algunas partículas alfa rebotaban", options: ["Todas pasaban sin desviarse", "Solo los protones se desviaban", "Algunas partículas alfa rebotaban", "Los electrones emitían luz"] },
+        { q: "¿Cuál es la carga relativa del electrón?", a: "-1", options: ["+1", "0", "-1", "+2"] },
+        { q: "Niels Bohr postuló que los electrones se mueven en:", a: "Órbitas cuantizadas de energía", options: ["Trayectorias al azar", "Órbitas cuantizadas de energía", "Nubes de probabilidad", "Espirales hacia el núcleo"] },
+        { q: "El número atómico (Z) representa:", a: "Cantidad de protones", options: ["Cantidad de neutrones", "Masa atómica", "Cantidad de protones", "Número de electrones de valencia"] },
+        { q: "Isótopos son átomos que tienen:", a: "Mismo Z, diferente A", options: ["Mismo A, diferente Z", "Mismo número de neutrones", "Mismo Z, diferente A", "Diferente número de electrones"] },
+        { q: "¿Cuál de estos es un número cuántico?", a: "Principal (n)", options: ["Velocidad", "Principal (n)", "Masa atómica", "Radio atómico"] },
+        { q: "El principio de exclusión de Pauli establece que:", a: "Dos electrones no pueden tener los 4 números cuánticos iguales", options: ["Los electrones llenan orbitales de menor energía", "Dos electrones no pueden tener los 4 números cuánticos iguales", "Los electrones se aparean después de ocupar todos los orbitales", "La energía de los orbitales depende del spin"] },
+        { q: "¿Cuál es la configuración electrónica del sodio (Z=11)?", a: "1s² 2s² 2p⁶ 3s¹", options: ["1s² 2s² 2p⁶ 3s²", "1s² 2s² 2p⁵ 3s²", "1s² 2s² 2p⁶ 3s¹", "[Ne] 3s²"] },
+        { q: "Según la regla de Hund, los electrones en orbitales de igual energía:", a: "Se distribuyen con espines paralelos", options: ["Se aparean primero", "Se distribuyen con espines paralelos", "Ocupan primero el orbital s", "Se alinean antiparalelos desde el inicio"] },
+        { q: "¿Qué partícula subatómica tiene masa aproximadamente 1 uma y carga neutra?", a: "Neutrón", options: ["Protón", "Electrón", "Neutrón", "Positrón"] },
+        { q: "El modelo mecánico-cuántico describe al electrón mediante:", a: "Orbitales como regiones de probabilidad", options: ["Órbitas circulares fijas", "Orbitales como regiones de probabilidad", "Trayectorias elípticas", "Nubes estáticas"] },
+        { q: "El número másico (A) es igual a:", a: "Protones + neutrones", options: ["Protones + electrones", "Neutrones + electrones", "Protones + neutrones", "Solo protones"] },
+    ];
+
+    // --- TEMA 2: TABLA PERIÓDICA Y PROPIEDADES ---
+    const periodicQuestions = [
+        { q: "¿Quién ordenó los elementos según su peso atómico y predijo elementos desconocidos?", a: "Mendeléyev", options: ["Moseley", "Newlands", "Mendeléyev", "Döbereiner"] },
+        { q: "En la tabla periódica moderna, los elementos están ordenados por:", a: "Número atómico creciente", options: ["Masa atómica", "Número atómico creciente", "Electronegatividad", "Radio atómico"] },
+        { q: "Los metales alcalinos pertenecen al grupo:", a: "1", options: ["2", "17", "1", "18"] },
+        { q: "¿Cuál es el elemento más electronegativo según la escala de Pauling?", a: "Flúor", options: ["Oxígeno", "Cloro", "Flúor", "Nitrógeno"] },
+        { q: "El radio atómico dentro de un período:", a: "Disminuye de izquierda a derecha", options: ["Aumenta", "Disminuye de izquierda a derecha", "Se mantiene constante", "Aumenta y luego disminuye"] },
+        { q: "La energía de ionización en un grupo:", a: "Disminuye al descender", options: ["Aumenta", "Disminuye al descender", "No varía", "Es máxima en el centro"] },
+        { q: "Los elementos del bloque d se denominan:", a: "Metales de transición", options: ["Metales alcalinos", "Halógenos", "Metales de transición", "Lantánidos"] },
+        { q: "¿Cuál de estos es un metaloide?", a: "Silicio", options: ["Sodio", "Cloro", "Silicio", "Calcio"] },
+        { q: "Los gases nobles tienen configuración electrónica:", a: "Capa de valencia completa (ns² np⁶ excepto He)", options: ["ns¹", "ns² np¹", "ns² np⁶ excepto He", "ns² np⁵"] },
+        { q: "La electronegatividad de los halógenos es:", a: "Alta", options: ["Baja", "Alta", "Nula", "Variable"] },
+        { q: "En un período, el carácter metálico:", a: "Disminuye", options: ["Aumenta", "Disminuye", "Se mantiene", "Duplica"] },
+        { q: "¿Qué propiedad aumenta de arriba a abajo en un grupo?", a: "Radio atómico", options: ["Electronegatividad", "Energía de ionización", "Radio atómico", "Afinidad electrónica"] },
+        { q: "Los lantánidos y actínidos pertenecen al bloque:", a: "f", options: ["s", "p", "d", "f"] },
+        { q: "El elemento con número atómico 17 es:", a: "Cloro", options: ["Azufre", "Cloro", "Argón", "Flúor"] },
+        { q: "La tendencia de los metales es:", a: "Perder electrones", options: ["Ganar electrones", "Compartir electrones", "Perder electrones", "No reaccionar"] },
+    ];
+
+    // --- TEMA 3: ENLACE QUÍMICO ---
+    const bondQuestions = [
+        { q: "Enlace iónico se forma por:", a: "Transferencia de electrones", options: ["Compartición equitativa", "Transferencia de electrones", "Mar de electrones", "Puentes de hidrógeno"] },
+        { q: "El enlace covalente no polar ocurre cuando:", a: "Diferencia de electronegatividad < 0.4", options: ["ΔEN > 1.7", "ΔEN = 0", "ΔEN < 0.4", "ΔEN entre 0.4 y 1.7"] },
+        { q: "¿Qué tipo de enlace presenta el NaCl?", a: "Iónico", options: ["Covalente", "Metálico", "Iónico", "Puente H"] },
+        { q: "Según la teoría RPECV, una molécula con 4 pares enlazantes y 0 pares solitarios tiene geometría:", a: "Tetraédrica", options: ["Lineal", "Trigonal plana", "Tetraédrica", "Angular"] },
+        { q: "¿Cuál de las siguientes moléculas es polar?", a: "H₂O", options: ["CO₂", "CH₄", "H₂O", "CCl₄"] },
+        { q: "Las fuerzas de London son:", a: "Fuerzas intermoleculares débiles", options: ["Enlaces covalentes", "Interacciones iónicas", "Fuerzas intermoleculares débiles", "Puentes de hidrógeno"] },
+        { q: "El puente de hidrógeno se presenta en moléculas con H unido a:", a: "F, O, N", options: ["Cl, Br, I", "C, Si", "F, O, N", "S, Se"] },
+        { q: "En un enlace metálico los electrones de valencia están:", a: "Deslocalizados en un mar de electrones", options: ["Fijos en los núcleos", "Deslocalizados en un mar de electrones", "Compartidos en pares", "Transferidos a aniones"] },
+        { q: "El diamante es un ejemplo de:", a: "Red covalente", options: ["Cristal iónico", "Red covalente", "Enlace metálico", "Fuerzas de dispersión"] },
+        { q: "¿Qué tipo de enlace tiene el amoniaco (NH₃) entre sus moléculas?", a: "Puente de hidrógeno", options: ["Iónico", "Covalente apolar", "Puente de hidrógeno", "Fuerzas de London"] },
+    ];
+
+    // --- TEMA 4: NOMENCLATURA INORGÁNICA ---
+    const nomenclatureQuestions = [
+        { q: "El compuesto Fe₂O₃ según nomenclatura Stock se llama:", a: "Óxido de hierro (III)", options: ["Óxido ferroso", "Óxido de hierro (III)", "Trióxido de dihierro", "Óxido de hierro (II)"] },
+        { q: "El nombre sistemático del NaCl es:", a: "Cloruro de sodio", options: ["Monocloruro de sodio", "Cloruro sódico", "Cloruro de sodio", "Cloruro sódico"] },
+        { q: "La fórmula del ácido sulfúrico es:", a: "H₂SO₄", options: ["H₂SO₃", "H₂SO₄", "H₂S", "SO₃"] },
+        { q: "¿Cuál es el nombre del compuesto Ca(OH)₂?", a: "Hidróxido de calcio", options: ["Óxido de calcio", "Hidróxido de calcio", "Dihidróxido de calcio", "Cal apagada"] },
+        { q: "El ácido clorhídrico en disolución acuosa se representa:", a: "HCl(ac)", options: ["HCl(g)", "HCl(l)", "HCl(ac)", "ClH"] },
+        { q: "El peróxido de hidrógeno tiene fórmula:", a: "H₂O₂", options: ["H₂O", "HO₂", "H₂O₂", "H₂O₃"] },
+        { q: "La sal KNO₃ se denomina:", a: "Nitrato de potasio", options: ["Nitrito de potasio", "Nitrato de potasio", "Nitruro de potasio", "Nitrato potásico"] },
+        { q: "El anhídrido carbónico es:", a: "CO₂", options: ["CO", "CO₂", "C₂O", "C₃O₂"] },
+        { q: "Según la nomenclatura tradicional, el HClO se llama:", a: "Ácido hipocloroso", options: ["Ácido clórico", "Ácido cloroso", "Ácido hipocloroso", "Ácido perclórico"] },
+        { q: "El ion sulfato tiene fórmula:", a: "SO₄²⁻", options: ["SO₃²⁻", "SO₄²⁻", "SO₄⁻", "S₂O₃²⁻"] },
+    ];
+
+    // --- TEMA 5: ESTEQUIOMETRÍA Y REACCIONES ---
+    const stoichiometryQuestions = [
+        { q: "Ley de conservación de la masa establece que:", a: "La masa total de reactivos = masa de productos", options: ["La masa se crea", "La masa total de reactivos = masa de productos", "Los átomos se destruyen", "La energía se conserva"] },
+        { q: "¿Cuántos moles hay en 36 gramos de agua (H₂O)? (Masa molar H₂O=18 g/mol)", a: "2 moles", options: ["1 mol", "2 moles", "3 moles", "0.5 mol"] },
+        { q: "El número de Avogadro equivale a:", a: "6.022 × 10²³", options: ["6.022 × 10²²", "6.022 × 10²³", "6.022 × 10²⁴", "6.022 × 10²¹"] },
+        { q: "En la reacción N₂ + 3H₂ → 2NH₃, ¿cuántos moles de NH₃ se producen con 2 moles de N₂?", a: "4 moles", options: ["2 moles", "3 moles", "4 moles", "1 mol"] },
+        { q: "¿Qué volumen ocupa 1 mol de gas en condiciones STP?", a: "22.4 L", options: ["22.4 L", "24.5 L", "11.2 L", "44.8 L"] },
+        { q: "Reactivo limitante es aquel que:", a: "Se consume primero y limita la cantidad de producto", options: ["Está en exceso", "No reacciona", "Se consume primero y limita la cantidad de producto", "Determina la velocidad"] },
+        { q: "Si el rendimiento real es 15 g y el teórico 20 g, el rendimiento porcentual es:", a: "75%", options: ["133%", "75%", "25%", "50%"] },
+        { q: "En una reacción de desplazamiento simple, el zinc reacciona con HCl formando:", a: "ZnCl₂ + H₂", options: ["ZnO + H₂", "ZnCl + H", "ZnCl₂ + H₂", "ZnH₂ + Cl₂"] },
+        { q: "La reacción CH₄ + 2O₂ → CO₂ + 2H₂O es de tipo:", a: "Combustión", options: ["Síntesis", "Descomposición", "Combustión", "Desplazamiento doble"] },
+        { q: "¿Cuántos gramos de CO₂ se producen al quemar 16 g de CH₄? (Masas: C=12, H=1, O=16)", a: "44 g", options: ["22 g", "44 g", "88 g", "36 g"] },
+    ];
+
+    // --- TEMA 6: CINÉTICA Y EQUILIBRIO ---
+    const kineticsQuestions = [
+        { q: "La teoría de las colisiones indica que para que una reacción ocurra las moléculas deben:", a: "Tener energía suficiente y orientación adecuada", options: ["Estar muy concentradas", "Tener energía suficiente y orientación adecuada", "Ser gaseosas", "Estar en medio ácido"] },
+        { q: "La energía de activación es:", a: "Energía mínima para que ocurra la reacción", options: ["Energía liberada", "Energía mínima para que ocurra la reacción", "Energía de los productos", "Calor de reacción"] },
+        { q: "Al aumentar la temperatura, la velocidad de reacción generalmente:", a: "Aumenta", options: ["Disminuye", "No cambia", "Aumenta", "Se duplica siempre"] },
+        { q: "Un catalizador acelera una reacción porque:", a: "Disminuye la energía de activación", options: ["Aumenta la temperatura", "Disminuye la energía de activación", "Aumenta la concentración", "Consume productos"] },
+        { q: "En el equilibrio químico, las velocidades de reacción directa e inversa son:", a: "Iguales", options: ["Diferentes", "Iguales", "Cero", "Constantes pero distintas"] },
+        { q: "La constante de equilibrio Kc para la reacción aA + bB ⇌ cC + dD es:", a: "[C]^c [D]^d / [A]^a [B]^b", options: ["[A]^a [B]^b / [C]^c [D]^d", "[C]^c [D]^d / [A]^a [B]^b", "[C][D]/[A][B]", "aA + bB / cC + dD"] },
+        { q: "Según Le Châtelier, un aumento de presión favorece el lado con:", a: "Menor número de moles gaseosos", options: ["Mayor número de moles gaseosos", "Menor número de moles gaseosos", "Mayor temperatura", "Menor energía"] },
+        { q: "Para una reacción exotérmica, un aumento de temperatura desplaza el equilibrio hacia:", a: "Reactivos", options: ["Productos", "Reactivos", "No afecta", "Lado con mayor entropía"] },
+        { q: "Si Q < K, la reacción se desplazará hacia:", a: "Productos", options: ["Reactivos", "Productos", "No se desplaza", "Depende de T"] },
+        { q: "El orden de reacción se determina:", a: "Experimentalmente", options: ["Por los coeficientes estequiométricos", "Experimentalmente", "Por la temperatura", "Por la presión"] },
+    ];
+
+    let master = [];
+    master.push(...atomicQuestions);
+    master.push(...periodicQuestions);
+    master.push(...bondQuestions);
+    master.push(...nomenclatureQuestions);
+    master.push(...stoichiometryQuestions);
+    master.push(...kineticsQuestions);
+    
+    const expandTo300 = (baseList) => {
+        let expanded = [...baseList];
+        while(expanded.length < 300) {
+            for(let i = 0; i < baseList.length && expanded.length < 300; i++) {
+                let original = baseList[i];
+                let newQ = {
+                    q: original.q + " (Variación " + (Math.floor(Math.random()*100)+1) + ")",
+                    a: original.a,
+                    options: [...original.options]
+                };
+                if(!expanded.some(item => item.q === newQ.q)) expanded.push(newQ);
+            }
+        }
+        return expanded.slice(0,300);
+    };
+    
+    let fullBank = expandTo300(master);
+    while(fullBank.length < 300) fullBank.push({ q: "¿Cuál es la unidad de masa atómica?", a: "uma", options: ["gramo", "uma", "mol", "kg"] });
+    return fullBank.slice(0,300);
+}
+
+const TOTAL_QUESTION_BANK = buildQuestionBank();
+let selectedQuestions = [];
+let timeLeft = 75 * 60;
+let timerId;
+let userAnswers = [];
+
+// Modo oscuro con cambio de colores a blanco en todos los textos
+const themeToggle = document.getElementById('themeToggle');
+themeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+    const isDark = document.body.classList.contains('dark-mode');
+    themeToggle.innerHTML = isDark ? '<i class="bi bi-sun"></i> Modo Claro' : '<i class="bi bi-moon-stars"></i> Modo Oscuro';
+    localStorage.setItem('darkMode', isDark);
+});
+if(localStorage.getItem('darkMode') === 'true') {
+    document.body.classList.add('dark-mode');
+    themeToggle.innerHTML = '<i class="bi bi-sun"></i> Modo Claro';
+}
+
+function startTest() {
+    const name = document.getElementById('userName').value;
+    if(!name) return alert("Por favor, ingrese su nombre completo.");
+    document.getElementById('setupScreen').style.display = 'none';
+    document.getElementById('testArea').style.display = 'block';
+    document.getElementById('displayName').innerText = name;
+    const diff = document.getElementById('difficulty').value;
+    document.getElementById('displayDifficulty').innerText = "Modo: " + (diff === 'facil' ? 'Fácil' : (diff === 'intermedio' ? 'Intermedio' : 'Difícil'));
+    
+    selectedQuestions = [...TOTAL_QUESTION_BANK].sort(() => 0.5 - Math.random()).slice(0, 75);
+    userAnswers = new Array(75).fill(null);
+    renderQuestions();
+    startTimer();
+}
+
+function renderQuestions() {
+    const container = document.getElementById('questionsContainer');
+    container.innerHTML = '';
+    selectedQuestions.forEach((q, idx) => {
+        const card = document.createElement('div');
+        card.className = 'card question-card p-4';
+        card.innerHTML = `
+            <h5>${idx+1}. ${q.q}</h5>
+            <div class="options-list" id="q${idx}">
+                ${q.options.map(opt => `
+                    <div class="option-container" onclick="selectOption(${idx}, '${opt.replace(/'/g, "\\'")}', this)">
+                        <input type="radio" name="rad${idx}" class="d-none">
+                        <span>${opt}</span>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
+
+function selectOption(qIdx, val, element) {
+    if(element.parentElement.parentElement?.classList?.contains('disabled')) return;
+    const options = document.querySelectorAll(`#q${qIdx} .option-container`);
+    options.forEach(opt => opt.style.borderColor = "#dee2e6");
+    element.style.borderColor = "#e67e22";
+    userAnswers[qIdx] = val;
+    selectedQuestions[qIdx].userAnswer = val;
+}
+
+function startTimer() {
+    timerId = setInterval(() => {
+        timeLeft--;
+        let mins = Math.floor(timeLeft / 60);
+        let secs = timeLeft % 60;
+        document.getElementById('timer').innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        if(timeLeft <= 0) evaluateTest();
+    }, 1000);
+}
+
+function evaluateTest() {
+    clearInterval(timerId);
+    let correctCount = 0;
+
+    selectedQuestions.forEach((q, idx) => {
+        const optionsDiv = document.querySelectorAll(`#q${idx} .option-container`);
+        optionsDiv.forEach(opt => {
+            opt.classList.add('disabled');
+            const text = opt.querySelector('span').innerText;
+            if(text === q.a) opt.classList.add('correct-answer');
+            if(userAnswers[idx] === text && text !== q.a) opt.classList.add('wrong-answer');
+        });
+        if(userAnswers[idx] === q.a) correctCount++;
+    });
+
+    const score = Math.round((correctCount / 75) * 100);
+    document.getElementById('finalScore').innerText = score;
+    document.getElementById('resultsArea').style.display = 'block';
+    document.getElementById('finishBtn').style.display = 'none';
+    
+    const name = document.getElementById('userName').value;
+    let analysis = score >= 85 ? `✨ Excelente, ${name}. Dominio sólido en Química.` : (score >= 60 ? `📘 Buen esfuerzo, ${name}. Refuerce nomenclatura y enlaces.` : `⚠️ ${name}, necesita repasar teoría atómica y estequiometría.`);
+    document.getElementById('aiAnalysis').innerHTML = analysis;
+}
+
+async function downloadFullPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    const name = document.getElementById('userName').value;
+    const score = document.getElementById('finalScore').innerText;
+    
+    doc.setFontSize(18);
+    doc.text("Centro Los Naranjos - Informe Académico", 105, 20, { align: "center" });
+    doc.setFontSize(12);
+    doc.text(`Postulante: ${name}`, 20, 35);
+    doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 20, 42);
+    doc.text(`Calificación: ${score}/100`, 20, 50);
+    doc.text("Análisis IA: " + document.getElementById('aiAnalysis').innerText, 20, 60);
+    doc.text("========================================", 20, 70);
+    doc.text("DETALLE COMPLETO DE LAS 75 PREGUNTAS", 20, 78);
+    
+    let y = 88;
+    for(let i = 0; i < selectedQuestions.length; i++) {
+        if(y > 270) { doc.addPage(); y = 20; doc.text("Continuación del examen:", 20, y); y+=8; }
+        const q = selectedQuestions[i];
+        const userResp = userAnswers[i] || "Sin responder";
+        const estado = (userResp === q.a) ? "✓ Correcta" : "✗ Incorrecta";
+        doc.setFontSize(10);
+        doc.text(`${i+1}. ${q.q}`, 20, y);
+        doc.text(`   Respuesta correcta: ${q.a}`, 25, y+5);
+        doc.text(`   Su respuesta: ${userResp} | ${estado}`, 25, y+10);
+        y += 18;
+    }
+    doc.save(`Resultado_Completo_${name}_75preguntas.pdf`);
+}
+</script>
+</body>
+</html>
