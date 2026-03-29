@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CETA Los Naranjos | Plataforma de Simuladores</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #f1f5f9;
+      --bg-card: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --accent-primary: #2563eb;
+      --accent-success: #059669;
+      --accent-warning: #d97706;
+      --accent-purple: #7c3aed;
+      --header-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      --border-color: #e2e8f0;
+      --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+    }
+
+    body.dark {
+      --bg-primary: #0f172a;
+      --bg-card: #1e293b;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --border-color: #334155;
+      --shadow: 0 10px 15px -3px rgba(0,0,0,0.3);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      transition: background 0.3s ease;
+      min-height: 100vh;
+    }
+
+    /* --- LOGIN UI --- */
+    #login-screen {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: var(--header-gradient);
+      padding: 20px;
+    }
+
+    .login-box {
+      background: white;
+      padding: 2.5rem;
+      border-radius: 2rem;
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+    }
+
+    .login-box h2 { color: #0f172a; margin-bottom: 0.5rem; font-weight: 700; }
+    .login-box p { color: #64748b; margin-bottom: 2rem; font-size: 0.9rem; }
+
+    .input-group { margin-bottom: 1.5rem; text-align: left; }
+    .input-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.85rem; color: #1e293b; }
+    
+    .input-group input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+
+    .input-group input:focus { border-color: var(--accent-primary); outline: none; box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
+
+    .btn-login {
+      width: 100%;
+      padding: 14px;
+      background: var(--accent-primary);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    .btn-login:hover { background: #1d4ed8; transform: translateY(-2px); }
+
+    /* --- DASHBOARD UI --- */
+    #main-dashboard { display: none; }
+
+    header {
+      background: var(--header-gradient);
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .user-info-top { display: flex; align-items: center; gap: 1rem; }
+
+    .nav-buttons { display: flex; gap: 10px; }
+
+    .btn-icon {
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: white;
+      padding: 8px 15px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: 0.2s;
+    }
+
+    .btn-icon:hover { background: rgba(255,255,255,0.2); }
+    .btn-logout { background: #ef4444; }
+
+    .container { max-width: 1200px; margin: 2rem auto; padding: 0 20px; }
+
+    .welcome-hero { margin-bottom: 2.5rem; }
+    .welcome-hero h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+    .welcome-hero p { color: var(--text-muted); }
+
+    /* --- GRID DE CATEGORIAS --- */
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+
+    .cat-card {
+      background: var(--bg-card);
+      border-radius: 1.5rem;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow);
+      transition: transform 0.3s;
+    }
+
+    .cat-card:hover { transform: translateY(-5px); }
+
+    .cat-header {
+      padding: 1.5rem;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cat-math { background: var(--accent-primary); }
+    .cat-chem { background: var(--accent-success); }
+    .cat-verbal { background: var(--accent-warning); }
+    .cat-abstract { background: var(--accent-purple); }
+
+    .cat-body { padding: 1.5rem; }
+
+    .sim-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px;
+      margin-bottom: 10px;
+      background: var(--bg-primary);
+      border-radius: 10px;
+      text-decoration: none;
+      color: var(--text-main);
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: 0.2s;
+    }
+
+    .sim-item:hover { background: var(--border-color); padding-left: 18px; }
+
+    .error-toast {
+      background: #fee2e2;
+      color: #b91c1c;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      font-size: 0.85rem;
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      header { flex-direction: column; gap: 15px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PANTALLA DE LOGIN -->
+  <div id="login-screen">
+    <div class="login-box">
+      <div style="font-size: 3rem; margin-bottom: 1rem;">🎓</div>
+      <h2>CETA Los Naranjos</h2>
+      <p>Ingresa tu código para acceder a los simuladores</p>
+      
+      <div id="login-error" class="error-toast"></div>
+
+      <div class="input-group">
+        <label>Código de Estudiante</label>
+        <input type="text" id="accessCode" placeholder="Ej: Estudiante1-CETA" onkeypress="checkEnter(event)">
+        
+      </div>
+
+      <button class="btn-login" onclick="handleLogin()">Acceder Ahora</button>
+
+    </div>
+  </div>
+
+  <!-- DASHBOARD PRINCIPAL -->
+  <div id="main-dashboard">
+    <header>
+      <div class="user-info-top">
+        <strong>CETA LOS NARANJOS</strong>
+        <span>|</span>
+        <span id="user-display-name">Usuario</span>
+      </div>
+      <div class="nav-buttons">
+        <button id="dark-mode-toggle" class="btn-icon">🌙 Modo Oscuro</button>
+        <button class="btn-icon btn-logout" onclick="handleLogout()">🚪 Salir</button>
+      </div>
+    </header>
+
+    <main class="container">
+      <div class="welcome-hero">
+        <h1>Panel Académico</h1>
+        <p>Selecciona una categoría para comenzar tu práctica diaria.</p>
+      </div>
+
+      <div class="categories-grid">
+        
+        <!-- MATEMÁTICAS -->
+        <div class="cat-card">
+          <div class="cat-header cat-math">
+            <h3>📐 Matemáticas</h3>
+            <span>2 Tests</span>
+          </div>
+          <div class="cat-body">
+            <a href="#" class="sim-item"><span>🔢 Simulador Mate 1</span> ➜</a>
+            <a href="#" class="sim-item"><span>📊 Simulador Mate 2</span> ➜</a>
+          </div>
+        </div>
+
+        <!-- QUÍMICA -->
+        <div class="cat-card">
+          <div class="cat-header cat-chem">
+            <h3>🧪 Química</h3>
+            <span>2 Tests</span>
+          </div>
+          <div class="cat-body">
+            <a href="#" class="sim-item"><span>🧬 Química Orgánica</span> ➜</a>
+            <a href="#" class="sim-item"><span>⚛️ Tabla Periódica</span> ➜</a>
+          </div>
+        </div>
+
+        <!-- VERBAL -->
+        <div class="cat-card">
+          <div class="cat-header cat-verbal">
+            <h3>📖 R. Verbal</h3>
+            <span>2 Tests</span>
+          </div>
+          <div class="cat-body">
+            <a href="#" class="sim-item"><span>🔤 Sinónimos y Antónimos</span> ➜</a>
+            <a href="#" class="sim-item"><span>📚 Comprensión Lectora</span> ➜</a>
+          </div>
+        </div>
+
+        <!-- ABSTRACTO -->
+        <div class="cat-card">
+          <div class="cat-header cat-abstract">
+            <h3>🌀 R. Abstracto</h3>
+            <span>2 Tests</span>
+          </div>
+          <div class="cat-body">
+            <a href="#" class="sim-item"><span>🔷 Secuencias Lógicas</span> ➜</a>
+            <a href="#" class="sim-item"><span>🧩 Matrices Visuales</span> ➜</a>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // --- BASE DE DATOS DE ESTUDIANTES (Capacidad 25) ---
+    // 1 = Activo, 0 = Inactivo
+    const ESTUDIANTES_DB = [
+      { codigo: "Estudiante1-CETA", nombre: "Juan Pablo Mendoza Vera", activo: 1 },
+      { codigo: "Estudiante2-CETA", nombre: "Ana Lucía García", activo: 1 },
+      { codigo: "Estudiante3-CETA", nombre: "Marcos Torres", activo: 0 }, // Ejemplo de usuario deshabilitado
+    ];
+
+    // Llenar automáticamente los 25 estudiantes para el ejemplo
+    for(let i = 4; i <= 25; i++) {
+      ESTUDIANTES_DB.push({
+        codigo: `Estudiante${i}-CETA`,
+        nombre: `Estudiante Ejemplo ${i}`,
+        activo: 1
+      });
+    }
+
+    // --- MODO OSCURO ---
+    const darkBtn = document.getElementById('dark-mode-toggle');
+    const body = document.body;
+
+    darkBtn.addEventListener('click', () => {
+      body.classList.toggle('dark');
+      const isDark = body.classList.contains('dark');
+      localStorage.setItem('darkMode', isDark);
+      darkBtn.innerHTML = isDark ? '☀️ Modo Claro' : '🌙 Modo Oscuro';
+    });
+
+    // Cargar preferencia de modo oscuro
+    if(localStorage.getItem('darkMode') === 'true') {
+      body.classList.add('dark');
+      darkBtn.innerHTML = '☀️ Modo Claro';
+    }
+
+    // --- LÓGICA DE LOGIN ---
+    function handleLogin() {
+      const codeInput = document.getElementById('accessCode').value.trim();
+      const errorBox = document.getElementById('login-error');
+      
+      const user = ESTUDIANTES_DB.find(u => u.codigo === codeInput);
+
+      if (!user) {
+        showError("El código ingresado no existe.");
+        return;
+      }
+
+      if (user.activo === 0) {
+        showError("Tu acceso ha sido deshabilitado. Contacta al tutor.");
+        return;
+      }
+
+      // Login Exitoso
+      localStorage.setItem('ceta_session', JSON.stringify(user));
+      renderDashboard(user.nombre);
+    }
+
+    function showError(msg) {
+      const errorBox = document.getElementById('login-error');
+      errorBox.textContent = msg;
+      errorBox.style.display = 'block';
+    }
+
+    function renderDashboard(name) {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('main-dashboard').style.display = 'block';
+      document.getElementById('user-display-name').textContent = name;
+    }
+
+    function handleLogout() {
+      localStorage.removeItem('ceta_session');
+      location.reload();
+    }
+
+    function checkEnter(e) {
+      if(e.key === 'Enter') handleLogin();
+    }
+
+    // Persistencia de sesión
+    window.onload = () => {
+      const session = localStorage.getItem('ceta_session');
+      if(session) {
+        const userData = JSON.parse(session);
+        renderDashboard(userData.nombre);
+      }
+    };
+  </script>
+</body>
+</html>
