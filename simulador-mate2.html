@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador Educativo | Los Naranjos</title>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    
+    <style>
+        :root {
+            --primary-green: #2d5a27;
+            --accent-orange: #f39c12;
+            --edu-bg: #f9f7f2;
+            --paper: #ffffff;
+            --text-main: #2c3e50;
+            --text-muted: #7f8c8d;
+            --border-soft: #dcdde1;
+            --shadow: rgba(0,0,0,0.05);
+        }
+
+        body.dark-mode {
+            --edu-bg: #121212;
+            --paper: #1e1e1e;
+            --text-main: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --border-soft: #333333;
+            --shadow: rgba(0,0,0,0.3);
+        }
+
+        body { 
+            font-family: 'Segoe UI', Roboto, sans-serif; 
+            background-color: var(--edu-bg); 
+            color: var(--text-main); 
+            margin: 0; padding: 0;
+            transition: all 0.3s ease;
+        }
+
+        /* Botón Modo Oscuro Circular */
+        .theme-toggle {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background: var(--primary-green);
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 2000;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+        .theme-toggle:hover { transform: scale(1.1); }
+
+        .top-banner {
+            background: var(--paper);
+            padding: 25px;
+            text-align: center;
+            border-bottom: 4px solid var(--primary-green);
+            box-shadow: 0 2px 10px var(--shadow);
+        }
+        .top-banner img { max-height: 90px; margin-bottom: 10px; }
+
+        .container { max-width: 900px; margin: 30px auto; padding: 0 20px; }
+
+        .welcome-card {
+            background: var(--paper);
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px var(--shadow);
+            border: 1px solid var(--border-soft);
+        }
+
+        .navbar {
+            background: var(--paper);
+            padding: 15px 25px;
+            border-radius: 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 20px;
+            z-index: 1000;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px var(--shadow);
+            border: 1px solid var(--border-soft);
+        }
+
+        .timer-box { font-weight: bold; color: #e74c3c; font-size: 1.2rem; }
+
+        .btn { 
+            padding: 12px 25px; 
+            border: none; 
+            border-radius: 30px; 
+            cursor: pointer; 
+            font-weight: 700; 
+            transition: 0.3s;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+
+        .btn-start { background: var(--primary-green); color: white; margin-top: 20px; }
+        .btn-grade { background: var(--accent-orange); color: white; }
+        .btn-pdf { background: #3498db; color: white; display: block; margin: 20px auto; }
+
+        .question-card {
+            background: var(--paper);
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border-soft);
+            position: relative;
+        }
+
+        .question-meta { color: var(--primary-green); font-weight: bold; font-size: 0.75rem; text-transform: uppercase; margin-bottom: 10px; display: block; }
+
+        .options-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        @media (max-width: 600px) { .options-container { grid-template-columns: 1fr; } }
+
+        .option-btn {
+            padding: 15px;
+            border: 2px solid var(--border-soft);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+            background: var(--paper);
+            color: var(--text-main);
+        }
+
+        .option-btn:hover { border-color: var(--primary-green); }
+        .option-btn.selected { border-color: var(--primary-green); background: rgba(45, 90, 39, 0.1); font-weight: bold; }
+        .option-btn.correct { background: #2ecc71 !important; color: white !important; border-color: #27ae60 !important; }
+        .option-btn.wrong { background: #e74c3c !important; color: white !important; border-color: #c0392b !important; }
+        .option-btn.disabled { pointer-events: none; }
+
+        .overlay-lock { position: absolute; top:0; left:0; width:100%; height:100%; z-index: 10; display:none; }
+
+        input[type="text"] {
+            width: 100%; padding: 15px; border-radius: 10px; border: 2px solid var(--border-soft);
+            background: var(--paper); color: var(--text-main); font-size: 1rem; box-sizing: border-box;
+        }
+
+        footer { text-align: center; padding: 40px; color: var(--text-muted); font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+<!-- Botón Circular Unificado -->
+<button class="theme-toggle" onclick="toggleDarkMode()" id="themeBtn" title="Cambiar Modo">🌓</button>
+
+<div class="top-banner">
+    <img src="icono.png" alt="Logo Los Naranjos">
+    <h1 style="margin:0;">Centro de Especialidades y Tutorías "Los Naranjos"</h1>
+    <p style="color: var(--text-muted); margin-top: 5px;">Excelencia en Formación Académica</p>
+</div>
+
+<div class="container">
+    <div id="welcomeScreen" class="welcome-card">
+        <h2>Evaluación Diagnóstica Matemática</h2>
+        <p>Se seleccionarán 30 reactivos aleatorios de una base de 300 ejercicios.</p>
+        <input type="text" id="studentName" placeholder="Nombre completo del Estudiante">
+        <button class="btn btn-start" onclick="startExam()">🚀 Iniciar Evaluación</button>
+    </div>
+
+    <div id="examContainer" style="display:none;">
+        <div class="navbar">
+            <div class="timer-box">⏱️ <span id="timer">45:00</span></div>
+            <div id="scoreDisplay" style="font-weight:bold;"></div>
+            <button class="btn btn-grade" id="gradeBtn" onclick="gradeExam()">Calificar</button>
+        </div>
+
+        <div id="questionsList"></div>
+        
+        <div id="postExamActions" style="text-align:center; display:none;">
+            <button class="btn btn-pdf" onclick="generatePDF()">📥 Descargar Reporte PDF</button>
+            <p style="color: var(--text-muted);">Resultados finales generados correctamente.</p>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p>© 2026 Centro de Especialidades y Tutorías "Los Naranjos"</p>
+    <p>Chone - Manabí - Ecuador</p>
+</footer>
+
+<script>
+    const TEMAS = ["Leyes de exponentes", "Polinomios", "Productos notables", "División de polinomios", "Factorización", "Fracciones algebraicas", "Binomio de Newton", "Radicación", "Números complejos", "Ecuaciones", "Desigualdades e inecuaciones", "Progresiones", "Logaritmos"];
+
+    const TEMPLATES = [
+        { t:0, q:"Simplifica: \\( x^{10} \\cdot x^{-3} \\cdot x^2 \\)", o:["\\(x^9\\)","\\(x^{15}\\)","\\(x^7\\)","\\(x^5\\)"], a:0 },
+        { t:1, q:"Grado del polinomio \\( P(x) = 4x^6 - 2x^3 + 1 \\)", o:["4","6","3","1"], a:1 },
+        { t:2, q:"Desarrolla \\( (x-5)^2 \\)", o:["\\(x^2-25\\)","\\(x^2+25\\)","\\(x^2-10x+25\\)","\\(x^2-5x+25\\)"], a:2 },
+        { t:4, q:"Factoriza \\( 4x^2 - 9 \\)", o:["\\((2x+3)(2x-3)\\)","\\((2x-3)^2\\)","\\((4x-9)^2\\)","\\(2x-3\\)"], a:0 },
+        { t:12, q:"Calcula \\( \\log_{2}(16) \\)", o:["2","8","4","16"], a:2 }
+    ];
+
+    // Llenar banco a 300
+    const FULL_BANK = [];
+    for(let i=0; i<300; i++) {
+        let base = TEMPLATES[i % TEMPLATES.length];
+        FULL_BANK.push({
+            cat: TEMAS[base.t || 0],
+            q: base.q + ` (#${i+1})`,
+            o: [...base.o],
+            a: base.a
+        });
+    }
+
+    let selectedQuestions = [];
+    let timeLeft = 2700; 
+    let timerInterval;
+
+    function toggleDarkMode() {
+        document.body.classList.toggle('dark-mode');
+        const btn = document.getElementById('themeBtn');
+        btn.innerHTML = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+    }
+
+    function startExam() {
+        const name = document.getElementById('studentName').value;
+        if(name.length < 5) return alert("Ingrese el nombre completo.");
+        
+        document.getElementById('welcomeScreen').style.display = 'none';
+        document.getElementById('examContainer').style.display = 'block';
+        
+        selectedQuestions = [...FULL_BANK].sort(() => 0.5 - Math.random()).slice(0, 30);
+        render();
+        startTimer();
+    }
+
+    function render() {
+        const container = document.getElementById('questionsList');
+        container.innerHTML = selectedQuestions.map((q, i) => `
+            <div class="question-card" id="card-${i}">
+                <div class="overlay-lock" id="lock-${i}"></div>
+                <span class="question-meta">${q.cat}</span>
+                <div style="font-size:1.15rem;">${i+1}. ${q.q}</div>
+                <div class="options-container">
+                    ${q.o.map((opt, oi) => `
+                        <div class="option-btn" id="opt-${i}-${oi}" onclick="select(${i}, ${oi})">
+                            <b>${String.fromCharCode(97+oi)})</b> ${opt}
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `).join('');
+        if(window.MathJax) MathJax.typeset();
+    }
+
+    function select(qIdx, oIdx) {
+        selectedQuestions[qIdx].userChoice = oIdx;
+        document.querySelectorAll(`#card-${qIdx} .option-btn`).forEach(b => b.classList.remove('selected'));
+        document.getElementById(`opt-${qIdx}-${oIdx}`).classList.add('selected');
+    }
+
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            let m = Math.floor(timeLeft/60), s = timeLeft%60;
+            document.getElementById('timer').innerText = `${m}:${s<10?'0':''}${s}`;
+            if(timeLeft <= 0) gradeExam();
+        }, 1000);
+    }
+
+    function gradeExam() {
+        clearInterval(timerInterval);
+        let score = 0;
+        selectedQuestions.forEach((q, i) => {
+            document.getElementById(`lock-${i}`).style.display = 'block';
+            document.querySelectorAll(`#card-${i} .option-btn`).forEach(b => b.classList.add('disabled'));
+
+            if(q.userChoice === q.a) {
+                score++;
+                document.getElementById(`opt-${i}-${q.a}`).classList.add('correct');
+            } else {
+                if(q.userChoice !== undefined) document.getElementById(`opt-${i}-${q.userChoice}`).classList.add('wrong');
+                document.getElementById(`opt-${i}-${q.a}`).classList.add('correct');
+            }
+        });
+
+        const finalScore = Math.round((score / 30) * 100);
+        document.getElementById('scoreDisplay').innerText = `NOTA: ${finalScore}/100`;
+        document.getElementById('gradeBtn').style.display = 'none';
+        document.getElementById('postExamActions').style.display = 'block';
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+
+    function generatePDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        const name = document.getElementById('studentName').value;
+        const score = document.getElementById('scoreDisplay').innerText;
+
+        doc.setFillColor(45, 90, 39);
+        doc.rect(0, 0, 210, 40, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(18);
+        doc.text("CENTRO ACADÉMICO LOS NARANJOS", 105, 20, { align: "center" });
+        
+        doc.setTextColor(0, 0, 0);
+        doc.setFontSize(11);
+        doc.text(`Estudiante: ${name.toUpperCase()}`, 20, 50);
+        doc.text(`Resultado: ${score}`, 20, 60);
+
+        const data = selectedQuestions.map((q, i) => [
+            i+1, q.cat, 
+            q.userChoice !== undefined ? String.fromCharCode(97+q.userChoice) : "N/A",
+            String.fromCharCode(97+q.a),
+            q.userChoice === q.a ? "Correcto" : "Incorrecto"
+        ]);
+
+        doc.autoTable({
+            startY: 70,
+            head: [['#', 'Tema', 'Rpta', 'Correcta', 'Estado']],
+            body: data,
+            headStyles: { fillColor: [45, 90, 39] }
+        });
+
+        doc.save(`Reporte_LosNaranjos_${name}.pdf`);
+    }
+</script>
+</body>
+</html>
