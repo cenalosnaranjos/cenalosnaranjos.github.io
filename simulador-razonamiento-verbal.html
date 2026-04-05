@@ -25,6 +25,7 @@
     .sidebar {
       width: 280px; background: var(--sidebar-bg); color: white; padding: 1.5rem;
       position: fixed; height: 100vh; overflow-y: auto; z-index: 1000;
+      transition: transform 0.3s ease;
     }
     .sidebar-brand { display: flex; align-items: center; gap: 10px; font-weight: 800; margin-bottom: 2rem; color: white; text-decoration: none; }
     .menu-group { margin-bottom: 1.5rem; }
@@ -43,6 +44,25 @@
       font-weight: 600;
     }
 
+    /* --- RESPONSIVE ELEMENTS --- */
+    .menu-toggle {
+      display: none;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 999;
+    }
+
     /* --- MAIN CONTENT --- */
     .main-content { margin-left: 280px; min-height: 100vh; }
 
@@ -54,7 +74,6 @@
     }
     .timer-box { background: #fee2e2; color: #991b1b; padding: 8px 16px; border-radius: 8px; font-weight: 800; font-family: monospace; font-size: 1.2rem; }
 
-    .actions-bar { display: flex; gap: 10px; }
     .btn {
       padding: 10px 18px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer;
       display: flex; align-items: center; gap: 8px; font-size: 0.85rem; transition: 0.2s;
@@ -64,7 +83,7 @@
     .btn-reset { background: #f1f5f9; color: #1e293b; border: 1px solid var(--border); }
     body.dark .btn-reset { background: #334155; color: white; border-color: #475569; }
 
-    /* --- EXAMEN --- */
+    /* --- EXAM UI --- */
     .exam-container { padding: 2rem; max-width: 900px; margin: 0 auto; }
     .question-card {
       background: var(--card-bg); border-radius: 16px; padding: 2rem; margin-bottom: 2rem;
@@ -78,27 +97,31 @@
     }
     .option:hover { border-color: var(--primary); }
     .option.selected { border-color: var(--primary); background: rgba(37,99,235,0.1); font-weight: 700; }
-    .option.disabled { pointer-events: none; }
-    
     .locked-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; display: none; }
     .ia-diagnostic { background: #eff6ff; border: 2px solid #bfdbfe; padding: 2rem; border-radius: 16px; margin-bottom: 2rem; display: none; color: #1e40af; }
 
     @media (max-width: 1024px) {
-      .sidebar { display: none; }
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.active { transform: translateX(0); }
+      .sidebar-overlay.active { display: block; }
       .main-content { margin-left: 0; }
+      .menu-toggle { display: block; }
+      .sticky-header { padding: 0.8rem 1rem; }
+      .btn span { display: none; }
     }
   </style>
 </head>
 <body>
 
-  <aside class="sidebar">
+  <div class="sidebar-overlay" id="overlay" onclick="toggleMenu()"></div>
+
+  <aside class="sidebar" id="sidebar">
     <a href="simuladores-ceta.html" class="sidebar-brand"><i data-lucide="graduation-cap"></i> CETA Los Naranjos - Regresar</a>
     
-   
     <div class="menu-group">
-      <div class="menu-label">Razonamiento</div>
-      <div class="nav-link active" id="link-verb1" onclick="loadSim('R. Verbal 1', 'link-verb1')"><i data-lucide="type"></i> Verbal 1</div>
-      </div>
+      <div class="menu-label">Lenguaje</div>
+      <div class="nav-link active" id="link-verbal" onclick="loadSim('R. link-verbal1', 'link-Verbal1')"><i data-lucide="book-open"></i> Simulador Verbal 1</div>
+    </div>
 
     <div style="margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
         <button class="nav-link" style="background:none; border:none; cursor:pointer; width:100%" onclick="toggleDarkMode()">
@@ -109,19 +132,22 @@
 
   <main class="main-content">
     <header class="sticky-header">
-      <div style="display: flex; gap: 15px; align-items: center;">
-        <button class="btn btn-reset" onclick="reloadCurrentSim()"><i data-lucide="refresh-cw"></i> Reiniciar Test</button>
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <button class="menu-toggle" onclick="toggleMenu()">
+          <i data-lucide="menu"></i>
+        </button>
+        <button class="btn btn-reset" onclick="reloadSim()"><i data-lucide="refresh-cw"></i> <span>Reiniciar</span></button>
         <div>
-            <h2 id="sim-title" style="font-size: 1rem;">Simulador de R. Verbal 1</h2>
-            <span id="student-name" style="font-size: 0.75rem; color: var(--sidebar-text);">...</span>
+            <h2 id="sim-title" style="font-size: 0.9rem;">Simulador de R. Verbal 1</h2>
+            <span id="student-name" style="font-size: 0.7rem; color: var(--sidebar-text);">...</span>
         </div>
       </div>
 
-      <div class="timer-box" id="timer">75:00</div>
+      <div class="timer-box" id="timer">60:00</div>
 
-      <div class="actions-bar">
-        <button class="btn btn-grade" id="btn-grade" onclick="gradeExam()"><i data-lucide="check-circle"></i> Calificar</button>
-        <button class="btn btn-pdf" id="btn-pdf" onclick="generatePDF()"><i data-lucide="download"></i> Reporte PDF</button>
+      <div class="actions-bar" style="display: flex; gap: 10px;">
+        <button class="btn btn-grade" id="btn-grade" onclick="gradeExam()"><i data-lucide="check-circle"></i> <span>Calificar</span></button>
+        <button class="btn btn-pdf" id="btn-pdf" onclick="generatePDF()"><i data-lucide="download"></i> <span>PDF</span></button>
       </div>
     </header>
 
@@ -132,17 +158,13 @@
   </main>
 
   <script>
-    let currentSimType = 'R. Verbal 1';
-    let currentLinkId = 'link-verb1';
-    
-    // --- BANCO DE PREGUNTAS DE R. VERBAL (300 REALES) ---
     const DB_VERBAL = [];
     const PLANTILLAS_VERBAL = [
-        { q: "Elija el antónimo de la palabra: EFÍMERO", o: ["Duradero", "Pasajero", "Breve", "Corto"], a: 0, t: "Antónimos" },
-        { q: "Identifique el sinónimo de: PROLIJO", o: ["Detallado", "Descuidado", "Breve", "Simple"], a: 0, t: "Sinónimos" },
-        { q: "Analogía: MÉDICO es a ENFERMO como:", o: ["Abogado es a Cliente", "Profesor es a Escuela", "Juez es a Ley", "Chef es a Cocina"], a: 0, t: "Analogías" },
-        { q: "Elija el término excluido de: ASTRONOMÍA", o: ["Astrología", "Cosmos", "Galaxia", "Planeta"], a: 0, t: "Término Excluido" },
-        { q: "Complete la oración: La lectura es una herramienta ____ para el desarrollo intelectual.", o: ["indispensable", "innecesaria", "opcional", "secundaria"], a: 0, t: "Completar Oraciones" }
+        { q: "Identifique el sinónimo de: ABNEGACIÓN", o: ["Sacrificio", "Egoísmo", "Odio", "Lujuria"], a: 0, t: "Sinónimos" },
+        { q: "Elija el término excluido de: PINTURA", o: ["Escultura", "Música", "Danza", "Fútbol"], a: 3, t: "Término Excluido" },
+        { q: "Complete la analogía: ANTORCHA es a LIBERTAD como...", o: ["Paloma es a Paz", "Corazón es a Odio", "Balanza es a Sueño", "Libro es a Guerra"], a: 0, t: "Analogías" },
+        { q: "Identifique el antónimo de: EFÍMERO", o: ["Eterno", "Breve", "Corto", "Fugaz"], a: 0, t: "Antónimos" },
+        { q: "Ordene la oración: 1. la 2. es 3. lectura 4. esencial", o: ["1-3-2-4", "4-2-1-3", "3-2-4-1", "2-1-3-4"], a: 0, t: "Orden Lógico" }
     ];
 
     for(let i=1; i<=300; i++) {
@@ -151,33 +173,27 @@
     }
 
     let activeQuestions = [];
-    let studentName = "Invitado Clover";
+    let studentName = "Invitado";
     let timer;
-    let secondsLeft = 4500;
+    let secondsLeft = 3600;
 
-    function reloadCurrentSim() {
-        if(confirm("¿Deseas reiniciar el simulador de Razonamiento Verbal?")) {
-            loadSim(currentSimType, currentLinkId);
-        }
+    function toggleMenu() {
+        document.getElementById('sidebar').classList.toggle('active');
+        document.getElementById('overlay').classList.toggle('active');
+    }
+
+    function reloadSim() {
+        if(confirm("¿Deseas barajar nuevas preguntas?")) loadSim('R. Verbal1', 'link-verbal1');
     }
 
     function loadSim(tipo, linkId) {
-        currentSimType = tipo;
-        currentLinkId = linkId;
-
-        document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-        const selectedLink = document.getElementById(linkId);
-        if(selectedLink) selectedLink.classList.add('active');
-
-        document.getElementById('sim-title').textContent = `Simulador de ${tipo}`;
         document.getElementById('btn-grade').style.display = 'flex';
         document.getElementById('btn-pdf').style.display = 'none';
         document.getElementById('ia-box').style.display = 'none';
-
-        activeQuestions = [...DB_VERBAL].sort(() => 0.5 - Math.random()).slice(0, 75).map(q => ({...q, userSelected: null}));
+        activeQuestions = [...DB_VERBAL].sort(() => 0.5 - Math.random()).slice(0, 50).map(q => ({...q, userSelected: null}));
         renderExam();
         resetTimer();
-        window.scrollTo({top: 0, behavior: 'smooth'});
+        if(window.innerWidth <= 1024 && document.getElementById('sidebar').classList.contains('active')) toggleMenu();
     }
 
     function renderExam() {
@@ -185,12 +201,12 @@
         wrapper.innerHTML = activeQuestions.map((q, i) => `
             <div class="question-card" id="q-${i}">
                 <div class="locked-overlay" id="lock-${i}"></div>
-                <small style="color: var(--primary); font-weight: 700;">PREGUNTA ${i+1} | ${q.tema}</small>
+                <small style="color: var(--primary); font-weight: 700;">${q.tema}</small>
                 <div class="question-text">${q.pregunta}</div>
                 <div class="options-list">
                     ${q.opciones.map((opt, oi) => `
                         <div class="option" id="opt-${i}-${oi}" onclick="selectOpt(${i}, ${oi})">
-                            <strong style="color:var(--primary)">${String.fromCharCode(65+oi)}</strong> ${opt}
+                            <strong>${String.fromCharCode(65+oi)}</strong> ${opt}
                         </div>
                     `).join('')}
                 </div>
@@ -207,7 +223,7 @@
 
     function resetTimer() {
         clearInterval(timer);
-        secondsLeft = 4500;
+        secondsLeft = 3600;
         timer = setInterval(() => {
             secondsLeft--;
             let m = Math.floor(secondsLeft / 60), s = secondsLeft % 60;
@@ -219,30 +235,26 @@
     function gradeExam() {
         clearInterval(timer);
         let correctas = 0;
-        let stats = {};
         activeQuestions.forEach((q, i) => {
             document.getElementById(`lock-${i}`).style.display = 'block';
-            if(!stats[q.tema]) stats[q.tema] = { total: 0, ok: 0 };
-            stats[q.tema].total++;
             const card = document.getElementById(`q-${i}`);
             if(q.userSelected === q.correcta) {
-                correctas++; stats[q.tema].ok++;
+                correctas++;
                 card.style.borderLeft = "6px solid #10b981";
             } else {
                 card.style.borderLeft = "6px solid #ef4444";
             }
         });
-        const nota = ((correctas / 75) * 100).toFixed(2);
-        showIA(nota, stats);
+        const nota = ((correctas / activeQuestions.length) * 100).toFixed(2);
+        showIA(nota);
         document.getElementById('btn-grade').style.display = 'none';
         document.getElementById('btn-pdf').style.display = 'flex';
         window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
-    function showIA(nota, stats) {
+    function showIA(nota) {
         const box = document.getElementById('ia-box');
-        let debiles = Object.keys(stats).filter(t => (stats[t].ok / stats[t].total) < 0.7);
-        box.innerHTML = `<h3><i data-lucide="bot"></i> Diagnóstico Verbal Clover IA</h3><p>Nota Final: <strong>${nota}/100</strong></p><p>Recomendación: ${debiles.length > 0 ? 'Focalizar práctica en ' + debiles.join(', ') : '¡Excelente dominio del léxico y la lógica verbal!'}</p>`;
+        box.innerHTML = `<h3><i data-lucide="bot"></i> Clover IA: Diagnóstico Verbal</h3><p>Resultado Final: <strong>${nota}/100</strong></p>`;
         box.style.display = 'block';
         lucide.createIcons();
     }
@@ -255,15 +267,21 @@
         doc.setTextColor(255); doc.text("REPORTE R. VERBAL - CETA LOS NARANJOS", 105, 20, {align: "center"});
         doc.setTextColor(40); doc.setFontSize(10);
         doc.text(`Estudiante: ${studentName}`, 15, 45);
-        doc.text(`Tutor: Ing. Teddy Valencia. Mgtr`, 130, 45);
-        doc.text(`Resultado Final: ${nota}`, 15, 52);
+        doc.text(`Docente: Ing. Teddy Valencia. Mgtr`, 130, 45);
+        doc.text(`Calificación Final: ${nota}`, 15, 52);
 
         const tableBody = activeQuestions.map((q, i) => [i+1, q.tema, q.userSelected !== null ? String.fromCharCode(65 + q.userSelected) : '-', String.fromCharCode(65 + q.correcta), q.userSelected === q.correcta ? 'OK' : 'X']);
         doc.autoTable({ startY: 60, head: [['#', 'TEMA', 'RPTA', 'CORRECTA', 'ESTADO']], body: tableBody, styles: { fontSize: 7 } });
         doc.save(`Resultado_Verbal_${studentName}.pdf`);
     }
 
-    function toggleDarkMode() { document.body.classList.toggle('dark'); }
+    function toggleDarkMode() {
+        document.body.classList.toggle('dark');
+        const isDark = document.body.classList.contains('dark');
+        document.getElementById('dark-text').textContent = isDark ? 'Modo Claro' : 'Modo Oscuro';
+        document.getElementById('dark-icon').setAttribute('data-lucide', isDark ? 'sun' : 'moon');
+        lucide.createIcons();
+    }
 
     window.onload = () => {
         const session = JSON.parse(localStorage.getItem('ceta_session'));
@@ -271,8 +289,7 @@
             studentName = session.nombre;
             document.getElementById('student-name').textContent = `Estudiante: ${studentName}`;
         }
-        loadSim('R. Verbal 1', 'link-verb1');
-        lucide.createIcons();
+        loadSim('R. Verbal1', 'link-verbal1');
     };
   </script>
 </body>

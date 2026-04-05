@@ -26,6 +26,7 @@
     .sidebar {
       width: 280px; background: var(--sidebar-bg); color: white; padding: 1.5rem;
       position: fixed; height: 100vh; overflow-y: auto; z-index: 1000;
+      transition: transform 0.3s ease;
     }
     .sidebar-brand { display: flex; align-items: center; gap: 10px; font-weight: 800; margin-bottom: 2rem; color: white; text-decoration: none; }
     .menu-group { margin-bottom: 1.5rem; }
@@ -42,6 +43,26 @@
       color: white; 
       border-left-color: var(--primary);
       font-weight: 600;
+    }
+
+    /* --- RESPONSIVE MENU ELEMENTS --- */
+    .menu-toggle {
+      display: none;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-right: 15px;
+    }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 999;
     }
 
     /* --- MAIN CONTENT --- */
@@ -85,22 +106,29 @@
     .ia-diagnostic { background: #eff6ff; border: 2px solid #bfdbfe; padding: 2rem; border-radius: 16px; margin-bottom: 2rem; display: none; color: #1e40af; }
 
     @media (max-width: 1024px) {
-      .sidebar { display: none; }
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.active { transform: translateX(0); }
+      .sidebar-overlay.active { display: block; }
       .main-content { margin-left: 0; }
+      .menu-toggle { display: flex; align-items: center; }
+      .sticky-header { padding: 0.8rem 1rem; }
+      .timer-box { font-size: 1rem; padding: 6px 10px; }
+      .btn span { display: none; } /* Ocultar texto de botones en móvil para ahorrar espacio */
     }
   </style>
 </head>
 <body>
 
-  <aside class="sidebar">
+  <div class="sidebar-overlay" id="overlay" onclick="toggleMenu()"></div>
+
+  <aside class="sidebar" id="sidebar">
     <a href="simuladores-ceta.html" class="sidebar-brand"><i data-lucide="graduation-cap"></i> CETA Los Naranjos - Regresar</a>
     
     <div class="menu-group">
       <div class="menu-label">Matemáticas</div>
       <div class="nav-link active" id="link-mate1" onclick="loadSim('Matemáticas 1', 'link-mate1')"><i data-lucide="calculator"></i> Simulador 1</div>
-      </div>
+    </div>
 
-   
     <div style="margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
         <button class="nav-link" style="background:none; border:none; cursor:pointer; width:100%" onclick="toggleDarkMode()">
             <i data-lucide="moon" id="dark-icon"></i> <span id="dark-text">Modo Oscuro</span>
@@ -110,19 +138,22 @@
 
   <main class="main-content">
     <header class="sticky-header">
-      <div style="display: flex; gap: 15px; align-items: center;">
-        <button class="btn btn-reset" onclick="reloadCurrentSim()"><i data-lucide="refresh-cw"></i> Reiniciar Test</button>
+      <div style="display: flex; gap: 5px; align-items: center;">
+        <button class="menu-toggle" onclick="toggleMenu()">
+          <i data-lucide="menu"></i>
+        </button>
+        <button class="btn btn-reset" onclick="reloadCurrentSim()"><i data-lucide="refresh-cw"></i> <span>Reiniciar</span></button>
         <div>
-            <h2 id="sim-title" style="font-size: 1rem;">Simulador de Matemáticas 1</h2>
-            <span id="student-name" style="font-size: 0.75rem; color: var(--sidebar-text);">...</span>
+            <h2 id="sim-title" style="font-size: 0.9rem;">Simulador de Matemáticas 1</h2>
+            <span id="student-name" style="font-size: 0.7rem; color: var(--sidebar-text);">...</span>
         </div>
       </div>
 
       <div class="timer-box" id="timer">75:00</div>
 
       <div class="actions-bar">
-        <button class="btn btn-grade" id="btn-grade" onclick="gradeExam()"><i data-lucide="check-circle"></i> Calificar</button>
-        <button class="btn btn-pdf" id="btn-pdf" onclick="generatePDF()"><i data-lucide="download"></i> Reporte PDF</button>
+        <button class="btn btn-grade" id="btn-grade" onclick="gradeExam()"><i data-lucide="check-circle"></i> <span>Calificar</span></button>
+        <button class="btn btn-pdf" id="btn-pdf" onclick="generatePDF()"><i data-lucide="download"></i> <span>Reporte</span></button>
       </div>
     </header>
 
@@ -136,7 +167,7 @@
     let currentSimType = 'Matemáticas 1';
     let currentLinkId = 'link-mate1';
     
-    // --- BANCO DE PREGUNTAS MATEMÁTICAS REALES (300) ---
+    // --- BANCO DE PREGUNTAS (CONSERVADO) ---
     const DB_MATE = [];
     const PLANTILLAS_MATE = [
         { q: "Si \\( 3x - 7 = 14 \\), ¿cuál es el valor de x?", o: ["x = 7", "x = 3", "x = 21", "x = 4"], a: 0, t: "Álgebra" },
@@ -155,6 +186,12 @@
     let studentName = "Invitado";
     let timer;
     let secondsLeft = 4500;
+
+    // --- FUNCIONES DE NAVEGACIÓN ---
+    function toggleMenu() {
+        document.getElementById('sidebar').classList.toggle('active');
+        document.getElementById('overlay').classList.toggle('active');
+    }
 
     function reloadCurrentSim() {
         if(confirm("¿Reiniciar el simulador actual? Se barajarán 75 nuevas preguntas.")) {
@@ -179,6 +216,9 @@
         renderExam();
         resetTimer();
         window.scrollTo({top: 0, behavior: 'smooth'});
+        
+        // Cerrar menú en móvil al seleccionar
+        if(window.innerWidth <= 1024) toggleMenu();
     }
 
     function renderExam() {

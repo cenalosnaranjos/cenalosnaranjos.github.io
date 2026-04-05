@@ -26,6 +26,7 @@
     .sidebar {
       width: 280px; background: var(--sidebar-bg); color: white; padding: 1.5rem;
       position: fixed; height: 100vh; overflow-y: auto; z-index: 1000;
+      transition: transform 0.3s ease;
     }
     .sidebar-brand { display: flex; align-items: center; gap: 10px; font-weight: 800; margin-bottom: 2rem; color: white; text-decoration: none; }
     .menu-group { margin-bottom: 1.5rem; }
@@ -42,6 +43,25 @@
       color: white; 
       border-left-color: var(--primary);
       font-weight: 600;
+    }
+
+    /* --- RESPONSIVE MENU ELEMENTS --- */
+    .menu-toggle {
+      display: none;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 999;
     }
 
     /* --- MAIN CONTENT --- */
@@ -85,45 +105,53 @@
     .ia-diagnostic { background: #eff6ff; border: 2px solid #bfdbfe; padding: 2rem; border-radius: 16px; margin-bottom: 2rem; display: none; color: #1e40af; }
 
     @media (max-width: 1024px) {
-      .sidebar { display: none; }
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.active { transform: translateX(0); }
+      .sidebar-overlay.active { display: block; }
       .main-content { margin-left: 0; }
+      .menu-toggle { display: block; }
+      .sticky-header { padding: 0.8rem 1rem; }
+      .btn span { display: none; }
     }
   </style>
 </head>
 <body>
 
-  <aside class="sidebar">
+  <div class="sidebar-overlay" id="overlay" onclick="toggleMenu()"></div>
+
+  <aside class="sidebar" id="sidebar">
     <a href="simuladores-ceta.html" class="sidebar-brand"><i data-lucide="graduation-cap"></i> CETA Los Naranjos - Regresar</a>
     
     <div class="menu-group">
       <div class="menu-label">Matemáticas</div>
-      <div class="nav-link active" id="link-mate1" onclick="loadSim('Matemáticas 2', 'link-link-mate2')"><i data-lucide="calculator"></i> Simulador 2</div>
+      <div class="nav-link active" id="link-mate2" onclick="loadSim('Matemáticas 2', 'link-mate2')"><i data-lucide="calculator"></i> Simulador 2</div>
      </div>
-
-   
 
     <div style="margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
         <button class="nav-link" style="background:none; border:none; cursor:pointer; width:100%" onclick="toggleDarkMode()">
-            <i data-lucide="moon"></i> <span>Modo Oscuro</span>
+            <i data-lucide="moon" id="dark-icon"></i> <span id="dark-text">Modo Oscuro</span>
         </button>
     </div>
   </aside>
 
   <main class="main-content">
     <header class="sticky-header">
-      <div style="display: flex; gap: 15px; align-items: center;">
-        <button class="btn btn-reset" onclick="reloadCurrentSim()"><i data-lucide="refresh-cw"></i> Reiniciar Test</button>
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <button class="menu-toggle" onclick="toggleMenu()">
+          <i data-lucide="menu"></i>
+        </button>
+        <button class="btn btn-reset" onclick="reloadCurrentSim()"><i data-lucide="refresh-cw"></i> <span>Reiniciar Test</span></button>
         <div>
-            <h2 id="sim-title" style="font-size: 1rem;">Simulador de Matemáticas 2</h2>
-            <span id="student-name" style="font-size: 0.75rem; color: var(--sidebar-text);">...</span>
+            <h2 id="sim-title" style="font-size: 0.9rem;">Simulador de Matemáticas 2</h2>
+            <span id="student-name" style="font-size: 0.7rem; color: var(--sidebar-text);">...</span>
         </div>
       </div>
 
       <div class="timer-box" id="timer">75:00</div>
 
       <div class="actions-bar">
-        <button class="btn btn-grade" id="btn-grade" onclick="gradeExam()"><i data-lucide="check-circle"></i> Calificar</button>
-        <button class="btn btn-pdf" id="btn-pdf" onclick="generatePDF()"><i data-lucide="download"></i> Reporte PDF</button>
+        <button class="btn btn-grade" id="btn-grade" onclick="gradeExam()"><i data-lucide="check-circle"></i> <span>Calificar</span></button>
+        <button class="btn btn-pdf" id="btn-pdf" onclick="generatePDF()"><i data-lucide="download"></i> <span>Reporte PDF</span></button>
       </div>
     </header>
 
@@ -135,7 +163,7 @@
 
   <script>
     let currentSimType = 'Matemáticas 2';
-    let currentLinkId = 'link-mate1';
+    let currentLinkId = 'link-mate2';
     const DB_REAL = [];
     const PLANTILLAS = [
         { q: "Resuelva: 5x - 15 = 10", o: ["x = 5", "x = 10", "x = 2", "x = 25"], a: 0, t: "Álgebra" },
@@ -151,7 +179,11 @@
     let timer;
     let secondsLeft = 4500;
 
-    // FUNCIÓN PARA RECARGAR EL SIMULADOR ACTUAL
+    function toggleMenu() {
+        document.getElementById('sidebar').classList.toggle('active');
+        document.getElementById('overlay').classList.toggle('active');
+    }
+
     function reloadCurrentSim() {
         if(confirm("¿Deseas reiniciar el simulador actual? Se cargarán nuevas preguntas y el tiempo volverá a iniciar.")) {
             loadSim(currentSimType, currentLinkId);
@@ -175,6 +207,8 @@
         renderExam();
         resetTimer();
         window.scrollTo({top: 0, behavior: 'smooth'});
+
+        if(window.innerWidth <= 1024) toggleMenu();
     }
 
     function renderExam() {
@@ -258,7 +292,13 @@
         doc.save(`Reporte_CETA_${studentName}.pdf`);
     }
 
-    function toggleDarkMode() { document.body.classList.toggle('dark'); }
+    function toggleDarkMode() { 
+        document.body.classList.toggle('dark');
+        const isDark = document.body.classList.contains('dark');
+        document.getElementById('dark-text').textContent = isDark ? 'Modo Claro' : 'Modo Oscuro';
+        document.getElementById('dark-icon').setAttribute('data-lucide', isDark ? 'sun' : 'moon');
+        lucide.createIcons();
+    }
 
     window.onload = () => {
         const session = JSON.parse(localStorage.getItem('ceta_session'));
