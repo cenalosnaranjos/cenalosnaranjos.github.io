@@ -122,7 +122,7 @@
     
     <div class="menu-group">
       <div class="menu-label">Lenguaje</div>
-      <div class="nav-link active" id="link-verbal2" onclick="loadSim('R. Verbal 2', 'link-verbal2')"><i data-lucide="book-open"></i> Simulador R. Verbal 2</div>
+      <div class="nav-link active" id="link-verbal2" onclick="loadSim('R. Verbal3', 'link-Verbal3')"><i data-lucide="book-open"></i> Simulador R. Verbal 3</div>
     </div>
 
     <div style="margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
@@ -140,7 +140,7 @@
         </button>
         <button class="btn btn-reset" onclick="reloadSim()"><i data-lucide="refresh-cw"></i> <span>Reiniciar</span></button>
         <div>
-            <h2 id="sim-title" style="font-size: 0.9rem;">Simulador de R. Verbal 2</h2>
+            <h2 id="sim-title" style="font-size: 0.9rem;">Simulador de R. Verbal 3</h2>
             <span id="student-name" style="font-size: 0.7rem; color: var(--sidebar-text);">...</span>
         </div>
       </div>
@@ -294,7 +294,7 @@
             studentName = session.nombre;
             document.getElementById('student-name').textContent = `Estudiante: ${studentName}`;
         }
-        loadSim('R. Verbal 2', 'link-verbal2');
+        loadSim('R. Verbal3', 'link-verbal3');
     };
   </script>
 </body>

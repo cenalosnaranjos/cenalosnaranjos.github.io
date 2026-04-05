@@ -223,7 +223,10 @@
 
     function resetTimer() {
         clearInterval(timer);
-        secondsLeft = 3600;
+        
+        // --- CAMBIO 4: Reinicio del tiempo a 75 minutos ---
+        secondsLeft = 4500; 
+        
         timer = setInterval(() => {
             secondsLeft--;
             let m = Math.floor(secondsLeft / 60), s = secondsLeft % 60;

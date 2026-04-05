@@ -175,7 +175,7 @@
     let activeQuestions = [];
     let studentName = "Invitado";
     let timer;
-    let secondsLeft = 3600;
+    let secondsLeft = 4500;
 
     function toggleMenu() {
         document.getElementById('sidebar').classList.toggle('active');
@@ -221,9 +221,12 @@
         document.getElementById(`opt-${qIdx}-${oIdx}`).classList.add('selected');
     }
 
-    function resetTimer() {
+   function resetTimer() {
         clearInterval(timer);
-        secondsLeft = 3600;
+        
+        // --- CAMBIO 4: Reinicio del tiempo a 75 minutos ---
+        secondsLeft = 4500; 
+        
         timer = setInterval(() => {
             secondsLeft--;
             let m = Math.floor(secondsLeft / 60), s = secondsLeft % 60;

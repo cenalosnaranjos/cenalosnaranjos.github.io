@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CETA | Simulador de R. Verbal Profesional 2</title>
+  <title>CETA | Simulador de Química Profesional 2</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -121,8 +121,8 @@
     <a href="simuladores-ceta.html" class="sidebar-brand"><i data-lucide="graduation-cap"></i> CETA Los Naranjos - Regresar</a>
     
     <div class="menu-group">
-      <div class="menu-label">Lenguaje</div>
-      <div class="nav-link active" id="link-verbal2" onclick="loadSim('R. Verbal 2', 'link-verbal2')"><i data-lucide="book-open"></i> Simulador R. Verbal 2</div>
+      <div class="menu-label">Ciencias</div>
+      <div class="nav-link active" id="link-link-quimica3" onclick="loadSim('Química3', 'link-link-quimica3')"><i data-lucide="flask-conical"></i> Simulador Química 3</div>
     </div>
 
     <div style="margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
@@ -140,7 +140,7 @@
         </button>
         <button class="btn btn-reset" onclick="reloadSim()"><i data-lucide="refresh-cw"></i> <span>Reiniciar</span></button>
         <div>
-            <h2 id="sim-title" style="font-size: 0.9rem;">Simulador de R. Verbal 2</h2>
+            <h2 id="sim-title" style="font-size: 0.9rem;">Simulador de Química 3</h2>
             <span id="student-name" style="font-size: 0.7rem; color: var(--sidebar-text);">...</span>
         </div>
       </div>
@@ -160,18 +160,18 @@
   </main>
 
   <script>
-    const DB_VERBAL = [];
-    const PLANTILLAS_VERBAL = [
-        { q: "Elija el sinónimo de: EFÍMERO", o: ["Pasajero", "Eterno", "Duradero", "Fuerte"], a: 0, t: "Sinónimos" },
-        { q: "Complete la analogía: PERRO es a JAURÍA como CERDO es a...", o: ["Piara", "Enjambre", "Bandada", "Cardumen"], a: 0, t: "Analogías" },
-        { q: "Elija el antónimo de: ALTURISMO", o: ["Egoísmo", "Generosidad", "Bondad", "Paz"], a: 0, t: "Antónimos" },
-        { q: "¿Qué palabra está mal escrita?", o: ["Escaces", "Exceso", "Escasez", "Excelente"], a: 2, t: "Ortografía" },
-        { q: "Identifique el término excluido de: FRUTAS", o: ["Lechuga", "Manzana", "Pera", "Uva"], a: 0, t: "Término Excluido" }
+    const DB_QUIMICA = [];
+    const PLANTILLAS_QUIMICA = [
+        { q: "¿Cuál es el componente principal del gas natural?", o: ["Metano", "Propano", "Butano", "Etano"], a: 0, t: "Hidrocarburos" },
+        { q: "¿Qué partículas se encuentran en el núcleo del átomo?", o: ["Protones y Neutrones", "Electrones y Protones", "Solo Neutrones", "Solo Electrones"], a: 0, t: "Estructura Atómica" },
+        { q: "La ley de Boyle relaciona presión y volumen a temperatura:", o: ["Constante", "Variable", "Cero", "Infinita"], a: 0, t: "Gases" },
+        { q: "¿Cuál es el número de Avogadro?", o: ["6.022 x 10^23", "3.1416", "9.81", "1.602 x 10^-19"], a: 0, t: "Estequiometría" },
+        { q: "Un compuesto con grupo funcional -OH es un:", o: ["Alcohol", "Cetona", "Aldehído", "Éter"], a: 0, t: "Grupos Funcionales" }
     ];
 
     for(let i=1; i<=300; i++) {
-        let p = PLANTILLAS_VERBAL[i % PLANTILLAS_VERBAL.length];
-        DB_VERBAL.push({ id: i, pregunta: `Ejercicio Verbal #${i}: ${p.q}`, opciones: p.o, correcta: p.a, tema: p.t });
+        let p = PLANTILLAS_QUIMICA[i % PLANTILLAS_QUIMICA.length];
+        DB_QUIMICA.push({ id: i, pregunta: `Pregunta de Química Avanzada #${i}: ${p.q}`, opciones: p.o, correcta: p.a, tema: p.t });
     }
 
     let activeQuestions = [];
@@ -185,14 +185,14 @@
     }
 
     function reloadSim() {
-        if(confirm("¿Deseas reiniciar el simulador con nuevas preguntas?")) loadSim('R. Verbal 2', 'link-verbal2');
+        if(confirm("¿Deseas reiniciar el simulador con nuevas preguntas?")) loadSim('Química 2', 'link-quimica2');
     }
 
     function loadSim(tipo, linkId) {
         document.getElementById('btn-grade').style.display = 'flex';
         document.getElementById('btn-pdf').style.display = 'none';
         document.getElementById('ia-box').style.display = 'none';
-        activeQuestions = [...DB_VERBAL].sort(() => 0.5 - Math.random()).slice(0, 50).map(q => ({...q, userSelected: null}));
+        activeQuestions = [...DB_QUIMICA].sort(() => 0.5 - Math.random()).slice(0, 50).map(q => ({...q, userSelected: null}));
         renderExam();
         resetTimer();
         if(window.innerWidth <= 1024 && document.getElementById('sidebar').classList.contains('active')) toggleMenu();
@@ -223,7 +223,7 @@
         document.getElementById(`opt-${qIdx}-${oIdx}`).classList.add('selected');
     }
 
-    function resetTimer() {
+     function resetTimer() {
         clearInterval(timer);
         
         // --- CAMBIO 4: Reinicio del tiempo a 75 minutos ---
@@ -259,7 +259,7 @@
 
     function showIA(nota) {
         const box = document.getElementById('ia-box');
-        box.innerHTML = `<h3><i data-lucide="bot"></i> Clover IA: Diagnóstico Verbal</h3><p>Puntaje Final: <strong>${nota}/100</strong></p>`;
+        box.innerHTML = `<h3><i data-lucide="bot"></i> Clover IA: Diagnóstico Avanzado</h3><p>Resultado Final: <strong>${nota}/100</strong></p>`;
         box.style.display = 'block';
         lucide.createIcons();
     }
@@ -269,15 +269,15 @@
         const doc = new jsPDF();
         const nota = document.getElementById('ia-box').querySelector('strong').innerText;
         doc.setFillColor(15, 23, 42); doc.rect(0, 0, 210, 30, 'F');
-        doc.setTextColor(255); doc.text("REPORTE R. VERBAL - CETA LOS NARANJOS", 105, 20, {align: "center"});
+        doc.setTextColor(255); doc.text("REPORTE QUÍMICA 2 - CETA LOS NARANJOS", 105, 20, {align: "center"});
         doc.setTextColor(40); doc.setFontSize(10);
         doc.text(`Estudiante: ${studentName}`, 15, 45);
-        doc.text(`Tutor: Ing. Teddy Valencia. Mgtr`, 130, 45);
-        doc.text(`Resultado Final: ${nota}`, 15, 52);
+        doc.text(`Docente: Ing. Teddy Valencia. Mgtr`, 130, 45);
+        doc.text(`Calificación Final: ${nota}`, 15, 52);
 
         const tableBody = activeQuestions.map((q, i) => [i+1, q.tema, q.userSelected !== null ? String.fromCharCode(65 + q.userSelected) : '-', String.fromCharCode(65 + q.correcta), q.userSelected === q.correcta ? 'OK' : 'X']);
         doc.autoTable({ startY: 60, head: [['#', 'TEMA', 'RPTA', 'CORRECTA', 'ESTADO']], body: tableBody, styles: { fontSize: 7 } });
-        doc.save(`Resultado_Verbal_${studentName}.pdf`);
+        doc.save(`Resultado_Quimica2_${studentName}.pdf`);
     }
 
     function toggleDarkMode() {
@@ -294,7 +294,7 @@
             studentName = session.nombre;
             document.getElementById('student-name').textContent = `Estudiante: ${studentName}`;
         }
-        loadSim('R. Verbal 2', 'link-verbal2');
+        loadSim('Química3', 'link-quimica3');
     };
   </script>
 </body>
