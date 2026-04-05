@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CETA | Simulador de Química Profesional</title>
+  <title>CETA | Simulador de Química Profesional 2</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -96,8 +96,8 @@
 
     <div class="menu-group">
       <div class="menu-label">Ciencias</div>
-      <div class="nav-link active" id="link-qui1" onclick="loadSim('Química 1', 'link-qui1')"><i data-lucide="beaker"></i> Química 1</div>
-     </div>
+      <div class="nav-link" id="link-qui2" onclick="loadSim('Química 2', 'link-qui2')"><i data-lucide="flask-conical"></i> Química 2</div>
+    </div>
 
 
     <div style="margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
@@ -112,7 +112,7 @@
       <div style="display: flex; gap: 15px; align-items: center;">
         <button class="btn btn-reset" onclick="reloadCurrentSim()"><i data-lucide="refresh-cw"></i> Reiniciar Test</button>
         <div>
-            <h2 id="sim-title" style="font-size: 1rem;">Simulador de Química 1</h2>
+            <h2 id="sim-title" style="font-size: 1rem;">Simulador de Química 2</h2>
             <span id="student-name" style="font-size: 0.75rem; color: var(--sidebar-text);">...</span>
         </div>
       </div>
@@ -132,8 +132,8 @@
   </main>
 
   <script>
-    let currentSimType = 'Química 1';
-    let currentLinkId = 'link-qui1';
+    let currentSimType = 'Química 2';
+    let currentLinkId = 'link-qui2';
     
     // --- BANCO DE PREGUNTAS DE QUÍMICA (300 REALES) ---
     const DB_QUIMICA = [];
@@ -151,7 +151,7 @@
     }
 
     let activeQuestions = [];
-    let studentName = "Invitado Clover";
+    let studentName = "Invitado";
     let timer;
     let secondsLeft = 4500;
 
@@ -271,7 +271,7 @@
             studentName = session.nombre;
             document.getElementById('student-name').textContent = `Estudiante: ${studentName}`;
         }
-        loadSim('Química 1', 'link-qui1');
+        loadSim('Química 2', 'link-qui2');
         lucide.createIcons();
     };
   </script>

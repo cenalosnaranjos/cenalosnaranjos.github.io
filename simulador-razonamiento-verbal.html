@@ -1,349 +1,279 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador RV con Análisis IA - Los Naranjos</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CETA | Simulador de R. Verbal Profesional</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+  <style>
+    :root {
+      --primary: #2563eb; --sidebar-bg: #0f172a; --sidebar-text: #94a3b8;
+      --bg-main: #f8fafc; --card-bg: #ffffff; --text-dark: #1e293b;
+      --border: #e2e8f0; --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    body.dark {
+      --bg-main: #020617; --card-bg: #1e293b; --text-dark: #f1f5f9;
+      --border: #334155; --sidebar-bg: #000000;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-main); color: var(--text-dark); transition: var(--transition); }
+
+    /* --- SIDEBAR --- */
+    .sidebar {
+      width: 280px; background: var(--sidebar-bg); color: white; padding: 1.5rem;
+      position: fixed; height: 100vh; overflow-y: auto; z-index: 1000;
+    }
+    .sidebar-brand { display: flex; align-items: center; gap: 10px; font-weight: 800; margin-bottom: 2rem; color: white; text-decoration: none; }
+    .menu-group { margin-bottom: 1.5rem; }
+    .menu-label { font-size: 0.7rem; text-transform: uppercase; color: #475569; letter-spacing: 1px; margin-bottom: 0.5rem; padding-left: 10px; }
     
-    <style>
-        :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #e67e22;
-            --bg-body: #f4f7f6;
-            --card-bg: #ffffff;
-            --text-main: #212529;
-            --border-color: #dee2e6;
-        }
+    .nav-link {
+      display: flex; align-items: center; gap: 10px; padding: 12px 16px; color: var(--sidebar-text);
+      text-decoration: none; border-radius: 10px; font-size: 0.85rem; margin-bottom: 4px; 
+      transition: 0.2s; cursor: pointer; border-left: 4px solid transparent;
+    }
+    .nav-link:hover { background: rgba(255,255,255,0.05); color: white; }
+    .nav-link.active { 
+      background: rgba(37, 99, 235, 0.15); 
+      color: white; 
+      border-left-color: var(--primary);
+      font-weight: 600;
+    }
 
-        body.dark-mode {
-            --bg-body: #121212;
-            --card-bg: #1e1e1e;
-            --text-main: #f8f9fa;
-            --border-color: #333;
-            --primary-color: #e67e22;
-        }
+    /* --- MAIN CONTENT --- */
+    .main-content { margin-left: 280px; min-height: 100vh; }
 
-        body {
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            transition: all 0.3s ease;
-        }
+    .sticky-header {
+      position: sticky; top: 0; background: var(--card-bg); z-index: 900;
+      padding: 0.8rem 2rem; border-bottom: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    }
+    .timer-box { background: #fee2e2; color: #991b1b; padding: 8px 16px; border-radius: 8px; font-weight: 800; font-family: monospace; font-size: 1.2rem; }
 
-        .navbar-custom {
-            background: var(--card-bg);
-            border-bottom: 4px solid var(--secondary-color);
-            padding: 1rem 0;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
+    .actions-bar { display: flex; gap: 10px; }
+    .btn {
+      padding: 10px 18px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer;
+      display: flex; align-items: center; gap: 8px; font-size: 0.85rem; transition: 0.2s;
+    }
+    .btn-grade { background: #059669; color: white; }
+    .btn-pdf { background: #1e293b; color: white; display: none; }
+    .btn-reset { background: #f1f5f9; color: #1e293b; border: 1px solid var(--border); }
+    body.dark .btn-reset { background: #334155; color: white; border-color: #475569; }
 
-        .question-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 25px;
-            transition: transform 0.2s;
-        }
+    /* --- EXAMEN --- */
+    .exam-container { padding: 2rem; max-width: 900px; margin: 0 auto; }
+    .question-card {
+      background: var(--card-bg); border-radius: 16px; padding: 2rem; margin-bottom: 2rem;
+      border: 1px solid var(--border); position: relative; overflow: hidden;
+    }
+    .question-text { font-size: 1.1rem; font-weight: 600; margin: 15px 0; line-height: 1.6; }
+    .options-list { display: grid; gap: 12px; }
+    .option {
+      padding: 15px; border: 2px solid var(--border); border-radius: 12px; cursor: pointer;
+      transition: 0.2s; display: flex; align-items: center; gap: 12px;
+    }
+    .option:hover { border-color: var(--primary); }
+    .option.selected { border-color: var(--primary); background: rgba(37,99,235,0.1); font-weight: 700; }
+    .option.disabled { pointer-events: none; }
+    
+    .locked-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; display: none; }
+    .ia-diagnostic { background: #eff6ff; border: 2px solid #bfdbfe; padding: 2rem; border-radius: 16px; margin-bottom: 2rem; display: none; color: #1e40af; }
 
-        .unit-label {
-            font-size: 0.75rem;
-            font-weight: bold;
-            color: var(--secondary-color);
-            text-transform: uppercase;
-            background: rgba(230, 126, 34, 0.1);
-            padding: 4px 12px;
-            border-radius: 20px;
-            display: inline-block;
-            margin-bottom: 10px;
-        }
-
-        .option-item {
-            border: 2px solid var(--border-color);
-            border-radius: 10px;
-            padding: 12px 18px;
-            margin-top: 10px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .option-item:hover:not(.disabled) {
-            background-color: rgba(230, 126, 34, 0.05);
-            border-color: var(--secondary-color);
-        }
-
-        .option-item.selected {
-            background-color: rgba(230, 126, 34, 0.15);
-            border-color: var(--secondary-color);
-            font-weight: 600;
-        }
-
-        .option-item.disabled { pointer-events: none; }
-
-        .correct-ans { background-color: #d4edda !important; color: #155724 !important; border-color: #28a745 !important; }
-        .wrong-ans { background-color: #f8d7da !important; color: #721c24 !important; border-color: #dc3545 !important; }
-
-        .ai-box {
-            background: #e3f2fd;
-            border-left: 5px solid #2196f3;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
-            text-align: left;
-        }
-        body.dark-mode .ai-box { background: #1a237e; color: #e3f2fd; }
-
-        .timer-badge {
-            position: sticky; top: 20px; z-index: 1000;
-            background: var(--secondary-color); color: white;
-            padding: 10px 25px; border-radius: 50px; font-weight: bold;
-            box-shadow: 0 4px 15px rgba(230, 126, 34, 0.4);
-        }
-    </style>
+    @media (max-width: 1024px) {
+      .sidebar { display: none; }
+      .main-content { margin-left: 0; }
+    }
+  </style>
 </head>
 <body>
 
-<nav class="navbar-custom mb-5">
-    <div class="container d-flex justify-content-between align-items-center">
-        <div>
-            <h4 class="fw-bold m-0">LOS NARANJOS</h4>
-            <small class="text-muted">Centro de Especialidades y Tutorías Académicas</small>
-        </div>
-        <button id="themeToggle" class="btn btn-outline-secondary rounded-pill shadow-sm">
-            <i class="bi bi-moon-stars-fill"></i> Modo Oscuro
+  <aside class="sidebar">
+    <a href="simuladores-ceta.html" class="sidebar-brand"><i data-lucide="graduation-cap"></i> CETA Los Naranjos - Regresar</a>
+    
+   
+    <div class="menu-group">
+      <div class="menu-label">Razonamiento</div>
+      <div class="nav-link active" id="link-verb1" onclick="loadSim('R. Verbal 1', 'link-verb1')"><i data-lucide="type"></i> Verbal 1</div>
+      </div>
+
+    <div style="margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
+        <button class="nav-link" style="background:none; border:none; cursor:pointer; width:100%" onclick="toggleDarkMode()">
+            <i data-lucide="moon" id="dark-icon"></i> <span id="dark-text">Modo Oscuro</span>
         </button>
     </div>
-</nav>
+  </aside>
 
-<div class="container">
-    <div id="welcomeScreen" class="card p-5 shadow-lg text-center border-0 mx-auto" style="max-width: 600px; background: var(--card-bg);">
-        <i class="bi bi-brain text-secondary mb-3" style="font-size: 3.5rem;"></i>
-        <h2 class="fw-bold">Simulador de Razonamiento Verbal</h2>
-        <p class="text-muted mb-4">Análisis inteligente de 75 preguntas basado en las 8 unidades académicas de admisión.</p>
-        <input type="text" id="userName" class="form-control form-control-lg mb-3 shadow-sm" placeholder="Ingresa tu nombre completo">
-        <button onclick="startSimulacion()" class="btn btn-secondary btn-lg w-100 py-3 shadow">Comenzar Test IA</button>
+  <main class="main-content">
+    <header class="sticky-header">
+      <div style="display: flex; gap: 15px; align-items: center;">
+        <button class="btn btn-reset" onclick="reloadCurrentSim()"><i data-lucide="refresh-cw"></i> Reiniciar Test</button>
+        <div>
+            <h2 id="sim-title" style="font-size: 1rem;">Simulador de R. Verbal 1</h2>
+            <span id="student-name" style="font-size: 0.75rem; color: var(--sidebar-text);">...</span>
+        </div>
+      </div>
+
+      <div class="timer-box" id="timer">75:00</div>
+
+      <div class="actions-bar">
+        <button class="btn btn-grade" id="btn-grade" onclick="gradeExam()"><i data-lucide="check-circle"></i> Calificar</button>
+        <button class="btn btn-pdf" id="btn-pdf" onclick="generatePDF()"><i data-lucide="download"></i> Reporte PDF</button>
+      </div>
+    </header>
+
+    <div class="exam-container">
+      <div id="ia-box" class="ia-diagnostic"></div>
+      <div id="questions-wrapper"></div>
     </div>
+  </main>
 
-    <div id="quizArea" style="display: none;">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div class="timer-badge" id="timer">75:00</div>
-            <h5 id="displayStudent" class="m-0 fw-bold"></h5>
-        </div>
-        <div id="renderSpace"></div>
-        <div class="text-center py-5">
-            <button id="finishBtn" onclick="evaluateQuiz()" class="btn btn-success btn-lg px-5 rounded-pill shadow-lg">
-                <i class="bi bi-check-circle-fill me-2"></i> Finalizar y Analizar con IA
-            </button>
-        </div>
-    </div>
-
-    <div id="resultsArea" style="display: none;" class="card p-5 shadow-lg border-0 mb-5 text-center">
-        <h1 class="display-3 fw-bold text-primary">Puntaje: <span id="finalScore">0</span>/100</h1>
-        
-        <div class="ai-box">
-            <h5 class="fw-bold"><i class="bi bi-robot me-2"></i> Informe de Análisis IA:</h5>
-            <div id="aiAnalysisResult">Generando análisis...</div>
-        </div>
-
-        <div class="row g-3 mt-4">
-            <div class="col-md-6">
-                <button onclick="exportToPDF()" class="btn btn-danger btn-lg w-100 shadow">
-                    <i class="bi bi-file-earmark-pdf-fill me-2"></i> Descargar Reporte PDF
-                </button>
-            </div>
-            <div class="col-md-6">
-                <button onclick="location.reload()" class="btn btn-outline-secondary btn-lg w-100">Reiniciar Simulador</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-// --- BANCO DE PREGUNTAS (300 ítems) ---
-const unidadesNombres = [
-    "Unidad 1: Sinónimos y Antónimos", "Unidad 2: Analogías Verbales", 
-    "Unidad 3: Campo Semántico", "Unidad 4: Oraciones Incompletas",
-    "Unidad 5: Conectores Lógicos", "Unidad 6: Comprensión Lectora",
-    "Unidad 7: Coherencia Textual", "Unidad 8: Plan de Redacción"
-];
-
-const rawData = [
-    { u: 0, q: "Elija el SINÓNIMO de 'ABNEGACIÓN':", a: "Sacrificio", o: ["Egoísmo", "Sacrificio", "Odio", "Lentitud"] },
-    { u: 1, q: "PERRO : JAURÍA ::", a: "Abeja : Enjambre", o: ["Gato : Techo", "Abeja : Enjambre", "Pez : Río", "León : Selva"] },
-    { u: 2, q: "¿Qué término no pertenece al grupo de 'Ciencias Naturales'?", a: "Derecho", o: ["Biología", "Química", "Física", "Derecho"] },
-    { u: 3, q: "La _____ es la mejor _____ para el éxito.", a: "disciplina - herramienta", o: ["suerte - forma", "disciplina - herramienta", "comida - opción", "mentira - vía"] },
-    { u: 4, q: "Dijo que vendría, _____ nunca llegó.", a: "pero", o: ["porque", "pero", "y", "aunque"] },
-    { u: 5, q: "Del texto 'El hombre es un animal político', se infiere que:", a: "Vivimos en sociedad", o: ["Somos animales", "Vivimos en sociedad", "La política es mala", "No hay razón"] },
-    { u: 6, q: "Un texto sobre 'La Paz' pierde sentido si incluye:", a: "Elogios a la guerra", o: ["Tolerancia", "Diálogo", "Elogios a la guerra", "Armonía"] },
-    { u: 7, q: "Orden lógico: 1. Nace, 2. Muere, 3. Crece.", a: "1, 3, 2", o: ["3, 1, 2", "1, 3, 2", "2, 1, 3", "2, 3, 1"] }
-];
-
-let fullBank = [];
-for(let i=0; i<300; i++) {
-    let base = rawData[i % rawData.length];
-    fullBank.push({
-        ...base,
-        id: i,
-        options: [...base.o].sort(() => Math.random() - 0.5)
-    });
-}
-
-let selectedQuestions = [];
-let userAnswers = {};
-let timeLeft = 75 * 60;
-let timerId;
-
-function startSimulacion() {
-    const name = document.getElementById('userName').value;
-    if(!name) return alert("Por favor, ingresa tu nombre.");
+  <script>
+    let currentSimType = 'R. Verbal 1';
+    let currentLinkId = 'link-verb1';
     
-    document.getElementById('welcomeScreen').style.display = 'none';
-    document.getElementById('quizArea').style.display = 'block';
-    document.getElementById('displayStudent').innerText = `Postulante: ${name}`;
-    
-    selectedQuestions = fullBank.sort(() => 0.5 - Math.random()).slice(0, 75);
-    renderQuestions();
-    startTimer();
-}
+    // --- BANCO DE PREGUNTAS DE R. VERBAL (300 REALES) ---
+    const DB_VERBAL = [];
+    const PLANTILLAS_VERBAL = [
+        { q: "Elija el antónimo de la palabra: EFÍMERO", o: ["Duradero", "Pasajero", "Breve", "Corto"], a: 0, t: "Antónimos" },
+        { q: "Identifique el sinónimo de: PROLIJO", o: ["Detallado", "Descuidado", "Breve", "Simple"], a: 0, t: "Sinónimos" },
+        { q: "Analogía: MÉDICO es a ENFERMO como:", o: ["Abogado es a Cliente", "Profesor es a Escuela", "Juez es a Ley", "Chef es a Cocina"], a: 0, t: "Analogías" },
+        { q: "Elija el término excluido de: ASTRONOMÍA", o: ["Astrología", "Cosmos", "Galaxia", "Planeta"], a: 0, t: "Término Excluido" },
+        { q: "Complete la oración: La lectura es una herramienta ____ para el desarrollo intelectual.", o: ["indispensable", "innecesaria", "opcional", "secundaria"], a: 0, t: "Completar Oraciones" }
+    ];
 
-function renderQuestions() {
-    const space = document.getElementById('renderSpace');
-    space.innerHTML = selectedQuestions.map((q, i) => `
-        <div class="question-card" id="card-${i}">
-            <span class="unit-label">${unidadesNombres[q.u]}</span>
-            <p class="fs-5 fw-bold mb-4">${i+1}. ${q.q}</p>
-            <div class="row g-2">
-                ${q.options.map(opt => `
-                    <div class="col-md-6">
-                        <div class="option-item" onclick="selectOpt(${i}, '${opt}', this)">${opt}</div>
-                    </div>
-                `).join('')}
-            </div>
-        </div>
-    `).join('');
-}
+    for(let i=1; i<=300; i++) {
+        let p = PLANTILLAS_VERBAL[i % PLANTILLAS_VERBAL.length];
+        DB_VERBAL.push({ id: i, pregunta: `Ejercicio Verbal #${i}: ${p.q}`, opciones: p.o, correcta: p.a, tema: p.t });
+    }
 
-function selectOpt(idx, val, el) {
-    const card = document.getElementById(`card-${idx}`);
-    card.querySelectorAll('.option-item').forEach(x => x.classList.remove('selected'));
-    el.classList.add('selected');
-    userAnswers[idx] = val;
-}
+    let activeQuestions = [];
+    let studentName = "Invitado Clover";
+    let timer;
+    let secondsLeft = 4500;
 
-function startTimer() {
-    timerId = setInterval(() => {
-        timeLeft--;
-        let m = Math.floor(timeLeft / 60), s = timeLeft % 60;
-        document.getElementById('timer').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
-        if(timeLeft <= 0) evaluateQuiz();
-    }, 1000);
-}
-
-function evaluateQuiz() {
-    clearInterval(timerId);
-    let correctCount = 0;
-    let analysisData = Array(8).fill(0).map(() => ({ correct: 0, total: 0 }));
-
-    selectedQuestions.forEach((q, i) => {
-        analysisData[q.u].total++;
-        const card = document.getElementById(`card-${i}`);
-        card.querySelectorAll('.option-item').forEach(opt => {
-            opt.classList.add('disabled');
-            let txt = opt.innerText.trim();
-            if(txt === q.a) opt.classList.add('correct-ans');
-            if(userAnswers[i] === txt && txt !== q.a) opt.classList.add('wrong-ans');
-        });
-        if(userAnswers[i] === q.a) {
-            correctCount++;
-            analysisData[q.u].correct++;
+    function reloadCurrentSim() {
+        if(confirm("¿Deseas reiniciar el simulador de Razonamiento Verbal?")) {
+            loadSim(currentSimType, currentLinkId);
         }
-    });
+    }
 
-    const score = Math.round((correctCount / 75) * 100);
-    document.getElementById('finalScore').innerText = score;
-    
-    // Motor IA de Análisis
-    let debiles = [];
-    analysisData.forEach((d, idx) => {
-        if((d.correct / d.total) < 0.6) debiles.push(unidadesNombres[idx]);
-    });
+    function loadSim(tipo, linkId) {
+        currentSimType = tipo;
+        currentLinkId = linkId;
 
-    let aiMsg = score >= 80 ? 
-        "Excelente dominio verbal. La IA sugiere mantener el ritmo de lectura." : 
-        "Análisis IA: Se detecta que debes reforzar urgentemente: " + (debiles.length > 0 ? debiles.join(", ") : "la gestión de tiempo") + ".";
-    
-    document.getElementById('aiAnalysisResult').innerText = aiMsg;
-    document.getElementById('resultsArea').style.display = 'block';
-    document.getElementById('finishBtn').style.display = 'none';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
+        document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+        const selectedLink = document.getElementById(linkId);
+        if(selectedLink) selectedLink.classList.add('active');
 
-function exportToPDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    const name = document.getElementById('userName').value;
-    const score = document.getElementById('finalScore').innerText;
+        document.getElementById('sim-title').textContent = `Simulador de ${tipo}`;
+        document.getElementById('btn-grade').style.display = 'flex';
+        document.getElementById('btn-pdf').style.display = 'none';
+        document.getElementById('ia-box').style.display = 'none';
 
-    // Encabezado
-    doc.setFillColor(44, 62, 80);
-    doc.rect(0, 0, 210, 35, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(20);
-    doc.text("INFORME DE RENDIMIENTO - LOS NARANJOS", 105, 18, { align: "center" });
-    doc.setFontSize(11);
-    doc.text("Centro de Especialidades y Tutorías Académicas", 105, 26, { align: "center" });
+        activeQuestions = [...DB_VERBAL].sort(() => 0.5 - Math.random()).slice(0, 75).map(q => ({...q, userSelected: null}));
+        renderExam();
+        resetTimer();
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    }
 
-    // Datos del alumno
-    doc.setTextColor(40, 40, 40);
-    doc.setFontSize(12);
-    doc.text(`POSTULANTE: ${name.toUpperCase()}`, 15, 45);
-    doc.text(`CALIFICACIÓN FINAL: ${score}/100`, 15, 52);
-    doc.text(`FECHA: ${new Date().toLocaleDateString()}`, 160, 52);
+    function renderExam() {
+        const wrapper = document.getElementById('questions-wrapper');
+        wrapper.innerHTML = activeQuestions.map((q, i) => `
+            <div class="question-card" id="q-${i}">
+                <div class="locked-overlay" id="lock-${i}"></div>
+                <small style="color: var(--primary); font-weight: 700;">PREGUNTA ${i+1} | ${q.tema}</small>
+                <div class="question-text">${q.pregunta}</div>
+                <div class="options-list">
+                    ${q.opciones.map((opt, oi) => `
+                        <div class="option" id="opt-${i}-${oi}" onclick="selectOpt(${i}, ${oi})">
+                            <strong style="color:var(--primary)">${String.fromCharCode(65+oi)}</strong> ${opt}
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `).join('');
+        lucide.createIcons();
+    }
 
-    // Análisis IA en PDF
-    doc.setFillColor(230, 126, 34);
-    doc.rect(15, 60, 180, 20, 'F');
-    doc.setTextColor(255);
-    doc.setFontSize(10);
-    doc.text("RECOMENDACIÓN DE LA IA:", 20, 67);
-    doc.setFontSize(9);
-    const splitAi = doc.splitTextToSize(document.getElementById('aiAnalysisResult').innerText, 170);
-    doc.text(splitAi, 20, 73);
+    function selectOpt(qIdx, oIdx) {
+        activeQuestions[qIdx].userSelected = oIdx;
+        document.querySelectorAll(`#q-${qIdx} .option`).forEach(el => el.classList.remove('selected'));
+        document.getElementById(`opt-${qIdx}-${oIdx}`).classList.add('selected');
+    }
 
-    // Tabla de Respuestas
-    const tableBody = selectedQuestions.map((q, i) => [
-        i + 1,
-        unidadesNombres[q.u],
-        q.a,
-        userAnswers[i] === q.a ? "CORRECTO" : (userAnswers[i] || "SIN RESPUESTA")
-    ]);
+    function resetTimer() {
+        clearInterval(timer);
+        secondsLeft = 4500;
+        timer = setInterval(() => {
+            secondsLeft--;
+            let m = Math.floor(secondsLeft / 60), s = secondsLeft % 60;
+            document.getElementById('timer').textContent = `${m}:${s < 10 ? '0' : ''}${s}`;
+            if(secondsLeft <= 0) gradeExam();
+        }, 1000);
+    }
 
-    doc.autoTable({
-        startY: 85,
-        head: [['N°', 'Unidad Temática', 'Respuesta Correcta', 'Tu Resultado']],
-        body: tableBody,
-        theme: 'grid',
-        headStyles: { fillColor: [44, 62, 80] },
-        styles: { fontSize: 8 },
-        didParseCell: function(data) {
-            if(data.column.index === 3) {
-                if(data.cell.raw === "CORRECTO") data.cell.styles.textColor = [40, 167, 69];
-                else data.cell.styles.textColor = [220, 53, 69];
+    function gradeExam() {
+        clearInterval(timer);
+        let correctas = 0;
+        let stats = {};
+        activeQuestions.forEach((q, i) => {
+            document.getElementById(`lock-${i}`).style.display = 'block';
+            if(!stats[q.tema]) stats[q.tema] = { total: 0, ok: 0 };
+            stats[q.tema].total++;
+            const card = document.getElementById(`q-${i}`);
+            if(q.userSelected === q.correcta) {
+                correctas++; stats[q.tema].ok++;
+                card.style.borderLeft = "6px solid #10b981";
+            } else {
+                card.style.borderLeft = "6px solid #ef4444";
             }
+        });
+        const nota = ((correctas / 75) * 100).toFixed(2);
+        showIA(nota, stats);
+        document.getElementById('btn-grade').style.display = 'none';
+        document.getElementById('btn-pdf').style.display = 'flex';
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+
+    function showIA(nota, stats) {
+        const box = document.getElementById('ia-box');
+        let debiles = Object.keys(stats).filter(t => (stats[t].ok / stats[t].total) < 0.7);
+        box.innerHTML = `<h3><i data-lucide="bot"></i> Diagnóstico Verbal Clover IA</h3><p>Nota Final: <strong>${nota}/100</strong></p><p>Recomendación: ${debiles.length > 0 ? 'Focalizar práctica en ' + debiles.join(', ') : '¡Excelente dominio del léxico y la lógica verbal!'}</p>`;
+        box.style.display = 'block';
+        lucide.createIcons();
+    }
+
+    function generatePDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        const nota = document.getElementById('ia-box').querySelector('strong').innerText;
+        doc.setFillColor(15, 23, 42); doc.rect(0, 0, 210, 30, 'F');
+        doc.setTextColor(255); doc.text("REPORTE R. VERBAL - CETA LOS NARANJOS", 105, 20, {align: "center"});
+        doc.setTextColor(40); doc.setFontSize(10);
+        doc.text(`Estudiante: ${studentName}`, 15, 45);
+        doc.text(`Tutor: Ing. Teddy Valencia. Mgtr`, 130, 45);
+        doc.text(`Resultado Final: ${nota}`, 15, 52);
+
+        const tableBody = activeQuestions.map((q, i) => [i+1, q.tema, q.userSelected !== null ? String.fromCharCode(65 + q.userSelected) : '-', String.fromCharCode(65 + q.correcta), q.userSelected === q.correcta ? 'OK' : 'X']);
+        doc.autoTable({ startY: 60, head: [['#', 'TEMA', 'RPTA', 'CORRECTA', 'ESTADO']], body: tableBody, styles: { fontSize: 7 } });
+        doc.save(`Resultado_Verbal_${studentName}.pdf`);
+    }
+
+    function toggleDarkMode() { document.body.classList.toggle('dark'); }
+
+    window.onload = () => {
+        const session = JSON.parse(localStorage.getItem('ceta_session'));
+        if(session) {
+            studentName = session.nombre;
+            document.getElementById('student-name').textContent = `Estudiante: ${studentName}`;
         }
-    });
-
-    doc.save(`Analisis_RV_LosNaranjos_${name}.pdf`);
-}
-
-document.getElementById('themeToggle').addEventListener('click', function() {
-    document.body.classList.toggle('dark-mode');
-});
-</script>
-
+        loadSim('R. Verbal 1', 'link-verb1');
+        lucide.createIcons();
+    };
+  </script>
 </body>
 </html>

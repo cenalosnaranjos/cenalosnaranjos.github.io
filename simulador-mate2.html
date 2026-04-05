@@ -1,331 +1,274 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador Educativo | Los Naranjos</title>
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CETA Los Naranjos | Sistema de Evaluación Profesional</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+  <style>
+    :root {
+      --primary: #2563eb; --sidebar-bg: #0f172a; --sidebar-text: #94a3b8;
+      --bg-main: #f8fafc; --card-bg: #ffffff; --text-dark: #1e293b;
+      --border: #e2e8f0; --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    body.dark {
+      --bg-main: #020617; --card-bg: #1e293b; --text-dark: #f1f5f9;
+      --border: #334155; --sidebar-bg: #000000;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-main); color: var(--text-dark); transition: var(--transition); }
+
+    /* --- SIDEBAR --- */
+    .sidebar {
+      width: 280px; background: var(--sidebar-bg); color: white; padding: 1.5rem;
+      position: fixed; height: 100vh; overflow-y: auto; z-index: 1000;
+    }
+    .sidebar-brand { display: flex; align-items: center; gap: 10px; font-weight: 800; margin-bottom: 2rem; color: white; text-decoration: none; }
+    .menu-group { margin-bottom: 1.5rem; }
+    .menu-label { font-size: 0.7rem; text-transform: uppercase; color: #475569; letter-spacing: 1px; margin-bottom: 0.5rem; padding-left: 10px; }
     
-    <style>
-        :root {
-            --primary-green: #2d5a27;
-            --accent-orange: #f39c12;
-            --edu-bg: #f9f7f2;
-            --paper: #ffffff;
-            --text-main: #2c3e50;
-            --text-muted: #7f8c8d;
-            --border-soft: #dcdde1;
-            --shadow: rgba(0,0,0,0.05);
-        }
+    .nav-link {
+      display: flex; align-items: center; gap: 10px; padding: 12px 16px; color: var(--sidebar-text);
+      text-decoration: none; border-radius: 10px; font-size: 0.85rem; margin-bottom: 4px; 
+      transition: 0.2s; cursor: pointer; border-left: 4px solid transparent;
+    }
+    .nav-link:hover { background: rgba(255,255,255,0.05); color: white; }
+    .nav-link.active { 
+      background: rgba(37, 99, 235, 0.15); 
+      color: white; 
+      border-left-color: var(--primary);
+      font-weight: 600;
+    }
 
-        body.dark-mode {
-            --edu-bg: #121212;
-            --paper: #1e1e1e;
-            --text-main: #e0e0e0;
-            --text-muted: #a0a0a0;
-            --border-soft: #333333;
-            --shadow: rgba(0,0,0,0.3);
-        }
+    /* --- MAIN CONTENT --- */
+    .main-content { margin-left: 280px; min-height: 100vh; }
 
-        body { 
-            font-family: 'Segoe UI', Roboto, sans-serif; 
-            background-color: var(--edu-bg); 
-            color: var(--text-main); 
-            margin: 0; padding: 0;
-            transition: all 0.3s ease;
-        }
+    .sticky-header {
+      position: sticky; top: 0; background: var(--card-bg); z-index: 900;
+      padding: 0.8rem 2rem; border-bottom: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    }
+    .timer-box { background: #fee2e2; color: #991b1b; padding: 8px 16px; border-radius: 8px; font-weight: 800; font-family: monospace; font-size: 1.2rem; }
 
-        /* Botón Modo Oscuro Circular */
-        .theme-toggle {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            background: var(--primary-green);
-            color: white;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            z-index: 2000;
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.2s;
-        }
-        .theme-toggle:hover { transform: scale(1.1); }
+    .actions-bar { display: flex; gap: 10px; }
+    .btn {
+      padding: 10px 18px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer;
+      display: flex; align-items: center; gap: 8px; font-size: 0.85rem; transition: 0.2s;
+    }
+    .btn-grade { background: #059669; color: white; }
+    .btn-pdf { background: #1e293b; color: white; display: none; }
+    .btn-reset { background: #f1f5f9; color: #1e293b; border: 1px solid var(--border); }
+    body.dark .btn-reset { background: #334155; color: white; border-color: #475569; }
 
-        .top-banner {
-            background: var(--paper);
-            padding: 25px;
-            text-align: center;
-            border-bottom: 4px solid var(--primary-green);
-            box-shadow: 0 2px 10px var(--shadow);
-        }
-        .top-banner img { max-height: 90px; margin-bottom: 10px; }
+    /* --- EXAMEN --- */
+    .exam-container { padding: 2rem; max-width: 900px; margin: 0 auto; }
+    .question-card {
+      background: var(--card-bg); border-radius: 16px; padding: 2rem; margin-bottom: 2rem;
+      border: 1px solid var(--border); position: relative; overflow: hidden;
+    }
+    .question-text { font-size: 1.1rem; font-weight: 600; margin: 15px 0; line-height: 1.6; }
+    .options-list { display: grid; gap: 12px; }
+    .option {
+      padding: 15px; border: 2px solid var(--border); border-radius: 12px; cursor: pointer;
+      transition: 0.2s; display: flex; align-items: center; gap: 12px;
+    }
+    .option:hover { border-color: var(--primary); }
+    .option.selected { border-color: var(--primary); background: rgba(37,99,235,0.1); font-weight: 700; }
+    .option.disabled { pointer-events: none; }
+    
+    .locked-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; display: none; }
+    .ia-diagnostic { background: #eff6ff; border: 2px solid #bfdbfe; padding: 2rem; border-radius: 16px; margin-bottom: 2rem; display: none; color: #1e40af; }
 
-        .container { max-width: 900px; margin: 30px auto; padding: 0 20px; }
-
-        .welcome-card {
-            background: var(--paper);
-            padding: 40px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 10px 30px var(--shadow);
-            border: 1px solid var(--border-soft);
-        }
-
-        .navbar {
-            background: var(--paper);
-            padding: 15px 25px;
-            border-radius: 50px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 20px;
-            z-index: 1000;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 15px var(--shadow);
-            border: 1px solid var(--border-soft);
-        }
-
-        .timer-box { font-weight: bold; color: #e74c3c; font-size: 1.2rem; }
-
-        .btn { 
-            padding: 12px 25px; 
-            border: none; 
-            border-radius: 30px; 
-            cursor: pointer; 
-            font-weight: 700; 
-            transition: 0.3s;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-        }
-
-        .btn-start { background: var(--primary-green); color: white; margin-top: 20px; }
-        .btn-grade { background: var(--accent-orange); color: white; }
-        .btn-pdf { background: #3498db; color: white; display: block; margin: 20px auto; }
-
-        .question-card {
-            background: var(--paper);
-            padding: 30px;
-            border-radius: 12px;
-            margin-bottom: 25px;
-            border: 1px solid var(--border-soft);
-            position: relative;
-        }
-
-        .question-meta { color: var(--primary-green); font-weight: bold; font-size: 0.75rem; text-transform: uppercase; margin-bottom: 10px; display: block; }
-
-        .options-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
-        @media (max-width: 600px) { .options-container { grid-template-columns: 1fr; } }
-
-        .option-btn {
-            padding: 15px;
-            border: 2px solid var(--border-soft);
-            border-radius: 10px;
-            cursor: pointer;
-            transition: 0.2s;
-            background: var(--paper);
-            color: var(--text-main);
-        }
-
-        .option-btn:hover { border-color: var(--primary-green); }
-        .option-btn.selected { border-color: var(--primary-green); background: rgba(45, 90, 39, 0.1); font-weight: bold; }
-        .option-btn.correct { background: #2ecc71 !important; color: white !important; border-color: #27ae60 !important; }
-        .option-btn.wrong { background: #e74c3c !important; color: white !important; border-color: #c0392b !important; }
-        .option-btn.disabled { pointer-events: none; }
-
-        .overlay-lock { position: absolute; top:0; left:0; width:100%; height:100%; z-index: 10; display:none; }
-
-        input[type="text"] {
-            width: 100%; padding: 15px; border-radius: 10px; border: 2px solid var(--border-soft);
-            background: var(--paper); color: var(--text-main); font-size: 1rem; box-sizing: border-box;
-        }
-
-        footer { text-align: center; padding: 40px; color: var(--text-muted); font-size: 0.9rem; }
-    </style>
+    @media (max-width: 1024px) {
+      .sidebar { display: none; }
+      .main-content { margin-left: 0; }
+    }
+  </style>
 </head>
 <body>
 
-<!-- Botón Circular Unificado -->
-<button class="theme-toggle" onclick="toggleDarkMode()" id="themeBtn" title="Cambiar Modo">🌓</button>
+  <aside class="sidebar">
+    <a href="simuladores-ceta.html" class="sidebar-brand"><i data-lucide="graduation-cap"></i> CETA Los Naranjos - Regresar</a>
+    
+    <div class="menu-group">
+      <div class="menu-label">Matemáticas</div>
+      <div class="nav-link active" id="link-mate1" onclick="loadSim('Matemáticas 2', 'link-link-mate2')"><i data-lucide="calculator"></i> Simulador 2</div>
+     </div>
 
-<div class="top-banner">
-    <img src="icono.png" alt="Logo Los Naranjos">
-    <h1 style="margin:0;">Centro de Especialidades y Tutorías "Los Naranjos"</h1>
-    <p style="color: var(--text-muted); margin-top: 5px;">Excelencia en Formación Académica</p>
-</div>
+   
 
-<div class="container">
-    <div id="welcomeScreen" class="welcome-card">
-        <h2>Evaluación Diagnóstica Matemática</h2>
-        <p>Se seleccionarán 30 reactivos aleatorios de una base de 300 ejercicios.</p>
-        <input type="text" id="studentName" placeholder="Nombre completo del Estudiante">
-        <button class="btn btn-start" onclick="startExam()">🚀 Iniciar Evaluación</button>
+    <div style="margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
+        <button class="nav-link" style="background:none; border:none; cursor:pointer; width:100%" onclick="toggleDarkMode()">
+            <i data-lucide="moon"></i> <span>Modo Oscuro</span>
+        </button>
     </div>
+  </aside>
 
-    <div id="examContainer" style="display:none;">
-        <div class="navbar">
-            <div class="timer-box">⏱️ <span id="timer">45:00</span></div>
-            <div id="scoreDisplay" style="font-weight:bold;"></div>
-            <button class="btn btn-grade" id="gradeBtn" onclick="gradeExam()">Calificar</button>
+  <main class="main-content">
+    <header class="sticky-header">
+      <div style="display: flex; gap: 15px; align-items: center;">
+        <button class="btn btn-reset" onclick="reloadCurrentSim()"><i data-lucide="refresh-cw"></i> Reiniciar Test</button>
+        <div>
+            <h2 id="sim-title" style="font-size: 1rem;">Simulador de Matemáticas 2</h2>
+            <span id="student-name" style="font-size: 0.75rem; color: var(--sidebar-text);">...</span>
         </div>
+      </div>
 
-        <div id="questionsList"></div>
-        
-        <div id="postExamActions" style="text-align:center; display:none;">
-            <button class="btn btn-pdf" onclick="generatePDF()">📥 Descargar Reporte PDF</button>
-            <p style="color: var(--text-muted);">Resultados finales generados correctamente.</p>
-        </div>
+      <div class="timer-box" id="timer">75:00</div>
+
+      <div class="actions-bar">
+        <button class="btn btn-grade" id="btn-grade" onclick="gradeExam()"><i data-lucide="check-circle"></i> Calificar</button>
+        <button class="btn btn-pdf" id="btn-pdf" onclick="generatePDF()"><i data-lucide="download"></i> Reporte PDF</button>
+      </div>
+    </header>
+
+    <div class="exam-container">
+      <div id="ia-box" class="ia-diagnostic"></div>
+      <div id="questions-wrapper"></div>
     </div>
-</div>
+  </main>
 
-<footer>
-    <p>© 2026 Centro de Especialidades y Tutorías "Los Naranjos"</p>
-    <p>Chone - Manabí - Ecuador</p>
-</footer>
-
-<script>
-    const TEMAS = ["Leyes de exponentes", "Polinomios", "Productos notables", "División de polinomios", "Factorización", "Fracciones algebraicas", "Binomio de Newton", "Radicación", "Números complejos", "Ecuaciones", "Desigualdades e inecuaciones", "Progresiones", "Logaritmos"];
-
-    const TEMPLATES = [
-        { t:0, q:"Simplifica: \\( x^{10} \\cdot x^{-3} \\cdot x^2 \\)", o:["\\(x^9\\)","\\(x^{15}\\)","\\(x^7\\)","\\(x^5\\)"], a:0 },
-        { t:1, q:"Grado del polinomio \\( P(x) = 4x^6 - 2x^3 + 1 \\)", o:["4","6","3","1"], a:1 },
-        { t:2, q:"Desarrolla \\( (x-5)^2 \\)", o:["\\(x^2-25\\)","\\(x^2+25\\)","\\(x^2-10x+25\\)","\\(x^2-5x+25\\)"], a:2 },
-        { t:4, q:"Factoriza \\( 4x^2 - 9 \\)", o:["\\((2x+3)(2x-3)\\)","\\((2x-3)^2\\)","\\((4x-9)^2\\)","\\(2x-3\\)"], a:0 },
-        { t:12, q:"Calcula \\( \\log_{2}(16) \\)", o:["2","8","4","16"], a:2 }
+  <script>
+    let currentSimType = 'Matemáticas 2';
+    let currentLinkId = 'link-mate1';
+    const DB_REAL = [];
+    const PLANTILLAS = [
+        { q: "Resuelva: 5x - 15 = 10", o: ["x = 5", "x = 10", "x = 2", "x = 25"], a: 0, t: "Álgebra" },
+        { q: "Perímetro de un cuadrado de lado 4m.", o: ["16m", "8m", "12m", "4m"], a: 0, t: "Geometría" }
     ];
-
-    // Llenar banco a 300
-    const FULL_BANK = [];
-    for(let i=0; i<300; i++) {
-        let base = TEMPLATES[i % TEMPLATES.length];
-        FULL_BANK.push({
-            cat: TEMAS[base.t || 0],
-            q: base.q + ` (#${i+1})`,
-            o: [...base.o],
-            a: base.a
-        });
+    for(let i=1; i<=300; i++) {
+        let p = PLANTILLAS[i % PLANTILLAS.length];
+        DB_REAL.push({ id: i, pregunta: `Ejercicio Académico #${i}: ${p.q}`, opciones: p.o, correcta: p.a, tema: p.t });
     }
 
-    let selectedQuestions = [];
-    let timeLeft = 2700; 
-    let timerInterval;
+    let activeQuestions = [];
+    let studentName = "Invitado";
+    let timer;
+    let secondsLeft = 4500;
 
-    function toggleDarkMode() {
-        document.body.classList.toggle('dark-mode');
-        const btn = document.getElementById('themeBtn');
-        btn.innerHTML = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+    // FUNCIÓN PARA RECARGAR EL SIMULADOR ACTUAL
+    function reloadCurrentSim() {
+        if(confirm("¿Deseas reiniciar el simulador actual? Se cargarán nuevas preguntas y el tiempo volverá a iniciar.")) {
+            loadSim(currentSimType, currentLinkId);
+        }
     }
 
-    function startExam() {
-        const name = document.getElementById('studentName').value;
-        if(name.length < 5) return alert("Ingrese el nombre completo.");
-        
-        document.getElementById('welcomeScreen').style.display = 'none';
-        document.getElementById('examContainer').style.display = 'block';
-        
-        selectedQuestions = [...FULL_BANK].sort(() => 0.5 - Math.random()).slice(0, 30);
-        render();
-        startTimer();
+    function loadSim(tipo, linkId) {
+        currentSimType = tipo;
+        currentLinkId = linkId;
+
+        document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+        const selectedLink = document.getElementById(linkId);
+        if(selectedLink) selectedLink.classList.add('active');
+
+        document.getElementById('sim-title').textContent = `Simulador de ${tipo}`;
+        document.getElementById('btn-grade').style.display = 'flex';
+        document.getElementById('btn-pdf').style.display = 'none';
+        document.getElementById('ia-box').style.display = 'none';
+
+        activeQuestions = [...DB_REAL].sort(() => 0.5 - Math.random()).slice(0, 75).map(q => ({...q, userSelected: null}));
+        renderExam();
+        resetTimer();
+        window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
-    function render() {
-        const container = document.getElementById('questionsList');
-        container.innerHTML = selectedQuestions.map((q, i) => `
-            <div class="question-card" id="card-${i}">
-                <div class="overlay-lock" id="lock-${i}"></div>
-                <span class="question-meta">${q.cat}</span>
-                <div style="font-size:1.15rem;">${i+1}. ${q.q}</div>
-                <div class="options-container">
-                    ${q.o.map((opt, oi) => `
-                        <div class="option-btn" id="opt-${i}-${oi}" onclick="select(${i}, ${oi})">
-                            <b>${String.fromCharCode(97+oi)})</b> ${opt}
+    function renderExam() {
+        const wrapper = document.getElementById('questions-wrapper');
+        wrapper.innerHTML = activeQuestions.map((q, i) => `
+            <div class="question-card" id="q-${i}">
+                <div class="locked-overlay" id="lock-${i}"></div>
+                <small style="color: var(--primary); font-weight: 700;">PREGUNTA ${i+1} | ${q.tema}</small>
+                <div class="question-text">${q.pregunta}</div>
+                <div class="options-list">
+                    ${q.opciones.map((opt, oi) => `
+                        <div class="option" id="opt-${i}-${oi}" onclick="selectOpt(${i}, ${oi})">
+                            <strong style="color:var(--primary)">${String.fromCharCode(65+oi)}</strong> ${opt}
                         </div>
                     `).join('')}
                 </div>
             </div>
         `).join('');
         if(window.MathJax) MathJax.typeset();
+        lucide.createIcons();
     }
 
-    function select(qIdx, oIdx) {
-        selectedQuestions[qIdx].userChoice = oIdx;
-        document.querySelectorAll(`#card-${qIdx} .option-btn`).forEach(b => b.classList.remove('selected'));
+    function selectOpt(qIdx, oIdx) {
+        activeQuestions[qIdx].userSelected = oIdx;
+        document.querySelectorAll(`#q-${qIdx} .option`).forEach(el => el.classList.remove('selected'));
         document.getElementById(`opt-${qIdx}-${oIdx}`).classList.add('selected');
     }
 
-    function startTimer() {
-        timerInterval = setInterval(() => {
-            timeLeft--;
-            let m = Math.floor(timeLeft/60), s = timeLeft%60;
-            document.getElementById('timer').innerText = `${m}:${s<10?'0':''}${s}`;
-            if(timeLeft <= 0) gradeExam();
+    function resetTimer() {
+        clearInterval(timer);
+        secondsLeft = 4500;
+        timer = setInterval(() => {
+            secondsLeft--;
+            let m = Math.floor(secondsLeft / 60), s = secondsLeft % 60;
+            document.getElementById('timer').textContent = `${m}:${s < 10 ? '0' : ''}${s}`;
+            if(secondsLeft <= 0) gradeExam();
         }, 1000);
     }
 
     function gradeExam() {
-        clearInterval(timerInterval);
-        let score = 0;
-        selectedQuestions.forEach((q, i) => {
+        clearInterval(timer);
+        let correctas = 0;
+        let stats = {};
+        activeQuestions.forEach((q, i) => {
             document.getElementById(`lock-${i}`).style.display = 'block';
-            document.querySelectorAll(`#card-${i} .option-btn`).forEach(b => b.classList.add('disabled'));
-
-            if(q.userChoice === q.a) {
-                score++;
-                document.getElementById(`opt-${i}-${q.a}`).classList.add('correct');
+            if(!stats[q.tema]) stats[q.tema] = { total: 0, ok: 0 };
+            stats[q.tema].total++;
+            const card = document.getElementById(`q-${i}`);
+            if(q.userSelected === q.correcta) {
+                correctas++; stats[q.tema].ok++;
+                card.style.borderLeft = "6px solid #10b981";
             } else {
-                if(q.userChoice !== undefined) document.getElementById(`opt-${i}-${q.userChoice}`).classList.add('wrong');
-                document.getElementById(`opt-${i}-${q.a}`).classList.add('correct');
+                card.style.borderLeft = "6px solid #ef4444";
             }
         });
-
-        const finalScore = Math.round((score / 30) * 100);
-        document.getElementById('scoreDisplay').innerText = `NOTA: ${finalScore}/100`;
-        document.getElementById('gradeBtn').style.display = 'none';
-        document.getElementById('postExamActions').style.display = 'block';
+        const nota = ((correctas / 75) * 100).toFixed(2);
+        showIA(nota, stats);
+        document.getElementById('btn-grade').style.display = 'none';
+        document.getElementById('btn-pdf').style.display = 'flex';
         window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+
+    function showIA(nota, stats) {
+        const box = document.getElementById('ia-box');
+        let debiles = Object.keys(stats).filter(t => (stats[t].ok / stats[t].total) < 0.7);
+        box.innerHTML = `<h3><i data-lucide="bot"></i> Diagnóstico Clover IA</h3><p>Nota: <strong>${nota}/100</strong></p><p>Reforzar: ${debiles.length > 0 ? debiles.join(', ') : '¡Excelente dominio!'}</p>`;
+        box.style.display = 'block';
+        lucide.createIcons();
     }
 
     function generatePDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-        const name = document.getElementById('studentName').value;
-        const score = document.getElementById('scoreDisplay').innerText;
-
-        doc.setFillColor(45, 90, 39);
-        doc.rect(0, 0, 210, 40, 'F');
-        doc.setTextColor(255, 255, 255);
-        doc.setFontSize(18);
-        doc.text("CENTRO ACADÉMICO LOS NARANJOS", 105, 20, { align: "center" });
-        
-        doc.setTextColor(0, 0, 0);
-        doc.setFontSize(11);
-        doc.text(`Estudiante: ${name.toUpperCase()}`, 20, 50);
-        doc.text(`Resultado: ${score}`, 20, 60);
-
-        const data = selectedQuestions.map((q, i) => [
-            i+1, q.cat, 
-            q.userChoice !== undefined ? String.fromCharCode(97+q.userChoice) : "N/A",
-            String.fromCharCode(97+q.a),
-            q.userChoice === q.a ? "Correcto" : "Incorrecto"
-        ]);
-
-        doc.autoTable({
-            startY: 70,
-            head: [['#', 'Tema', 'Rpta', 'Correcta', 'Estado']],
-            body: data,
-            headStyles: { fillColor: [45, 90, 39] }
-        });
-
-        doc.save(`Reporte_LosNaranjos_${name}.pdf`);
+        const nota = document.getElementById('ia-box').querySelector('strong').innerText;
+        doc.setFillColor(15, 23, 42); doc.rect(0, 0, 210, 30, 'F');
+        doc.setTextColor(255); doc.text("REPORTE ACADÉMICO CETA", 105, 20, {align: "center"});
+        doc.setTextColor(40); doc.text(`Estudiante: ${studentName}`, 15, 45);
+        doc.text(`Calificación: ${nota}`, 140, 45);
+        const tableBody = activeQuestions.map((q, i) => [i+1, q.tema, q.userSelected !== null ? String.fromCharCode(65 + q.userSelected) : '-', String.fromCharCode(65 + q.correcta), q.userSelected === q.correcta ? 'OK' : 'X']);
+        doc.autoTable({ startY: 55, head: [['#', 'TEMA', 'RPTA', 'CORRECTA', 'ESTADO']], body: tableBody, styles: { fontSize: 7 } });
+        doc.save(`Reporte_CETA_${studentName}.pdf`);
     }
-</script>
+
+    function toggleDarkMode() { document.body.classList.toggle('dark'); }
+
+    window.onload = () => {
+        const session = JSON.parse(localStorage.getItem('ceta_session'));
+        if(session) {
+            studentName = session.nombre;
+            document.getElementById('student-name').textContent = `Estudiante: ${studentName}`;
+        }
+        loadSim('Matemáticas 2', 'link-mate2');
+        lucide.createIcons();
+    };
+  </script>
 </body>
 </html>
