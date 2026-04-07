@@ -21,7 +21,6 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-main); color: var(--text-dark); transition: var(--transition); }
 
-    /* --- SIDEBAR --- */
     .sidebar {
       width: 280px; background: var(--sidebar-bg); color: white; padding: 1.5rem;
       position: fixed; height: 100vh; overflow-y: auto; z-index: 1000;
@@ -37,35 +36,9 @@
       transition: 0.2s; cursor: pointer; border-left: 4px solid transparent;
     }
     .nav-link:hover { background: rgba(255,255,255,0.05); color: white; }
-    .nav-link.active { 
-      background: rgba(37, 99, 235, 0.15); 
-      color: white; 
-      border-left-color: var(--primary);
-      font-weight: 600;
-    }
+    .nav-link.active { background: rgba(37, 99, 235, 0.15); color: white; border-left-color: var(--primary); font-weight: 600; }
 
-    /* --- RESPONSIVE ELEMENTS --- */
-    .menu-toggle {
-      display: none;
-      background: var(--primary);
-      color: white;
-      border: none;
-      padding: 10px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .sidebar-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      z-index: 999;
-    }
-
-    /* --- MAIN CONTENT --- */
     .main-content { margin-left: 280px; min-height: 100vh; }
-
     .sticky-header {
       position: sticky; top: 0; background: var(--card-bg); z-index: 900;
       padding: 0.8rem 2rem; border-bottom: 1px solid var(--border);
@@ -83,7 +56,6 @@
     .btn-reset { background: #f1f5f9; color: #1e293b; border: 1px solid var(--border); }
     body.dark .btn-reset { background: #334155; color: white; border-color: #475569; }
 
-    /* --- EXAM UI --- */
     .exam-container { padding: 2rem; max-width: 900px; margin: 0 auto; }
     .question-card {
       background: var(--card-bg); border-radius: 16px; padding: 2rem; margin-bottom: 2rem;
@@ -97,32 +69,24 @@
     }
     .option:hover { border-color: var(--primary); }
     .option.selected { border-color: var(--primary); background: rgba(37,99,235,0.1); font-weight: 700; }
+    
     .locked-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; display: none; }
     .ia-diagnostic { background: #eff6ff; border: 2px solid #bfdbfe; padding: 2rem; border-radius: 16px; margin-bottom: 2rem; display: none; color: #1e40af; }
 
     @media (max-width: 1024px) {
       .sidebar { transform: translateX(-100%); }
-      .sidebar.active { transform: translateX(0); }
-      .sidebar-overlay.active { display: block; }
       .main-content { margin-left: 0; }
-      .menu-toggle { display: block; }
-      .sticky-header { padding: 0.8rem 1rem; }
-      .btn span { display: none; }
     }
   </style>
 </head>
 <body>
 
-  <div class="sidebar-overlay" id="overlay" onclick="toggleMenu()"></div>
-
-  <aside class="sidebar" id="sidebar">
+  <aside class="sidebar">
     <a href="simuladores-ceta.html" class="sidebar-brand"><i data-lucide="graduation-cap"></i> CETA Los Naranjos - Regresar</a>
-    
     <div class="menu-group">
       <div class="menu-label">Ciencias</div>
-      <div class="nav-link active" id="link-quimica" onclick="loadSim('Química1', 'link-link-quimica1')"><i data-lucide="beaker"></i> Simulador Química 1</div>
+      <div class="nav-link active" onclick="reloadSim()"><i data-lucide="flask-conical"></i> Simulador Química</div>
     </div>
-
     <div style="margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
         <button class="nav-link" style="background:none; border:none; cursor:pointer; width:100%" onclick="toggleDarkMode()">
             <i data-lucide="moon" id="dark-icon"></i> <span id="dark-text">Modo Oscuro</span>
@@ -133,19 +97,14 @@
   <main class="main-content">
     <header class="sticky-header">
       <div style="display: flex; gap: 10px; align-items: center;">
-        <button class="menu-toggle" onclick="toggleMenu()">
-          <i data-lucide="menu"></i>
-        </button>
         <button class="btn btn-reset" onclick="reloadSim()"><i data-lucide="refresh-cw"></i> <span>Reiniciar</span></button>
         <div>
-            <h2 id="sim-title" style="font-size: 0.9rem;">Simulador de Química 1</h2>
-            <span id="student-name" style="font-size: 0.7rem; color: var(--sidebar-text);">...</span>
+            <h2 style="font-size: 0.9rem;">Simulador Química</h2>
+            <span id="student-name-display" style="font-size: 0.7rem; color: var(--sidebar-text);">Cargando...</span>
         </div>
       </div>
-
       <div class="timer-box" id="timer">75:00</div>
-
-      <div class="actions-bar" style="display: flex; gap: 10px;">
+      <div style="display: flex; gap: 10px;">
         <button class="btn btn-grade" id="btn-grade" onclick="gradeExam()"><i data-lucide="check-circle"></i> <span>Calificar</span></button>
         <button class="btn btn-pdf" id="btn-pdf" onclick="generatePDF()"><i data-lucide="download"></i> <span>PDF</span></button>
       </div>
@@ -159,17 +118,29 @@
 
   <script>
     const DB_QUIMICA = [];
-    const PLANTILLAS_QUIMICA = [
-        { q: "¿Cuál es el símbolo químico del Oro?", o: ["Au", "Ag", "Fe", "Or"], a: 0, t: "Tabla Periódica" },
-        { q: "¿Qué tipo de enlace se forma por transferencia de electrones?", o: ["Iónico", "Covalente", "Metálico", "Puente de Hidrógeno"], a: 0, t: "Enlaces Químicos" },
-        { q: "El pH de una sustancia neutra es:", o: ["7", "0", "14", "1"], a: 0, t: "Ácidos y Bases" },
-        { q: "¿Cuál es la masa atómica aproximada del Hidrógeno?", o: ["1 u", "12 u", "16 u", "4 u"], a: 0, t: "Estequiometría" },
-        { q: "Los alcanos tienen enlaces de tipo:", o: ["Sencillo", "Doble", "Triple", "Aromático"], a: 0, t: "Química Orgánica" }
+    const TEMAS = [
+        { q: "¿Cuál es la hibridación del carbono en el benceno?", o: ["sp2", "sp3", "sp", "d2sp3"], a: 0, t: "Química Orgánica" },
+        { q: "¿Qué partículas forman el núcleo atómico?", o: ["Protones y neutrones", "Electrones y protones", "Solo neutrones", "Electrones únicamente"], a: 0, t: "Estructura Atómica" },
+        { q: "A presión constante, el volumen de un gas es directamente proporcional a su temperatura. Esta es la ley de:", o: ["Charles", "Boyle", "Gay-Lussac", "Avogadro"], a: 0, t: "Leyes de los Gases" },
+        { q: "¿Cuál es el pH de una solución de HCl 0.01 M?", o: ["2", "7", "1", "12"], a: 0, t: "Ácidos y Bases" },
+        { q: "El enlace que resulta de la transferencia de electrones se llama:", o: ["Iónico", "Covalente", "Metálico", "Coordinado"], a: 0, t: "Enlaces Químicos" },
+        { q: "¿Cuál es la masa molar del agua (H2O)?", o: ["18 g/mol", "16 g/mol", "1 g/mol", "20 g/mol"], a: 0, t: "Estequiometría" },
+        { q: "El grupo funcional -OH identifica a los:", o: ["Alcoholes", "Aldehídos", "Éteres", "Ácidos"], a: 0, t: "Funciones Orgánicas" },
+        { q: "¿Cuál es el elemento más abundante en el universo?", o: ["Hidrógeno", "Helio", "Oxígeno", "Carbono"], a: 0, t: "Química General" },
+        { q: "Un proceso que libera calor al entorno se denomina:", o: ["Exotérmico", "Endotérmico", "Isotérmico", "Adiabático"], a: 0, t: "Termoquímica" },
+        { q: "La velocidad de una reacción aumenta si:", o: ["Aumenta la temperatura", "Disminuye la presión", "Se reduce la superficie", "No hay catalizador"], a: 0, t: "Cinética Química" }
     ];
 
-    for(let i=1; i<=300; i++) {
-        let p = PLANTILLAS_QUIMICA[i % PLANTILLAS_QUIMICA.length];
-        DB_QUIMICA.push({ id: i, pregunta: `Pregunta de Química #${i}: ${p.q}`, opciones: p.o, correcta: p.a, tema: p.t });
+    // Generar banco de 550 sin IDs en el texto
+    for(let i=1; i<=550; i++) {
+        let p = TEMAS[i % TEMAS.length];
+        DB_QUIMICA.push({ 
+            id: i, 
+            pregunta: `Pregunta de ${p.t}: ${p.q}`, 
+            opciones: [...p.o], 
+            correcta: p.a, 
+            tema: p.t 
+        });
     }
 
     let activeQuestions = [];
@@ -177,23 +148,39 @@
     let timer;
     let secondsLeft = 4500;
 
-    function toggleMenu() {
-        document.getElementById('sidebar').classList.toggle('active');
-        document.getElementById('overlay').classList.toggle('active');
+    function handleSession() {
+        const session = JSON.parse(localStorage.getItem('ceta_session'));
+        if (session) {
+            const resp = confirm(`Sesión de ${session.nombre} detectada.\n\n¿Deseas continuar con este usuario o iniciar con otro?\n(Aceptar: Continuar / Cancelar: Nuevo Usuario)`);
+            if (resp) {
+                studentName = session.nombre;
+            } else {
+                promptNewUser();
+            }
+        } else {
+            promptNewUser();
+        }
+        document.getElementById('student-name-display').textContent = `Estudiante: ${studentName}`;
+    }
+
+    function promptNewUser() {
+        const name = prompt("Ingrese el nombre completo del estudiante:");
+        studentName = name && name.trim() !== "" ? name : "Invitado";
+        localStorage.setItem('ceta_session', JSON.stringify({ nombre: studentName }));
     }
 
     function reloadSim() {
-        if(confirm("¿Reiniciar simulador?")) loadSim('Química1', 'link-quimica1');
+        handleSession();
+        loadSim();
     }
 
-    function loadSim(tipo, linkId) {
+    function loadSim() {
         document.getElementById('btn-grade').style.display = 'flex';
         document.getElementById('btn-pdf').style.display = 'none';
         document.getElementById('ia-box').style.display = 'none';
         activeQuestions = [...DB_QUIMICA].sort(() => 0.5 - Math.random()).slice(0, 50).map(q => ({...q, userSelected: null}));
         renderExam();
         resetTimer();
-        if(window.innerWidth <= 1024 && document.getElementById('sidebar').classList.contains('active')) toggleMenu();
     }
 
     function renderExam() {
@@ -221,12 +208,9 @@
         document.getElementById(`opt-${qIdx}-${oIdx}`).classList.add('selected');
     }
 
-   function resetTimer() {
+    function resetTimer() {
         clearInterval(timer);
-        
-        // --- CAMBIO 4: Reinicio del tiempo a 75 minutos ---
-        secondsLeft = 4500; 
-        
+        secondsLeft = 4500;
         timer = setInterval(() => {
             secondsLeft--;
             let m = Math.floor(secondsLeft / 60), s = secondsLeft % 60;
@@ -237,61 +221,45 @@
 
     function gradeExam() {
         clearInterval(timer);
-        let correctas = 0;
+        let score = 0;
         activeQuestions.forEach((q, i) => {
             document.getElementById(`lock-${i}`).style.display = 'block';
-            const card = document.getElementById(`q-${i}`);
-            if(q.userSelected === q.correcta) {
-                correctas++;
-                card.style.borderLeft = "6px solid #10b981";
-            } else {
-                card.style.borderLeft = "6px solid #ef4444";
-            }
+            if(q.userSelected === q.correcta) score++;
+            document.getElementById(`q-${i}`).style.borderLeft = q.userSelected === q.correcta ? "6px solid #10b981" : "6px solid #ef4444";
         });
-        const nota = ((correctas / activeQuestions.length) * 100).toFixed(2);
-        showIA(nota);
+        const finalScore = ((score / 50) * 100).toFixed(2);
+        const iaBox = document.getElementById('ia-box');
+        iaBox.innerHTML = `<h3>Diagnóstico de IA Clover</h3><p>Resultado: <strong>${finalScore}/100</strong></p>`;
+        iaBox.style.display = 'block';
         document.getElementById('btn-grade').style.display = 'none';
         document.getElementById('btn-pdf').style.display = 'flex';
         window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
-    function showIA(nota) {
-        const box = document.getElementById('ia-box');
-        box.innerHTML = `<h3><i data-lucide="bot"></i> Clover IA: Diagnóstico</h3><p>Resultado Final: <strong>${nota}/100</strong></p>`;
-        box.style.display = 'block';
-        lucide.createIcons();
-    }
-
     function generatePDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-        const nota = document.getElementById('ia-box').querySelector('strong').innerText;
         doc.setFillColor(15, 23, 42); doc.rect(0, 0, 210, 30, 'F');
         doc.setTextColor(255); doc.text("REPORTE QUÍMICA - CETA LOS NARANJOS", 105, 20, {align: "center"});
         doc.setTextColor(40); doc.setFontSize(10);
         doc.text(`Estudiante: ${studentName}`, 15, 45);
         doc.text(`Docente: Ing. Teddy Valencia. Mgtr`, 130, 45);
-        doc.text(`Calificación Final: ${nota}`, 15, 52);
-        const tableBody = activeQuestions.map((q, i) => [i+1, q.tema, q.userSelected !== null ? String.fromCharCode(65 + q.userSelected) : '-', String.fromCharCode(65 + q.correcta), q.userSelected === q.correcta ? 'OK' : 'X']);
-        doc.autoTable({ startY: 60, head: [['#', 'TEMA', 'RPTA', 'CORRECTA', 'ESTADO']], body: tableBody, styles: { fontSize: 7 } });
-        doc.save(`Resultado_Quimica_${studentName}.pdf`);
+        doc.autoTable({ 
+            startY: 60, 
+            head: [['#', 'Tema', 'Estado']], 
+            body: activeQuestions.map((q, i) => [i+1, q.tema, q.userSelected === q.correcta ? 'Correcto' : 'Incorrecto']) 
+        });
+        doc.save(`Resultado_${studentName}.pdf`);
     }
 
     function toggleDarkMode() {
         document.body.classList.toggle('dark');
-        const isDark = document.body.classList.contains('dark');
-        document.getElementById('dark-text').textContent = isDark ? 'Modo Claro' : 'Modo Oscuro';
-        document.getElementById('dark-icon').setAttribute('data-lucide', isDark ? 'sun' : 'moon');
         lucide.createIcons();
     }
 
     window.onload = () => {
-        const session = JSON.parse(localStorage.getItem('ceta_session'));
-        if(session) {
-            studentName = session.nombre;
-            document.getElementById('student-name').textContent = `Estudiante: ${studentName}`;
-        }
-        loadSim('Química1', 'link-quimica1');
+        handleSession();
+        loadSim();
     };
   </script>
 </body>

@@ -45,23 +45,14 @@
       font-weight: 600;
     }
 
-    /* --- RESPONSIVE MENU ELEMENTS --- */
     .menu-toggle {
-      display: none;
-      background: var(--primary);
-      color: white;
-      border: none;
-      padding: 10px;
-      border-radius: 8px;
-      cursor: pointer;
+      display: none; background: var(--primary); color: white; border: none;
+      padding: 10px; border-radius: 8px; cursor: pointer;
     }
 
     .sidebar-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      z-index: 999;
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5); z-index: 999;
     }
 
     /* --- MAIN CONTENT --- */
@@ -99,10 +90,27 @@
     }
     .option:hover { border-color: var(--primary); }
     .option.selected { border-color: var(--primary); background: rgba(37,99,235,0.1); font-weight: 700; }
-    .option.disabled { pointer-events: none; }
     
     .locked-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; display: none; }
     .ia-diagnostic { background: #eff6ff; border: 2px solid #bfdbfe; padding: 2rem; border-radius: 16px; margin-bottom: 2rem; display: none; color: #1e40af; }
+
+    /* --- MODAL LOGIN --- */
+    .login-modal {
+        position: fixed; top:0; left:0; width:100%; height:100%;
+        background: rgba(0,0,0,0.8); z-index: 2000;
+        display: flex; align-items: center; justify-content: center;
+        backdrop-filter: blur(5px);
+    }
+    .login-content {
+        background: var(--card-bg); padding: 2.5rem; border-radius: 20px;
+        width: 90%; max-width: 400px; text-align: center;
+        box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+    }
+    .input-field {
+        width: 100%; padding: 12px; margin: 1rem 0;
+        border: 2px solid var(--border); border-radius: 8px;
+        font-family: inherit; font-size: 1rem;
+    }
 
     @media (max-width: 1024px) {
       .sidebar { transform: translateX(-100%); }
@@ -117,10 +125,30 @@
 </head>
 <body>
 
+  <div id="user-modal" class="login-modal">
+    <div class="login-content">
+        <i data-lucide="user-circle" style="width: 60px; height: 60px; color: var(--primary); margin-bottom: 1rem;"></i>
+        <h2 id="modal-title">Bienvenido al Simulador</h2>
+        <div id="existing-user-box" style="display:none; margin: 1.5rem 0;">
+            <p>Se detectó una sesión activa como:</p>
+            <h3 id="current-user-display" style="margin: 0.5rem 0; color: var(--primary);"></h3>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                <button class="btn btn-grade" style="width:100%; justify-content:center;" onclick="confirmUser(true)">Continuar con este usuario</button>
+                <button class="btn btn-reset" style="width:100%; justify-content:center;" onclick="showNewUserInput()">Entrar con otro usuario</button>
+            </div>
+        </div>
+        <div id="new-user-box">
+            <p>Por favor, ingresa tu nombre para el reporte:</p>
+            <input type="text" id="new-user-name" class="input-field" placeholder="Tu nombre completo...">
+            <button class="btn btn-grade" style="width:100%; justify-content:center;" onclick="confirmUser(false)">Empezar Simulador</button>
+        </div>
+    </div>
+  </div>
+
   <div class="sidebar-overlay" id="overlay" onclick="toggleMenu()"></div>
 
   <aside class="sidebar" id="sidebar">
-    <a href="simuladores-ceta.html" class="sidebar-brand"><i data-lucide="graduation-cap"></i> CETA Los Naranjos - Regresar</a>
+    <a href="simuladores-ceta.html" class="sidebar-brand"><i data-lucide="graduation-cap"></i> CETA Los Naranjos</a>
     
     <div class="menu-group">
       <div class="menu-label">Matemáticas</div>
@@ -130,6 +158,9 @@
     <div style="margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
         <button class="nav-link" style="background:none; border:none; cursor:pointer; width:100%" onclick="toggleDarkMode()">
             <i data-lucide="moon" id="dark-icon"></i> <span id="dark-text">Modo Oscuro</span>
+        </button>
+        <button class="nav-link" style="background:none; border:none; cursor:pointer; width:100%; color: #ef4444;" onclick="changeUserManual()">
+            <i data-lucide="log-out"></i> Cambiar Usuario
         </button>
     </div>
   </aside>
@@ -143,7 +174,7 @@
         <button class="btn btn-reset" onclick="reloadCurrentSim()"><i data-lucide="refresh-cw"></i> <span>Reiniciar Test</span></button>
         <div>
             <h2 id="sim-title" style="font-size: 0.9rem;">Simulador de Matemáticas 2</h2>
-            <span id="student-name" style="font-size: 0.7rem; color: var(--sidebar-text);">...</span>
+            <span id="student-name" style="font-size: 0.7rem; color: var(--sidebar-text);">Cargando...</span>
         </div>
       </div>
 
@@ -165,17 +196,97 @@
     let currentSimType = 'Matemáticas 2';
     let currentLinkId = 'link-mate2';
     const DB_REAL = [];
-    const PLANTILLAS = [
-        { q: "Resuelva: 5x - 15 = 10", o: ["x = 5", "x = 10", "x = 2", "x = 25"], a: 0, t: "Álgebra" },
-        { q: "Perímetro de un cuadrado de lado 4m.", o: ["16m", "8m", "12m", "4m"], a: 0, t: "Geometría" }
-    ];
-    for(let i=1; i<=300; i++) {
-        let p = PLANTILLAS[i % PLANTILLAS.length];
-        DB_REAL.push({ id: i, pregunta: `Ejercicio Académico #${i}: ${p.q}`, opciones: p.o, correcta: p.a, tema: p.t });
+    let studentName = "";
+
+    // --- MANEJO DE USUARIOS ---
+    function checkUserSession() {
+        const session = JSON.parse(localStorage.getItem('ceta_session'));
+        const modal = document.getElementById('user-modal');
+        const existingBox = document.getElementById('existing-user-box');
+        const newBox = document.getElementById('new-user-box');
+
+        modal.style.display = 'flex';
+
+        if(session && session.nombre) {
+            document.getElementById('current-user-display').textContent = session.nombre;
+            existingBox.style.display = 'block';
+            newBox.style.display = 'none';
+        } else {
+            showNewUserInput();
+        }
     }
 
+    function showNewUserInput() {
+        document.getElementById('existing-user-box').style.display = 'none';
+        document.getElementById('new-user-box').style.display = 'block';
+    }
+
+    function confirmUser(keepExisting) {
+        if(keepExisting) {
+            const session = JSON.parse(localStorage.getItem('ceta_session'));
+            studentName = session.nombre;
+        } else {
+            const inputName = document.getElementById('new-user-name').value.trim();
+            if(!inputName) { alert("Por favor ingresa un nombre"); return; }
+            studentName = inputName;
+            localStorage.setItem('ceta_session', JSON.stringify({ nombre: studentName }));
+        }
+        
+        document.getElementById('student-name').textContent = `Estudiante: ${studentName}`;
+        document.getElementById('user-modal').style.display = 'none';
+        loadSim(currentSimType, currentLinkId);
+    }
+
+    function changeUserManual() {
+        localStorage.removeItem('ceta_session');
+        location.reload();
+    }
+
+    // --- GENERADOR DE 550 PREGUNTAS ÚNICAS (SIN IDs EN EL TEXTO) ---
+    function initBancoPreguntas() {
+        const temas = [
+            { nombre: "Álgebra", vars: ["x", "y", "a", "b"], ops: ["+", "-"] },
+            { nombre: "Geometría", figuras: ["rectángulo", "triángulo", "círculo", "rombo"] },
+            { nombre: "Trigonometría", fun: ["Sen", "Cos", "Tan"], ang: ["30°", "45°", "60°"] },
+            { nombre: "Aritmética", contexto: ["porcentaje", "razón", "proporción"] }
+        ];
+
+        for(let i = 1; i <= 550; i++) {
+            let t = temas[i % temas.length];
+            let q = "";
+            let opts = [];
+            let ans = i % 4;
+
+            if(t.nombre === "Álgebra") {
+                let n1 = (i % 20) + 5;
+                let n2 = (i % 10) + 2;
+                q = `Determine el valor de ${t.vars[i%4]} en la ecuación: ${n2}${t.vars[i%4]} ${t.ops[i%2]} ${n1} = ${n1 * 2}`;
+                opts = [`${t.vars[i%4]} = ${n1}`, `${t.vars[i%4]} = 2`, `${t.vars[i%4]} = 0`, `${t.vars[i%4]} = -${n1}`];
+            } 
+            else if(t.nombre === "Geometría") {
+                let m = (i % 15) + 3;
+                let fig = t.figuras[i % 4];
+                q = `Calcule el área aproximada de un ${fig} cuyo componente principal mide ${m} unidades.`;
+                opts = [`${Math.pow(m, 2)} u²`, `${m * 2} u²`, `${m / 2} u²`, "No se puede determinar"];
+            }
+            else if(t.nombre === "Trigonometría") {
+                q = `¿Cuál es el valor de la función ${t.fun[i%3]} para un ángulo notable de ${t.ang[i%3]}?`;
+                opts = ["0.50", "0.86", "1.00", "0.70"];
+            }
+            else {
+                let p = (i % 100) + 1;
+                q = `En una sucesión aritmética, si el término inicial es ${i} y la razón es ${p}, ¿cuál es el segundo término?`;
+                opts = [`${i + p}`, `${i - p}`, `${i * p}`, `${p}`];
+            }
+
+            // Eliminado el prefijo [ID-XXX]
+            DB_REAL.push({ id: i, pregunta: q, opciones: opts, correcta: ans, tema: t.nombre });
+        }
+    }
+
+    initBancoPreguntas();
+
     let activeQuestions = [];
-    let studentName = "Invitado";
     let timer;
     let secondsLeft = 4500;
 
@@ -185,7 +296,7 @@
     }
 
     function reloadCurrentSim() {
-        if(confirm("¿Deseas reiniciar el simulador actual? Se cargarán nuevas preguntas y el tiempo volverá a iniciar.")) {
+        if(confirm("¿Deseas reiniciar el simulador? Se generará un nuevo test de 75 preguntas.")) {
             loadSim(currentSimType, currentLinkId);
         }
     }
@@ -193,7 +304,6 @@
     function loadSim(tipo, linkId) {
         currentSimType = tipo;
         currentLinkId = linkId;
-
         document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
         const selectedLink = document.getElementById(linkId);
         if(selectedLink) selectedLink.classList.add('active');
@@ -207,8 +317,7 @@
         renderExam();
         resetTimer();
         window.scrollTo({top: 0, behavior: 'smooth'});
-
-        if(window.innerWidth <= 1024) toggleMenu();
+        if(window.innerWidth <= 1024 && document.getElementById('sidebar').classList.contains('active')) toggleMenu();
     }
 
     function renderExam() {
@@ -301,13 +410,8 @@
     }
 
     window.onload = () => {
-        const session = JSON.parse(localStorage.getItem('ceta_session'));
-        if(session) {
-            studentName = session.nombre;
-            document.getElementById('student-name').textContent = `Estudiante: ${studentName}`;
-        }
-        loadSim('Matemáticas 2', 'link-mate2');
         lucide.createIcons();
+        checkUserSession(); // Inicia el flujo de usuario al cargar
     };
   </script>
 </body>

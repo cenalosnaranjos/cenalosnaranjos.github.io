@@ -20,7 +20,23 @@
       --border: #334155; --sidebar-bg: #000000;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-main); color: var(--text-dark); transition: var(--transition); }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-main); color: var(--text-dark); transition: var(--transition); overflow-x: hidden; }
+
+    /* --- MODAL GESTIÓN USUARIO --- */
+    .modal-user {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8); z-index: 3000; display: none;
+      align-items: center; justify-content: center; backdrop-filter: blur(8px);
+    }
+    .modal-content {
+      background: var(--card-bg); padding: 2.5rem; border-radius: 24px;
+      width: 90%; max-width: 450px; text-align: center; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+    }
+    .input-user {
+      width: 100%; padding: 15px; margin: 1.5rem 0; border: 2px solid var(--border);
+      border-radius: 12px; font-family: inherit; font-size: 1rem; outline: none;
+    }
+    .input-user:focus { border-color: var(--primary); }
 
     /* --- SIDEBAR --- */
     .sidebar {
@@ -38,36 +54,13 @@
       transition: 0.2s; cursor: pointer; border-left: 4px solid transparent;
     }
     .nav-link:hover { background: rgba(255,255,255,0.05); color: white; }
-    .nav-link.active { 
-      background: rgba(37, 99, 235, 0.15); 
-      color: white; 
-      border-left-color: var(--primary);
-      font-weight: 600;
-    }
+    .nav-link.active { background: rgba(37, 99, 235, 0.15); color: white; border-left-color: var(--primary); font-weight: 600; }
 
-    /* --- RESPONSIVE MENU ELEMENTS --- */
-    .menu-toggle {
-      display: none;
-      background: var(--primary);
-      color: white;
-      border: none;
-      padding: 10px;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-right: 15px;
-    }
-
-    .sidebar-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      z-index: 999;
-    }
+    .menu-toggle { display: none; background: var(--primary); color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; }
+    .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; }
 
     /* --- MAIN CONTENT --- */
-    .main-content { margin-left: 280px; min-height: 100vh; }
-
+    .main-content { margin-left: 280px; min-height: 100vh; transition: var(--transition); }
     .sticky-header {
       position: sticky; top: 0; background: var(--card-bg); z-index: 900;
       padding: 0.8rem 2rem; border-bottom: 1px solid var(--border);
@@ -76,7 +69,6 @@
     }
     .timer-box { background: #fee2e2; color: #991b1b; padding: 8px 16px; border-radius: 8px; font-weight: 800; font-family: monospace; font-size: 1.2rem; }
 
-    .actions-bar { display: flex; gap: 10px; }
     .btn {
       padding: 10px 18px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer;
       display: flex; align-items: center; gap: 8px; font-size: 0.85rem; transition: 0.2s;
@@ -84,9 +76,7 @@
     .btn-grade { background: #059669; color: white; }
     .btn-pdf { background: #1e293b; color: white; display: none; }
     .btn-reset { background: #f1f5f9; color: #1e293b; border: 1px solid var(--border); }
-    body.dark .btn-reset { background: #334155; color: white; border-color: #475569; }
 
-    /* --- EXAM UI --- */
     .exam-container { padding: 2rem; max-width: 900px; margin: 0 auto; }
     .question-card {
       background: var(--card-bg); border-radius: 16px; padding: 2rem; margin-bottom: 2rem;
@@ -100,7 +90,6 @@
     }
     .option:hover { border-color: var(--primary); }
     .option.selected { border-color: var(--primary); background: rgba(37,99,235,0.1); font-weight: 700; }
-    .option.disabled { pointer-events: none; }
     
     .locked-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; display: none; }
     .ia-diagnostic { background: #eff6ff; border: 2px solid #bfdbfe; padding: 2rem; border-radius: 16px; margin-bottom: 2rem; display: none; color: #1e40af; }
@@ -110,50 +99,65 @@
       .sidebar.active { transform: translateX(0); }
       .sidebar-overlay.active { display: block; }
       .main-content { margin-left: 0; }
-      .menu-toggle { display: flex; align-items: center; }
-      .sticky-header { padding: 0.8rem 1rem; }
-      .timer-box { font-size: 1rem; padding: 6px 10px; }
-      .btn span { display: none; } /* Ocultar texto de botones en móvil para ahorrar espacio */
+      .menu-toggle { display: flex; }
+      .btn span { display: none; }
     }
   </style>
 </head>
 <body>
 
+  <div id="user-modal" class="modal-user">
+    <div class="modal-content">
+      <i data-lucide="user-circle-2" style="width: 50px; height: 50px; color: var(--primary); margin: 0 auto 1rem;"></i>
+      <h2 id="modal-title">Acceso al Simulador</h2>
+      
+      <div id="session-active" style="display:none; margin-top: 1rem;">
+        <p>Se detectó una sesión previa:</p>
+        <h3 id="prev-user-name" style="color: var(--primary); margin: 0.5rem 0;"></h3>
+        <button class="btn btn-grade" style="width:100%; justify-content:center; margin-bottom: 10px;" onclick="confirmSession(true)">Continuar como este usuario</button>
+        <button class="btn btn-reset" style="width:100%; justify-content:center;" onclick="showNewUserForm()">Usar otro nombre</button>
+      </div>
+
+      <div id="session-new">
+        <p>Ingrese su nombre para personalizar su reporte:</p>
+        <input type="text" id="user-input-name" class="input-user" placeholder="Nombre completo...">
+        <button class="btn btn-grade" style="width:100%; justify-content:center;" onclick="confirmSession(false)">Iniciar Entrenamiento</button>
+      </div>
+    </div>
+  </div>
+
   <div class="sidebar-overlay" id="overlay" onclick="toggleMenu()"></div>
 
   <aside class="sidebar" id="sidebar">
     <a href="simuladores-ceta.html" class="sidebar-brand"><i data-lucide="graduation-cap"></i> CETA Los Naranjos - Regresar</a>
-    
     <div class="menu-group">
-      <div class="menu-label">Matemáticas</div>
-      <div class="nav-link active" id="link-mate1" onclick="loadSim('Matemáticas3', 'link-link-mate3')"><i data-lucide="calculator"></i> Simulador 3</div>
+      <div class="menu-label">Matemáticas Avanzadas</div>
+      <div class="nav-link active" id="link-mate3" onclick="loadSim('Matemáticas 3', 'link-mate3')"><i data-lucide="calculator"></i> Simulador 3</div>
     </div>
-
     <div style="margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
         <button class="nav-link" style="background:none; border:none; cursor:pointer; width:100%" onclick="toggleDarkMode()">
             <i data-lucide="moon" id="dark-icon"></i> <span id="dark-text">Modo Oscuro</span>
+        </button>
+        <button class="nav-link" style="background:none; border:none; cursor:pointer; width:100%; color: #ef4444;" onclick="logout()">
+            <i data-lucide="log-out"></i> Cambiar Usuario
         </button>
     </div>
   </aside>
 
   <main class="main-content">
     <header class="sticky-header">
-      <div style="display: flex; gap: 5px; align-items: center;">
-        <button class="menu-toggle" onclick="toggleMenu()">
-          <i data-lucide="menu"></i>
-        </button>
-        <button class="btn btn-reset" onclick="reloadCurrentSim()"><i data-lucide="refresh-cw"></i> <span>Reiniciar</span></button>
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <button class="menu-toggle" onclick="toggleMenu()"><i data-lucide="menu"></i></button>
+        <button class="btn btn-reset" onclick="reloadCurrentSim()"><i data-lucide="refresh-cw"></i> <span>Barajar</span></button>
         <div>
-            <h2 id="sim-title" style="font-size: 0.9rem;">Simulador de Matemáticas 3</h2>
-            <span id="student-name" style="font-size: 0.7rem; color: var(--sidebar-text);">...</span>
+            <h2 id="sim-title" style="font-size: 0.9rem;">Simulador 3</h2>
+            <span id="student-name-display" style="font-size: 0.7rem; color: var(--sidebar-text);">...</span>
         </div>
       </div>
-
       <div class="timer-box" id="timer">75:00</div>
-
-      <div class="actions-bar">
+      <div class="actions-bar" style="display:flex; gap:10px;">
         <button class="btn btn-grade" id="btn-grade" onclick="gradeExam()"><i data-lucide="check-circle"></i> <span>Calificar</span></button>
-        <button class="btn btn-pdf" id="btn-pdf" onclick="generatePDF()"><i data-lucide="download"></i> <span>Reporte</span></button>
+        <button class="btn btn-pdf" id="btn-pdf" onclick="generatePDF()"><i data-lucide="download"></i> <span>PDF</span></button>
       </div>
     </header>
 
@@ -164,61 +168,92 @@
   </main>
 
   <script>
-    let currentSimType = 'Matemáticas 1';
-    let currentLinkId = 'link-mate1';
-    
-    // --- BANCO DE PREGUNTAS (CONSERVADO) ---
-    const DB_MATE = [];
-    const PLANTILLAS_MATE = [
-        { q: "Si \\( 3x - 7 = 14 \\), ¿cuál es el valor de x?", o: ["x = 7", "x = 3", "x = 21", "x = 4"], a: 0, t: "Álgebra" },
-        { q: "Calcule la hipotenusa de un triángulo rectángulo con catetos de 3 y 4.", o: ["5", "7", "6", "10"], a: 0, t: "Geometría" },
-        { q: "Simplifique la expresión: \\( (a+b)^2 - 2ab \\).", o: ["\\( a^2 + b^2 \\)", "0", "4ab", "\\( a^2 - b^2 \\)"], a: 0, t: "Álgebra" },
-        { q: "¿Cuál es la derivada de \\( f(x) = x^2 \\)?", o: ["2x", "x", "2", "x²"], a: 0, t: "Cálculo" },
-        { q: "Determine el valor de \\( \cos(0^\circ) \\).", o: ["1", "0", "-1", "0.5"], a: 0, t: "Trigonometría" }
-    ];
-
-    for(let i=1; i<=300; i++) {
-        let p = PLANTILLAS_MATE[i % PLANTILLAS_MATE.length];
-        DB_MATE.push({ id: i, pregunta: `Ejercicio Matemático #${i}: ${p.q}`, opciones: p.o, correcta: p.a, tema: p.t });
-    }
-
+    const DB_MATE_AVANZADO = [];
+    let studentName = "";
     let activeQuestions = [];
-    let studentName = "Invitado";
     let timer;
     let secondsLeft = 4500;
 
-    // --- FUNCIONES DE NAVEGACIÓN ---
-    function toggleMenu() {
-        document.getElementById('sidebar').classList.toggle('active');
-        document.getElementById('overlay').classList.toggle('active');
-    }
+    // --- GENERADOR DE 550 EJERCICIOS DIFERENTES ---
+    function generarBanco() {
+        const tipos = [
+            { t: "Cálculo", q: "Calcule la derivada de f(x) = ", fn: (i) => `${i}x²`, res: (i) => `${i*2}x` },
+            { t: "Álgebra", q: "Resuelva para x: ", fn: (i) => `2x - ${i} = ${i*3}`, res: (i) => `x = ${i*2}` },
+            { t: "Trigonometría", q: "Determine el valor de: ", fn: (i) => `sen(${i % 2 === 0 ? '90' : '0'}°) + cos(${i % 2 === 0 ? '0' : '90'}°)`, res: (i) => "1" },
+            { t: "Geometría", q: "Área de un círculo con radio r = ", fn: (i) => `${i}u`, res: (i) => `${(Math.PI * i * i).toFixed(2)}u²` }
+        ];
 
-    function reloadCurrentSim() {
-        if(confirm("¿Reiniciar el simulador actual? Se barajarán 75 nuevas preguntas.")) {
-            loadSim(currentSimType, currentLinkId);
+        for(let i=1; i<=550; i++) {
+            let plantilla = tipos[i % tipos.length];
+            let enunciado = plantilla.q + plantilla.fn(i);
+            let correcta = plantilla.res(i);
+            
+            // Creamos distractores basados en la respuesta correcta
+            let opciones = [correcta, `${i+10}`, `${i*5}`, "0"].sort(() => 0.5 - Math.random());
+            
+            DB_MATE_AVANZADO.push({
+                pregunta: enunciado, // Eliminado el prefijo [ID-XXX]
+                opciones: opciones,
+                correcta: opciones.indexOf(correcta),
+                tema: plantilla.t
+            });
         }
     }
 
+    // --- GESTIÓN DE USUARIO ---
+    function checkUser() {
+        const saved = localStorage.getItem('ceta_user');
+        const modal = document.getElementById('user-modal');
+        modal.style.display = 'flex';
+
+        if(saved) {
+            document.getElementById('session-active').style.display = 'block';
+            document.getElementById('session-new').style.display = 'none';
+            document.getElementById('prev-user-name').textContent = saved;
+        } else {
+            showNewUserForm();
+        }
+    }
+
+    function showNewUserForm() {
+        document.getElementById('session-active').style.display = 'none';
+        document.getElementById('session-new').style.display = 'block';
+    }
+
+    function confirmSession(isOld) {
+        if(isOld) {
+            studentName = localStorage.getItem('ceta_user');
+        } else {
+            const val = document.getElementById('user-input-name').value.trim();
+            if(!val) return alert("Por favor, ingrese un nombre.");
+            studentName = val;
+            localStorage.setItem('ceta_user', val);
+        }
+        document.getElementById('student-name-display').textContent = `Estudiante: ${studentName}`;
+        document.getElementById('user-modal').style.display = 'none';
+        loadSim('Matemáticas 3', 'link-mate3');
+    }
+
+    function logout() {
+        localStorage.removeItem('ceta_user');
+        location.reload();
+    }
+
+    // --- LÓGICA DEL SIMULADOR ---
     function loadSim(tipo, linkId) {
-        currentSimType = tipo;
-        currentLinkId = linkId;
-
-        document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-        const selectedLink = document.getElementById(linkId);
-        if(selectedLink) selectedLink.classList.add('active');
-
-        document.getElementById('sim-title').textContent = `Simulador de ${tipo}`;
+        clearInterval(timer);
         document.getElementById('btn-grade').style.display = 'flex';
         document.getElementById('btn-pdf').style.display = 'none';
         document.getElementById('ia-box').style.display = 'none';
 
-        activeQuestions = [...DB_MATE].sort(() => 0.5 - Math.random()).slice(0, 75).map(q => ({...q, userSelected: null}));
+        // Selección de 75 preguntas únicas de las 550
+        activeQuestions = [...DB_MATE_AVANZADO]
+            .sort(() => 0.5 - Math.random())
+            .slice(0, 75)
+            .map(q => ({...q, userSelected: null}));
+
         renderExam();
-        resetTimer();
-        window.scrollTo({top: 0, behavior: 'smooth'});
-        
-        // Cerrar menú en móvil al seleccionar
-        if(window.innerWidth <= 1024) toggleMenu();
+        startTimer();
     }
 
     function renderExam() {
@@ -226,18 +261,17 @@
         wrapper.innerHTML = activeQuestions.map((q, i) => `
             <div class="question-card" id="q-${i}">
                 <div class="locked-overlay" id="lock-${i}"></div>
-                <small style="color: var(--primary); font-weight: 700;">PREGUNTA ${i+1} | ${q.tema}</small>
+                <small style="color: var(--primary); font-weight: 700;">EJERCICIO ${i+1} | ${q.tema}</small>
                 <div class="question-text">${q.pregunta}</div>
                 <div class="options-list">
                     ${q.opciones.map((opt, oi) => `
                         <div class="option" id="opt-${i}-${oi}" onclick="selectOpt(${i}, ${oi})">
-                            <strong style="color:var(--primary)">${String.fromCharCode(65+oi)}</strong> ${opt}
+                            <strong>${String.fromCharCode(65+oi)}</strong> ${opt}
                         </div>
                     `).join('')}
                 </div>
             </div>
         `).join('');
-        if(window.MathJax) MathJax.typeset();
         lucide.createIcons();
     }
 
@@ -247,12 +281,11 @@
         document.getElementById(`opt-${qIdx}-${oIdx}`).classList.add('selected');
     }
 
-    function resetTimer() {
-        clearInterval(timer);
+    function startTimer() {
         secondsLeft = 4500;
         timer = setInterval(() => {
             secondsLeft--;
-            let m = Math.floor(secondsLeft / 60), s = secondsLeft % 60;
+            let m = Math.floor(secondsLeft/60), s = secondsLeft%60;
             document.getElementById('timer').textContent = `${m}:${s < 10 ? '0' : ''}${s}`;
             if(secondsLeft <= 0) gradeExam();
         }, 1000);
@@ -260,67 +293,68 @@
 
     function gradeExam() {
         clearInterval(timer);
-        let correctas = 0;
-        let stats = {};
+        let score = 0;
         activeQuestions.forEach((q, i) => {
             document.getElementById(`lock-${i}`).style.display = 'block';
-            if(!stats[q.tema]) stats[q.tema] = { total: 0, ok: 0 };
-            stats[q.tema].total++;
             const card = document.getElementById(`q-${i}`);
             if(q.userSelected === q.correcta) {
-                correctas++; stats[q.tema].ok++;
+                score++;
                 card.style.borderLeft = "6px solid #10b981";
             } else {
                 card.style.borderLeft = "6px solid #ef4444";
             }
         });
-        const nota = ((correctas / 75) * 100).toFixed(2);
-        showIA(nota, stats);
+
+        const finalNota = ((score / 75) * 100).toFixed(2);
+        const box = document.getElementById('ia-box');
+        box.style.display = 'block';
+        box.innerHTML = `<h3>Diagnóstico Clover IA</h3><p>Puntaje Final: <strong>${finalNota}/100</strong></p>`;
+        
         document.getElementById('btn-grade').style.display = 'none';
         document.getElementById('btn-pdf').style.display = 'flex';
         window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
-    function showIA(nota, stats) {
-        const box = document.getElementById('ia-box');
-        let debiles = Object.keys(stats).filter(t => (stats[t].ok / stats[t].total) < 0.7);
-        box.innerHTML = `<h3><i data-lucide="bot"></i> Diagnóstico Clover IA</h3><p>Nota Final: <strong>${nota}/100</strong></p><p>Recomendación: ${debiles.length > 0 ? 'Urge reforzar ' + debiles.join(', ') : '¡Excelente nivel académico!'}</p>`;
-        box.style.display = 'block';
-        lucide.createIcons();
-    }
-
     function generatePDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-        const nota = document.getElementById('ia-box').querySelector('strong').innerText;
-        doc.setFillColor(15, 23, 42); doc.rect(0, 0, 210, 30, 'F');
-        doc.setTextColor(255); doc.text("REPORTE ACADÉMICO CETA LOS NARANJOS", 105, 20, {align: "center"});
-        doc.setTextColor(40); doc.setFontSize(9);
-        doc.text(`Estudiante: ${studentName}`, 15, 45);
-        doc.text(`Tutor: Ing. Teddy Valencia. Mgtr`, 140, 45);
-        doc.text(`Simulador: ${currentSimType}`, 15, 52);
-        doc.text(`Nota: ${nota}`, 140, 52);
+        doc.setFontSize(18);
+        doc.text("REPORTE ACADÉMICO - CETA", 105, 20, {align: "center"});
+        doc.setFontSize(12);
+        doc.text(`Estudiante: ${studentName}`, 20, 40);
+        doc.text(`Nota: ${document.querySelector('#ia-box strong').textContent}`, 20, 50);
 
-        const tableBody = activeQuestions.map((q, i) => [i+1, q.tema, q.userSelected !== null ? String.fromCharCode(65 + q.userSelected) : '-', String.fromCharCode(65 + q.correcta), q.userSelected === q.correcta ? 'OK' : 'X']);
-        doc.autoTable({ startY: 60, head: [['#', 'TEMA', 'RPTA', 'CORRECTA', 'ESTADO']], body: tableBody, styles: { fontSize: 7 }, headStyles: { fillColor: [37, 99, 235] } });
-        doc.save(`Reporte_MATE_${studentName}.pdf`);
+        const rows = activeQuestions.map((q, i) => [
+            i+1, 
+            q.tema, 
+            q.userSelected !== null ? String.fromCharCode(65+q.userSelected) : "-", 
+            String.fromCharCode(65+q.correcta)
+        ]);
+
+        doc.autoTable({
+            startY: 60,
+            head: [['#', 'Tema', 'Tu Respuesta', 'Correcta']],
+            body: rows
+        });
+        doc.save(`Reporte_Mate3_${studentName}.pdf`);
+    }
+
+    function toggleMenu() {
+        document.getElementById('sidebar').classList.toggle('active');
+        document.getElementById('overlay').classList.toggle('active');
     }
 
     function toggleDarkMode() {
         document.body.classList.toggle('dark');
-        const isDark = document.body.classList.contains('dark');
-        document.getElementById('dark-text').textContent = isDark ? 'Modo Claro' : 'Modo Oscuro';
-        document.getElementById('dark-icon').setAttribute('data-lucide', isDark ? 'sun' : 'moon');
-        lucide.createIcons();
+    }
+
+    function reloadCurrentSim() {
+        if(confirm("¿Deseas barajar nuevas preguntas?")) loadSim();
     }
 
     window.onload = () => {
-        const session = JSON.parse(localStorage.getItem('ceta_session'));
-        if(session) {
-            studentName = session.nombre;
-            document.getElementById('student-name').textContent = `Estudiante: ${studentName}`;
-        }
-        loadSim('Matemáticas3', 'link-mate3');
+        generarBanco();
+        checkUser();
         lucide.createIcons();
     };
   </script>

@@ -20,6 +20,7 @@
       --accent-chem: #10b981;
       --accent-verbal: #f59e0b;
       --accent-abstract: #8b5cf6;
+      --accent-exam: #ef4444; /* Color para Examen General */
       --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
@@ -106,7 +107,6 @@
 
     .layout-wrapper { display: flex; min-height: 100vh; }
 
-    /* Sidebar */
     .sidebar {
       width: 280px;
       background: var(--sidebar-bg);
@@ -153,7 +153,6 @@
       border-top: 1px solid rgba(255,255,255,0.1);
     }
 
-    /* Main Content */
     .main-content {
       flex-grow: 1;
       margin-left: 280px;
@@ -170,7 +169,6 @@
 
     .hamburger { display: none; cursor: pointer; color: var(--text-dark); }
 
-    /* --- CARDS ACADÉMICAS --- */
     .grid-courses {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -217,7 +215,6 @@
 
     .sim-link:hover { background: var(--primary); color: white; }
 
-    /* Responsive */
     @media (max-width: 1024px) {
       .sidebar { left: -280px; }
       .sidebar.active { left: 0; }
@@ -233,7 +230,15 @@
       .overlay.active { display: block; }
     }
 
-    .error-msg { color: #ef4444; font-size: 0.8rem; margin-bottom: 1rem; display: none; }
+    .error-msg { 
+      color: #ef4444; 
+      font-size: 0.85rem; 
+      margin-bottom: 1rem; 
+      display: none; 
+      background: #fee2e2;
+      padding: 10px;
+      border-radius: 8px;
+    }
   </style>
 </head>
 <body>
@@ -265,7 +270,7 @@
           <li class="nav-item">
             <a href="#" class="nav-link active"><i data-lucide="layout-dashboard"></i> Dashboard</a>
           </li>
-         <li class="nav-item">
+          <li class="nav-item">
             <a href="#" class="nav-link"><i data-lucide="calendar"></i> Horarios - PRÓXIMAMENTE</a>
           </li>
           <li class="nav-item">
@@ -325,15 +330,19 @@
 
           <div class="course-card">
             <div class="course-badge" style="background: var(--accent-abstract);"><i data-lucide="layers"></i></div>
-            <h3>R. Abstracto - PRÓXIMAMENTE</h3>
+            <h3>R. Abstracto - Próximamente</h3>
             <p style="font-size: 0.8rem; color: var(--sidebar-text); margin-bottom: 1rem;">Series y Matrices espaciales.</p>
-            <a href="#" class="sim-link">Secuencias Lógicas <i data-lucide="chevron-right" size="14"></i></a>
+            <a href="simulador_abstracto1.html" class="sim-link">Secuencias Lógicas <i data-lucide="chevron-right" size="14"></i></a>
+            <a href="simulador_abstracto2.html" class="sim-link">Matrices Espaciales <i data-lucide="chevron-right" size="14"></i></a>
           </div>
+
           <div class="course-card">
-            <div class="course-badge" style="background: var(--accent-abstract);"><i data-lucide="layers"></i></div>
-            <h3>Simulador General - PRÓXIMAMENTE</h3>
-            <p style="font-size: 0.8rem; color: var(--sidebar-text); margin-bottom: 1rem;">Simulador General - PRÓXIMAMENTE.</p>
-            <a href="#" class="sim-link">Simulador General - PRÓXIMAMENTE <i data-lucide="chevron-right" size="14"></i></a>
+            <div class="course-badge" style="background: var(--accent-exam);"><i data-lucide="file-text"></i></div>
+            <h3>Examen General - Próximamente</h3>
+            <p style="font-size: 0.8rem; color: var(--sidebar-text); margin-bottom: 1rem;">Simulacros integrales cronometrados.</p>
+            <a href="examen_general1.html" class="sim-link">Examen Piloto 1 <i data-lucide="chevron-right" size="14"></i></a>
+            <a href="examen_general2.html" class="sim-link">Examen Piloto 2 <i data-lucide="chevron-right" size="14"></i></a>
+            <a href="examen_final.html" class="sim-link">Simulacro Final <i data-lucide="chevron-right" size="14"></i></a>
           </div>
         </div>
       </main>
@@ -341,50 +350,47 @@
   </div>
 
   <script>
-    // --- DB CONSERVADA ---
+    // --- BASE DE DATOS DE ESTUDIANTES ---
+    // 1 = ACTIVO (Puede entrar)
+    // 0 = DESACTIVADO (No puede entrar)
     const ESTUDIANTES_DB = [
       { codigo: "Estudiante1-CETA", nombre: "Juan Pablo Mendoza Vera", activo: 1 },
       { codigo: "Estudiante2-CETA", nombre: "Ana Lucía García", activo: 1 },
-      { codigo: "Estudiante3-CETA", nombre: "Marcos Torres", activo: 0 },
+      { codigo: "Estudiante3-CETA", nombre: "Marcos Torres", activo: 0 }, // Desactivado
     ];
+
     for(let i = 4; i <= 25; i++) {
       ESTUDIANTES_DB.push({ codigo: `Estudiante${i}-CETA`, nombre: `Estudiante Ejemplo ${i}`, activo: 1 });
     }
 
-    // --- INTERFAZ ---
     const hamMenu = document.getElementById('ham-menu');
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('overlay');
     const darkToggle = document.getElementById('dark-toggle');
 
-    hamMenu.onclick = () => { sidebar.classList.add('active'); overlay.classList.add('active'); }
-    overlay.onclick = () => { sidebar.classList.remove('active'); overlay.classList.remove('active'); }
-
-    darkToggle.onclick = (e) => {
-      e.preventDefault();
-      document.body.classList.toggle('dark');
-      const isDark = document.body.classList.contains('dark');
-      localStorage.setItem('ceta_dark', isDark);
-      darkToggle.innerHTML = isDark ? '<i data-lucide="sun"></i> Modo Claro' : '<i data-lucide="moon"></i> Modo Oscuro';
-      lucide.createIcons();
-    };
-
-    // --- LÓGICA LOGIN ---
     function handleLogin() {
-      const code = document.getElementById('accessCode').value.trim();
-      const error = document.getElementById('login-error');
+      const codeInput = document.getElementById('accessCode');
+      const code = codeInput.value.trim();
       const user = ESTUDIANTES_DB.find(u => u.codigo === code);
 
-      if (!user) { showError("Código no válido"); return; }
-      if (user.activo === 0) { showError("Acceso deshabilitado"); return; }
+      if (!user) {
+        showError("Código de acceso no válido.");
+        return;
+      }
+
+      if (user.activo === 0) {
+        showError("Tu acceso ha sido deshabilitado. Contacta con administración del CETA Chone.");
+        return;
+      }
 
       localStorage.setItem('ceta_session', JSON.stringify(user));
       renderDashboard(user.nombre);
     }
 
-    function showError(m) {
+    function showError(mensaje) {
       const e = document.getElementById('login-error');
-      e.textContent = m; e.style.display = 'block';
+      e.textContent = mensaje; 
+      e.style.display = 'block';
     }
 
     function renderDashboard(name) {
@@ -399,13 +405,40 @@
       location.reload();
     }
 
-    function checkEnter(e) { if(e.key === 'Enter') handleLogin(); }
+    function checkEnter(e) { 
+      if(e.key === 'Enter') handleLogin(); 
+    }
+
+    hamMenu.onclick = () => { sidebar.classList.add('active'); overlay.classList.add('active'); }
+    overlay.onclick = () => { sidebar.classList.remove('active'); overlay.classList.remove('active'); }
+
+    darkToggle.onclick = (e) => {
+      e.preventDefault();
+      document.body.classList.toggle('dark');
+      const isDark = document.body.classList.contains('dark');
+      localStorage.setItem('ceta_dark', isDark);
+      darkToggle.innerHTML = isDark ? '<i data-lucide="sun"></i> Modo Claro' : '<i data-lucide="moon"></i> Modo Oscuro';
+      lucide.createIcons();
+    };
 
     window.onload = () => {
       lucide.createIcons();
-      if(localStorage.getItem('ceta_dark') === 'true') document.body.classList.add('dark');
+      if(localStorage.getItem('ceta_dark') === 'true') {
+        document.body.classList.add('dark');
+        darkToggle.innerHTML = '<i data-lucide="sun"></i> Modo Claro';
+        lucide.createIcons();
+      }
+
       const session = localStorage.getItem('ceta_session');
-      if(session) renderDashboard(JSON.parse(session).nombre);
+      if(session) {
+        const userSession = JSON.parse(session);
+        const userCheck = ESTUDIANTES_DB.find(u => u.codigo === userSession.codigo);
+        if(userCheck && userCheck.activo === 1) {
+          renderDashboard(userCheck.nombre);
+        } else {
+          localStorage.removeItem('ceta_session');
+        }
+      }
     };
   </script>
 </body>
