@@ -7,6 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
+    /* === ESTILOS BASE ORIGINALES (preservados e intactos) === */
     * {
       margin: 0;
       padding: 0;
@@ -269,16 +270,6 @@
       color: white;
     }
 
-    @media (max-width: 720px) {
-      body { padding: 1rem; }
-      .hero-card { padding: 1.8rem; }
-      h1 { font-size: 1.9rem; }
-      .description { max-width: 100%; font-size: 1rem; }
-      .progress-area { flex-direction: column; align-items: flex-start; }
-      .footer-info { flex-direction: column; text-align: center; }
-    }
-
-    /* detalles adicionales */
     .pill-notify {
       background: #2563eb;
       border: none;
@@ -305,6 +296,187 @@
       align-items: center;
       gap: 1rem;
       margin: 1rem 0 0.5rem;
+    }
+
+    /* ========== MEJORAS RESPONSIVAS AVANZADAS ========== */
+    /* sin modificar la estructura interna del HTML, solo se añaden reglas para asegurar 100% responsive */
+
+    /* Ajustes para pantallas medianas (tablets pequeñas) */
+    @media (max-width: 900px) {
+      .hero-card {
+        padding: 2rem 1.5rem;
+      }
+      h1 {
+        font-size: 2.4rem;
+      }
+      .description {
+        max-width: 100%;
+        font-size: 1rem;
+      }
+      .modules-grid {
+        gap: 1.2rem;
+      }
+    }
+
+    /* Ajustes para móviles estándar (pantallas hasta 640px) */
+    @media (max-width: 640px) {
+      body {
+        padding: 1rem;
+      }
+      .hero-card {
+        padding: 1.5rem;
+        border-radius: 1.5rem;
+      }
+      .logo-badge {
+        padding: 0.4rem 1rem;
+        font-size: 0.85rem;
+        gap: 8px;
+      }
+      .hero-icon {
+        width: 64px;
+        height: 64px;
+        border-radius: 22px;
+      }
+      .hero-icon i {
+        transform: scale(0.9);
+      }
+      h1 {
+        font-size: 1.9rem;
+        letter-spacing: -0.01em;
+      }
+      .construction-tag {
+        font-size: 0.7rem;
+        padding: 0.2rem 0.8rem;
+      }
+      .description {
+        font-size: 0.95rem;
+        margin: 0.8rem 0 1.2rem 0;
+      }
+      .progress-area {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.8rem;
+        padding: 1rem;
+      }
+      .progress-bar-wrapper {
+        min-width: unset;
+        width: 100%;
+      }
+      .stats-badge {
+        text-align: center;
+        align-self: center;
+        font-size: 0.8rem;
+      }
+      .flex-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .pill-notify {
+        justify-content: center;
+        width: 100%;
+        padding: 0.6rem 1rem;
+      }
+      .modules-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      .module-card {
+        padding: 1rem;
+      }
+      .module-icon {
+        width: 44px;
+        height: 44px;
+      }
+      .module-card h3 {
+        font-size: 1.2rem;
+      }
+      .footer-info {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+        padding-top: 1.5rem;
+        margin-top: 2rem;
+      }
+      .contact-links {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+      }
+      .contact-links a {
+        font-size: 0.8rem;
+      }
+    }
+
+    /* Para móviles muy pequeños (menos de 400px) ajustes extra de espaciado y legibilidad */
+    @media (max-width: 400px) {
+      .hero-card {
+        padding: 1.2rem;
+      }
+      h1 {
+        font-size: 1.7rem;
+      }
+      .progress-label {
+        font-size: 0.85rem;
+      }
+      .coming-soon {
+        font-size: 0.65rem;
+        padding: 0.2rem 0.7rem;
+      }
+      .pill-notify {
+        font-size: 0.75rem;
+        padding: 0.5rem 1rem;
+      }
+      .footer-info {
+        font-size: 0.75rem;
+      }
+      .contact-links a {
+        gap: 4px;
+      }
+    }
+
+    /* Ajuste para orientación horizontal en móviles (landscape) */
+    @media (max-width: 800px) and (orientation: landscape) {
+      body {
+        padding: 1rem;
+        align-items: flex-start;
+      }
+      .hero-card {
+        padding: 1.2rem;
+        margin-bottom: 1rem;
+      }
+      .modules-grid {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      }
+    }
+
+    /* Prevenir cualquier desbordamiento horizontal no deseado en elementos específicos */
+    .construction-container,
+    .hero-card,
+    .module-card,
+    .footer-info {
+      overflow-wrap: break-word;
+      word-break: break-word;
+    }
+
+    /* Asegurar que los iconos no generen scroll horizontal */
+    i[data-lucide] {
+      flex-shrink: 0;
+    }
+
+    /* Mejora de táctil para enlaces y elementos clickeables sin modificar comportamiento */
+    .contact-links a,
+    .pill-notify {
+      touch-action: manipulation;
+    }
+
+    /* Consistencia en el área de módulos para pantallas muy anchas también */
+    @media (min-width: 1600px) {
+      .construction-container {
+        max-width: 1400px;
+      }
+      .modules-grid {
+        gap: 1.8rem;
+      }
     }
   </style>
 </head>
