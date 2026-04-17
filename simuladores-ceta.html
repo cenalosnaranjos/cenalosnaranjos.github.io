@@ -2,623 +2,445 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>CETA Los Naranjos | Plataforma en Construcción</title>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CETA Los Naranjos | Plataforma Académica</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    /* === ESTILOS BASE ORIGINALES (preservados e intactos) === */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --sidebar-bg: #0f172a;
+      --sidebar-text: #94a3b8;
+      --bg-main: #f8fafc;
+      --card-bg: #ffffff;
+      --text-dark: #1e293b;
+      --border: #e2e8f0;
+      --accent-math: #3b82f6;
+      --accent-chem: #10b981;
+      --accent-verbal: #f59e0b;
+      --accent-abstract: #8b5cf6;
+      --accent-exam: #ef4444; /* Color para Examen General */
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
+
+    body.dark {
+      --bg-main: #020617;
+      --card-bg: #1e293b;
+      --text-dark: #f1f5f9;
+      --border: #334155;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      background: radial-gradient(circle at 10% 30%, #0f172a, #020617);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem;
-      position: relative;
+      background-color: var(--bg-main);
+      color: var(--text-dark);
       overflow-x: hidden;
     }
 
-    /* decorative animated elements */
-    body::before {
-      content: '';
-      position: absolute;
-      width: 300px;
-      height: 300px;
-      background: radial-gradient(circle, rgba(37,99,235,0.15) 0%, rgba(37,99,235,0) 70%);
-      top: -150px;
-      left: -150px;
-      border-radius: 50%;
-      pointer-events: none;
-    }
-
-    body::after {
-      content: '';
-      position: absolute;
-      width: 400px;
-      height: 400px;
-      background: radial-gradient(circle, rgba(139,92,246,0.1) 0%, rgba(139,92,246,0) 70%);
-      bottom: -200px;
-      right: -150px;
-      border-radius: 50%;
-      pointer-events: none;
-    }
-
-    .construction-container {
-      max-width: 1200px;
-      width: 100%;
-      z-index: 2;
-    }
-
-    /* MAIN CARD */
-    .hero-card {
-      background: rgba(255, 255, 255, 0.96);
-      backdrop-filter: blur(2px);
-      border-radius: 2rem;
-      padding: 2.5rem 2rem;
-      box-shadow: 0 30px 45px -20px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.1);
-      transition: all 0.3s ease;
-      margin-bottom: 2rem;
-    }
-
-    .logo-badge {
-      display: inline-flex;
-      align-items: center;
+    /* --- LOGIN ESTILIZADO --- */
+    #login-screen {
+      display: flex;
       justify-content: center;
-      gap: 12px;
-      background: #0f172a;
-      padding: 0.6rem 1.4rem;
-      border-radius: 100px;
-      margin-bottom: 1.8rem;
-      color: white;
-      font-weight: 700;
+      align-items: center;
+      min-height: 100vh;
+      background: radial-gradient(circle at top left, #1e293b, #0f172a);
+      padding: 20px;
     }
 
-    .logo-badge i {
-      color: #3b82f6;
+    .login-card {
+      background: white;
+      padding: 3rem 2rem;
+      border-radius: 24px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
     }
 
-    .hero-icon {
+    .logo-circle {
       width: 80px;
       height: 80px;
-      background: linear-gradient(135deg, #2563eb, #1e40af);
-      border-radius: 28px;
+      background: var(--primary);
+      border-radius: 20px;
+      margin: 0 auto 1.5rem;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 1.5rem;
       color: white;
-      box-shadow: 0 12px 20px -10px rgba(37,99,235,0.4);
+      transform: rotate(-10deg);
     }
 
-    h1 {
-      font-size: 2.8rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, #0f172a, #1e293b);
-      background-clip: text;
-      -webkit-background-clip: text;
-      color: transparent;
-      letter-spacing: -0.02em;
+    .login-card h2 { font-size: 1.5rem; margin-bottom: 0.5rem; color: #0f172a; }
+    .login-card p { color: #64748b; margin-bottom: 2rem; font-size: 0.9rem; }
+
+    .input-field {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      font-size: 1rem;
       margin-bottom: 1rem;
+      transition: var(--transition);
     }
 
-    .construction-tag {
-      display: inline-block;
-      background: #fef9c3;
-      color: #854d0e;
-      padding: 0.3rem 1rem;
-      border-radius: 40px;
+    .input-field:focus { border-color: var(--primary); outline: none; }
+
+    .btn-primary {
+      width: 100%;
+      padding: 14px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 12px;
       font-weight: 700;
-      font-size: 0.8rem;
-      margin-bottom: 1.2rem;
-      border: 1px solid #fde047;
+      cursor: pointer;
+      transition: var(--transition);
     }
 
-    .description {
-      font-size: 1.1rem;
-      line-height: 1.5;
-      color: #334155;
-      max-width: 85%;
-      margin: 1rem 0 1.5rem 0;
+    .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); }
+
+    /* --- LAYOUT CON SIDEBAR --- */
+    #main-dashboard { display: none; }
+
+    .layout-wrapper { display: flex; min-height: 100vh; }
+
+    .sidebar {
+      width: 280px;
+      background: var(--sidebar-bg);
+      color: white;
+      padding: 2rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      height: 100vh;
+      z-index: 1000;
+      transition: var(--transition);
     }
 
-    .progress-area {
-      background: #eef2ff;
-      border-radius: 20px;
-      padding: 1rem 1.2rem;
-      margin: 1.8rem 0 1rem;
+    .sidebar-brand {
       display: flex;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
+      gap: 12px;
+      font-weight: 800;
+      font-size: 1.2rem;
+      margin-bottom: 3rem;
+    }
+
+    .nav-menu { flex-grow: 1; list-style: none; }
+    .nav-item { margin-bottom: 0.5rem; }
+    
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      color: var(--sidebar-text);
+      text-decoration: none;
+      border-radius: 12px;
+      transition: var(--transition);
+    }
+
+    .nav-link:hover, .nav-link.active {
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
+
+    .sidebar-footer {
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .main-content {
+      flex-grow: 1;
+      margin-left: 280px;
+      padding: 2rem;
+      transition: var(--transition);
+    }
+
+    header {
+      display: flex;
       justify-content: space-between;
-    }
-
-    .progress-label {
-      font-weight: 700;
-      color: #1e293b;
-      display: flex;
       align-items: center;
-      gap: 8px;
+      margin-bottom: 3rem;
     }
 
-    .progress-bar-wrapper {
-      flex: 1;
-      min-width: 180px;
-      height: 10px;
-      background: #cbd5e1;
+    .hamburger { display: none; cursor: pointer; color: var(--text-dark); }
+
+    .grid-courses {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .course-card {
+      background: var(--card-bg);
       border-radius: 20px;
+      padding: 1.5rem;
+      border: 1px solid var(--border);
+      transition: var(--transition);
+      position: relative;
       overflow: hidden;
     }
 
-    .progress-fill {
-      width: 68%;
-      height: 100%;
-      background: linear-gradient(90deg, #2563eb, #7c3aed);
-      border-radius: 20px;
-      position: relative;
-      animation: shimmer 1.8s infinite;
-    }
+    .course-card:hover { transform: translateY(-8px); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.05); }
 
-    @keyframes shimmer {
-      0% { opacity: 0.9; }
-      50% { opacity: 1; background: linear-gradient(90deg, #3b82f6, #8b5cf6); }
-      100% { opacity: 0.9; }
-    }
-
-    .stats-badge {
-      background: white;
-      border-radius: 40px;
-      padding: 0.4rem 1rem;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: #2563eb;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-    }
-
-    /* módulos en construcción (feature grid) */
-    .modules-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 1.5rem;
-      margin-top: 2rem;
-    }
-
-    .module-card {
-      background: white;
-      border-radius: 1.5rem;
-      padding: 1.2rem 1rem;
-      border: 1px solid #e2e8f0;
-      transition: all 0.25s ease;
-      box-shadow: 0 8px 12px -6px rgba(0,0,0,0.05);
-      backdrop-filter: blur(2px);
-    }
-
-    .module-card:hover {
-      transform: translateY(-5px);
-      border-color: #bfdbfe;
-      box-shadow: 0 20px 25px -12px rgba(0,0,0,0.1);
-    }
-
-    .module-icon {
+    .course-badge {
       width: 48px;
       height: 48px;
-      border-radius: 16px;
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 1rem;
+      margin-bottom: 1.2rem;
       color: white;
     }
 
-    .module-card h3 {
-      font-size: 1.3rem;
-      font-weight: 700;
-      margin-bottom: 0.4rem;
-    }
-
-    .coming-soon {
-      background: #f1f5f9;
-      display: inline-block;
-      padding: 0.2rem 0.8rem;
-      border-radius: 30px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      color: #475569;
-      margin-top: 0.8rem;
-      letter-spacing: 0.3px;
-    }
-
-    .footer-info {
-      margin-top: 2.5rem;
-      text-align: center;
-      color: #94a3b8;
-      font-size: 0.85rem;
+    .sim-link {
       display: flex;
+      align-items: center;
       justify-content: space-between;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 1rem;
-      border-top: 1px solid rgba(255,255,255,0.15);
-      padding-top: 2rem;
-    }
-
-    .contact-links {
-      display: flex;
-      gap: 1rem;
-      align-items: center;
-    }
-
-    .contact-links a {
-      color: #cbd5e1;
+      padding: 12px;
+      background: var(--bg-main);
+      border-radius: 10px;
       text-decoration: none;
-      font-weight: 500;
-      transition: 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .contact-links a:hover {
-      color: white;
-    }
-
-    .pill-notify {
-      background: #2563eb;
-      border: none;
-      padding: 0.5rem 1.2rem;
-      border-radius: 40px;
-      color: white;
-      font-weight: 600;
-      cursor: default;
-      transition: 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
+      color: var(--text-dark);
       font-size: 0.85rem;
+      font-weight: 600;
+      margin-top: 10px;
+      transition: 0.2s;
     }
 
-    .pill-notify i {
-      width: 18px;
+    .sim-link:hover { background: var(--primary); color: white; }
+
+    @media (max-width: 1024px) {
+      .sidebar { left: -280px; }
+      .sidebar.active { left: 0; }
+      .main-content { margin-left: 0; }
+      .hamburger { display: block; }
+      .overlay {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 999;
+      }
+      .overlay.active { display: block; }
     }
 
-    .flex-row {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1rem;
-      margin: 1rem 0 0.5rem;
-    }
-
-    /* ========== MEJORAS RESPONSIVAS AVANZADAS ========== */
-    /* sin modificar la estructura interna del HTML, solo se añaden reglas para asegurar 100% responsive */
-
-    /* Ajustes para pantallas medianas (tablets pequeñas) */
-    @media (max-width: 900px) {
-      .hero-card {
-        padding: 2rem 1.5rem;
-      }
-      h1 {
-        font-size: 2.4rem;
-      }
-      .description {
-        max-width: 100%;
-        font-size: 1rem;
-      }
-      .modules-grid {
-        gap: 1.2rem;
-      }
-    }
-
-    /* Ajustes para móviles estándar (pantallas hasta 640px) */
-    @media (max-width: 640px) {
-      body {
-        padding: 1rem;
-      }
-      .hero-card {
-        padding: 1.5rem;
-        border-radius: 1.5rem;
-      }
-      .logo-badge {
-        padding: 0.4rem 1rem;
-        font-size: 0.85rem;
-        gap: 8px;
-      }
-      .hero-icon {
-        width: 64px;
-        height: 64px;
-        border-radius: 22px;
-      }
-      .hero-icon i {
-        transform: scale(0.9);
-      }
-      h1 {
-        font-size: 1.9rem;
-        letter-spacing: -0.01em;
-      }
-      .construction-tag {
-        font-size: 0.7rem;
-        padding: 0.2rem 0.8rem;
-      }
-      .description {
-        font-size: 0.95rem;
-        margin: 0.8rem 0 1.2rem 0;
-      }
-      .progress-area {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 0.8rem;
-        padding: 1rem;
-      }
-      .progress-bar-wrapper {
-        min-width: unset;
-        width: 100%;
-      }
-      .stats-badge {
-        text-align: center;
-        align-self: center;
-        font-size: 0.8rem;
-      }
-      .flex-row {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      .pill-notify {
-        justify-content: center;
-        width: 100%;
-        padding: 0.6rem 1rem;
-      }
-      .modules-grid {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-      }
-      .module-card {
-        padding: 1rem;
-      }
-      .module-icon {
-        width: 44px;
-        height: 44px;
-      }
-      .module-card h3 {
-        font-size: 1.2rem;
-      }
-      .footer-info {
-        flex-direction: column;
-        gap: 1rem;
-        text-align: center;
-        padding-top: 1.5rem;
-        margin-top: 2rem;
-      }
-      .contact-links {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 1rem;
-      }
-      .contact-links a {
-        font-size: 0.8rem;
-      }
-    }
-
-    /* Para móviles muy pequeños (menos de 400px) ajustes extra de espaciado y legibilidad */
-    @media (max-width: 400px) {
-      .hero-card {
-        padding: 1.2rem;
-      }
-      h1 {
-        font-size: 1.7rem;
-      }
-      .progress-label {
-        font-size: 0.85rem;
-      }
-      .coming-soon {
-        font-size: 0.65rem;
-        padding: 0.2rem 0.7rem;
-      }
-      .pill-notify {
-        font-size: 0.75rem;
-        padding: 0.5rem 1rem;
-      }
-      .footer-info {
-        font-size: 0.75rem;
-      }
-      .contact-links a {
-        gap: 4px;
-      }
-    }
-
-    /* Ajuste para orientación horizontal en móviles (landscape) */
-    @media (max-width: 800px) and (orientation: landscape) {
-      body {
-        padding: 1rem;
-        align-items: flex-start;
-      }
-      .hero-card {
-        padding: 1.2rem;
-        margin-bottom: 1rem;
-      }
-      .modules-grid {
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      }
-    }
-
-    /* Prevenir cualquier desbordamiento horizontal no deseado en elementos específicos */
-    .construction-container,
-    .hero-card,
-    .module-card,
-    .footer-info {
-      overflow-wrap: break-word;
-      word-break: break-word;
-    }
-
-    /* Asegurar que los iconos no generen scroll horizontal */
-    i[data-lucide] {
-      flex-shrink: 0;
-    }
-
-    /* Mejora de táctil para enlaces y elementos clickeables sin modificar comportamiento */
-    .contact-links a,
-    .pill-notify {
-      touch-action: manipulation;
-    }
-
-    /* Consistencia en el área de módulos para pantallas muy anchas también */
-    @media (min-width: 1600px) {
-      .construction-container {
-        max-width: 1400px;
-      }
-      .modules-grid {
-        gap: 1.8rem;
-      }
+    .error-msg { 
+      color: #ef4444; 
+      font-size: 0.85rem; 
+      margin-bottom: 1rem; 
+      display: none; 
+      background: #fee2e2;
+      padding: 10px;
+      border-radius: 8px;
     }
   </style>
 </head>
 <body>
 
-<div class="construction-container">
-  
-  <!-- Tarjeta principal / mensaje central -->
-  <div class="hero-card">
-    <div class="logo-badge">
-      <i data-lucide="graduation-cap" size="18"></i>
-      <span>CETA Los Naranjos · Academia Inteligente</span>
-    </div>
-    
-    <div class="hero-icon">
-      <i data-lucide="hard-hat" size="44"></i>
-    </div>
+  <div class="overlay" id="overlay"></div>
 
-    <div class="construction-tag">
-      🚧  EN CONSTRUCCIÓN ACTIVA  🚧
-    </div>
+  <div id="login-screen">
+    <div class="login-card">
+      <div class="logo-circle"><i data-lucide="graduation-cap" size="40"></i></div>
+      <h2>CETA Los Naranjos</h2>
+      <p>Plataforma de Preparación Académica</p>
+      
+      <div id="login-error" class="error-msg"></div>
 
-    <h1>Plataforma de<br>Preparación Académica</h1>
-    <p class="description">
-      Estamos construyendo un ecosistema educativo digital de alto rendimiento. 
-      Simuladores personalizados, exámenes generales, seguimiento inteligente y mucho más.  
-      <strong>Próximamente disponible para todos los estudiantes de CETA Los Naranjos.</strong>
-    </p>
-    
-    <div class="progress-area">
-      <div class="progress-label">
-        <i data-lucide="zap" size="16"></i> 
-        <span>Desarrollo activo</span>
-      </div>
-      <div class="progress-bar-wrapper">
-        <div class="progress-fill"></div>
-      </div>
-      <div class="stats-badge">
-        🎯 70% · Fase de simuladores
-      </div>
-    </div>
-
-    <div class="flex-row">
-      <div class="pill-notify">
-        <i data-lucide="bell-ring"></i> Notificaciones próximas
-      </div>
-      <div class="pill-notify" style="background: #334155;">
-        <i data-lucide="calendar-days"></i> Lanzamiento: Mayo del 2026
-      </div>
+      <input type="text" id="accessCode" class="input-field" placeholder="Código de acceso" onkeypress="checkEnter(event)">
+      <button class="btn-primary" onclick="handleLogin()">Ingresar al Sistema</button>
     </div>
   </div>
 
-  <!-- Módulos / áreas que estarán disponibles (Under construction preview) -->
-  <div class="modules-grid">
-    
-    <div class="module-card">
-      <div class="module-icon" style="background: #3b82f6;">
-        <i data-lucide="calculator" size="26"></i>
-      </div>
-      <h3>Matemáticas</h3>
-      <p style="font-size: 0.85rem; color: #475569; margin-top: 6px;">Álgebra, geometría, cálculo y más.</p>
-      <div class="coming-soon">
-        <i data-lucide="clock" size="12" style="display: inline-block; margin-right: 4px;"></i> 3 simuladores en desarrollo
-      </div>
-    </div>
+  <div id="main-dashboard">
+    <div class="layout-wrapper">
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+          <i data-lucide="book-open-check"></i>
+          <span>CETA Los Naranjos</span>
+        </div>
 
-    <div class="module-card">
-      <div class="module-icon" style="background: #10b981;">
-        <i data-lucide="flask-conical" size="26"></i>
-      </div>
-      <h3>Química</h3>
-      <p style="font-size: 0.85rem; color: #475569; margin-top: 6px;">Orgánica, inorgánica, balanceo y estequiometría.</p>
-      <div class="coming-soon">
-        <i data-lucide="clock" size="12" style="display: inline-block; margin-right: 4px;"></i> Próximamente: 3 niveles
-      </div>
-    </div>
+        <nav class="nav-menu">
+          <li class="nav-item">
+            <a href="#" class="nav-link active"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a href="videoclass.html" class="nav-link"><i data-lucide="video"></i> Clases Grabadas</a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link"><i data-lucide="calendar"></i> Horarios - PRÓXIMAMENTE</a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link" id="dark-toggle"><i data-lucide="moon"></i> Modo Oscuro</a>
+          </li>
+        </nav>
 
-    <div class="module-card">
-      <div class="module-icon" style="background: #f59e0b;">
-        <i data-lucide="languages" size="26"></i>
-      </div>
-      <h3>Razonamiento Verbal</h3>
-      <p style="font-size: 0.85rem; color: #475569; margin-top: 6px;">Comprensión lectora, analogías, sinónimos.</p>
-      <div class="coming-soon">
-        <i data-lucide="clock" size="12" style="display: inline-block; margin-right: 4px;"></i> Módulos interactivos
-      </div>
-    </div>
+        <div class="sidebar-footer">
+          <a href="#" onclick="handleLogout()" class="nav-link" style="color: #ef4444;">
+            <i data-lucide="log-out"></i> Cerrar Sesión
+          </a>
+        </div>
+      </aside>
 
-    <div class="module-card">
-      <div class="module-icon" style="background: #8b5cf6;">
-        <i data-lucide="layers" size="26"></i>
-      </div>
-      <h3>Razonamiento Abstracto</h3>
-      <p style="font-size: 0.85rem; color: #475569; margin-top: 6px;">Series, matrices, figuras ocultas.</p>
-      <div class="coming-soon">
-        <i data-lucide="clock" size="12" style="display: inline-block; margin-right: 4px;"></i> Próximamente
-      </div>
-    </div>
+      <main class="main-content">
+        <header>
+          <div class="hamburger" id="ham-menu"><i data-lucide="menu" size="32"></i></div>
+          <div>
+            <h1 id="user-display-name">Bienvenido</h1>
+            <p style="color: var(--sidebar-text)">¿Qué planeas estudiar hoy?</p>
+          </div>
+          <div class="user-pill" style="background: var(--card-bg); padding: 8px 16px; border-radius: 50px; border: 1px solid var(--border); display: flex; align-items: center; gap: 10px;">
+            <div style="width: 32px; height: 32px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;">
+              <i data-lucide="user" size="18"></i>
+            </div>
+            <span style="font-weight: 600; font-size: 0.9rem;">Estudiante Activo</span>
+          </div>
+        </header>
 
-    <div class="module-card">
-      <div class="module-icon" style="background: #ef4444;">
-        <i data-lucide="file-text" size="26"></i>
-      </div>
-      <h3>Examen General</h3>
-      <p style="font-size: 0.85rem; color: #475569; margin-top: 6px;">Simulacros cronometrados estilo admisión.</p>
-      <div class="coming-soon">
-        <i data-lucide="clock" size="12" style="display: inline-block; margin-right: 4px;"></i> Exámenes pilotos
-      </div>
+        <div class="grid-courses">
+          <div class="course-card">
+            <div class="course-badge" style="background: var(--accent-math);"><i data-lucide="calculator"></i></div>
+            <h3>Matemáticas</h3>
+            <p style="font-size: 0.8rem; color: var(--sidebar-text); margin-bottom: 1rem;">Álgebra, Geometría y Cálculo.</p>
+            <a href="simulador-matemático.html" class="sim-link">Simulador Mate 1 <i data-lucide="chevron-right" size="14"></i></a>
+            <a href="simulador-mate2.html" class="sim-link">Simulador Mate 2 <i data-lucide="chevron-right" size="14"></i></a>
+            <a href="simulador-mate3.html" class="sim-link">Simulador Mate 3 <i data-lucide="chevron-right" size="14"></i></a>
+          </div>
+
+          <div class="course-card">
+            <div class="course-badge" style="background: var(--accent-chem);"><i data-lucide="flask-conical"></i></div>
+            <h3>Química</h3>
+            <p style="font-size: 0.8rem; color: var(--sidebar-text); margin-bottom: 1rem;">Química Orgánica e Inorgánica.</p>
+            <a href="simulador_quimica.html" class="sim-link">Simulador de Química 1<i data-lucide="chevron-right" size="14"></i></a>
+            <a href="simulador_quimica2.html" class="sim-link">Simulador de Química 2<i data-lucide="chevron-right" size="14"></i></a>
+            <a href="simulador_quimica3.html" class="sim-link">Simulador de Química 3<i data-lucide="chevron-right" size="14"></i></a>
+          </div>
+
+          <div class="course-card">
+            <div class="course-badge" style="background: var(--accent-verbal);"><i data-lucide="languages"></i></div>
+            <h3>R. Verbal</h3>
+            <p style="font-size: 0.8rem; color: var(--sidebar-text); margin-bottom: 1rem;">Comprensión y Analogías.</p>
+            <a href="simulador-razonamiento-verbal.html" class="sim-link">Simulador Verbal 1<i data-lucide="chevron-right" size="14"></i></a>
+            <a href="simulador_r_verbal2.html" class="sim-link">Simulador Verbal 2<i data-lucide="chevron-right" size="14"></i></a>
+            <a href="simulador_r_verbal3.html" class="sim-link">Simulador Verbal 3<i data-lucide="chevron-right" size="14"></i></a>
+          </div>
+
+          <div class="course-card">
+            <div class="course-badge" style="background: var(--accent-abstract);"><i data-lucide="layers"></i></div>
+            <h3>R. Abstracto - Próximamente</h3>
+            <p style="font-size: 0.8rem; color: var(--sidebar-text); margin-bottom: 1rem;">Series y Matrices espaciales.</p>
+            <a href="#" class="sim-link">Secuencias Lógicas - Próximamente <i data-lucide="chevron-right" size="14"></i></a>
+            <a href="#" class="sim-link">Matrices Espaciales - Próximamente <i data-lucide="chevron-right" size="14"></i></a>
+          </div>
+
+          <div class="course-card">
+            <div class="course-badge" style="background: var(--accent-exam);"><i data-lucide="file-text"></i></div>
+            <h3>Examen General - Próximamente</h3>
+            <p style="font-size: 0.8rem; color: var(--sidebar-text); margin-bottom: 1rem;">Simulacros integrales cronometrados.</p>
+            <a href="#" class="sim-link">Examen Piloto 1 - Próximamente <i data-lucide="chevron-right" size="14"></i></a>
+            <a href="#" class="sim-link">Examen Piloto 2 - Próximamente <i data-lucide="chevron-right" size="14"></i></a>
+            <a href="#" class="sim-link">Simulacro Final - Próximamente <i data-lucide="chevron-right" size="14"></i></a>
+          </div>
+        </div>
+      </main>
     </div>
   </div>
 
-  <!-- Footer informativo con contacto y estado -->
-  <div class="footer-info">
-    <div style="display: flex; align-items: center; gap: 8px;">
-      <i data-lucide="construction" size="16"></i>
-      <span>© 2026 CETA Los Naranjos · Versión beta en desarrollo</span>
-    </div>
-    <div class="contact-links">
-      <a href="cnalosnaranjos@gmail.com"><i data-lucide="mail" size="14"></i> cnalosnaranjos@gmail.com</a>
-      <a href="https://api.whatsapp.com/send/?phone=%2B593994183892&text=Deseo+m%C3%A1s+informaci%C3%B3n&type=phone_number&app_absent=0"><i data-lucide="message-circle" size="14"></i> Soporte - Whatsapp</a>
-      <a href="https://cenalosnaranjos.github.io/"><i data-lucide="instagram" size="14"></i> Sitio Web </a>
-    </div>
-  </div>
-</div>
+  <script>
+    // --- BASE DE DATOS DE ESTUDIANTES ---
+    const ESTUDIANTES_DB = [
+      { codigo: "Estudiante1-CETA", nombre: "Juan Pablo Mendoza Vera", activo: 1 },
+      { codigo: "Estudiante2-CETA", nombre: "Ana Lucía García", activo: 1 },
+      { codigo: "Estudiante3-CETA", nombre: "Marcos Torres", activo: 0 },
+    ];
 
-<script>
-  // Inicializar todos los iconos de Lucide
-  lucide.createIcons();
+    for(let i = 4; i <= 25; i++) {
+      ESTUDIANTES_DB.push({ codigo: `Estudiante${i}-CETA`, nombre: `Estudiante Ejemplo ${i}`, activo: 1 });
+    }
 
-  // Pequeño efecto decorativo: seguimiento de brillo sutil
-  // Solo para experiencia visual, sin afectar rendimiento
-  const progressFill = document.querySelector('.progress-fill');
-  if (progressFill) {
-    // actualización opcional: pequeña animación de ancho dinámico pero ya tiene animación shimmer
-    // podemos agregar un efecto de conteo simbólico sin interactividad compleja
-    let progressValue = 68;
-    // solo mantener estilo
-  }
+    const hamMenu = document.getElementById('ham-menu');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    const darkToggle = document.getElementById('dark-toggle');
 
-  // mostrar mensaje en consola amigable (solo para desarrolladores)
-  console.log("🚧 CETA Los Naranjos | Plataforma académica en construcción — próximamente simuladores interactivos y preparación integral.");
-</script>
+    function handleLogin() {
+      const codeInput = document.getElementById('accessCode');
+      const code = codeInput.value.trim();
+      const user = ESTUDIANTES_DB.find(u => u.codigo === code);
 
+      if (!user) {
+        showError("Código de acceso no válido.");
+        return;
+      }
+
+      if (user.activo === 0) {
+        showError("Tu acceso ha sido deshabilitado. Contacta con administración del CETA Chone.");
+        return;
+      }
+
+      localStorage.setItem('ceta_session', JSON.stringify(user));
+      renderDashboard(user.nombre);
+    }
+
+    function showError(mensaje) {
+      const e = document.getElementById('login-error');
+      e.textContent = mensaje; 
+      e.style.display = 'block';
+    }
+
+    function renderDashboard(name) {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('main-dashboard').style.display = 'block';
+      document.getElementById('user-display-name').textContent = `Hola, ${name.split(' ')[0]}`;
+      lucide.createIcons();
+    }
+
+    function handleLogout() {
+      localStorage.removeItem('ceta_session');
+      location.reload();
+    }
+
+    function checkEnter(e) { 
+      if(e.key === 'Enter') handleLogin(); 
+    } 
+
+    hamMenu.onclick = () => { sidebar.classList.add('active'); overlay.classList.add('active'); }
+    overlay.onclick = () => { sidebar.classList.remove('active'); overlay.classList.remove('active'); }
+
+    darkToggle.onclick = (e) => {
+      e.preventDefault();
+      document.body.classList.toggle('dark');
+      const isDark = document.body.classList.contains('dark');
+      localStorage.setItem('ceta_dark', isDark);
+      darkToggle.innerHTML = isDark ? '<i data-lucide="sun"></i> Modo Claro' : '<i data-lucide="moon"></i> Modo Oscuro';
+      lucide.createIcons();
+    };
+
+    window.onload = () => {
+      lucide.createIcons();
+      if(localStorage.getItem('ceta_dark') === 'true') {
+        document.body.classList.add('dark');
+        darkToggle.innerHTML = '<i data-lucide="sun"></i> Modo Claro';
+        lucide.createIcons();
+      }
+
+      const session = localStorage.getItem('ceta_session');
+      if(session) {
+        const userSession = JSON.parse(session);
+        const userCheck = ESTUDIANTES_DB.find(u => u.codigo === userSession.codigo);
+        if(userCheck && userCheck.activo === 1) {
+          renderDashboard(userCheck.nombre);
+        } else {
+          localStorage.removeItem('ceta_session');
+        }
+      }
+    };
+  </script>
 </body>
 </html>
