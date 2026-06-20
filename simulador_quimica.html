@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CETA | Simulador de Química Profesional</title>
+  <title>CETA | Simulador de Química</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -38,13 +38,21 @@
     .nav-link:hover { background: rgba(255,255,255,0.05); color: white; }
     .nav-link.active { background: rgba(37, 99, 235, 0.15); color: white; border-left-color: var(--primary); font-weight: 600; }
 
-    .main-content { margin-left: 280px; min-height: 100vh; }
+    .main-content { margin-left: 280px; min-height: 100vh; transition: var(--transition); }
     .sticky-header {
       position: sticky; top: 0; background: var(--card-bg); z-index: 900;
       padding: 0.8rem 2rem; border-bottom: 1px solid var(--border);
       display: flex; justify-content: space-between; align-items: center;
       box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
     }
+
+    /* Botón Hamburguesa Mejorado */
+    .menu-toggle {
+      display: none; background: var(--primary); color: white; border: none;
+      padding: 8px; border-radius: 8px; cursor: pointer; align-items: center; justify-content: center;
+      z-index: 1100;
+    }
+
     .timer-box { background: #fee2e2; color: #991b1b; padding: 8px 16px; border-radius: 8px; font-weight: 800; font-family: monospace; font-size: 1.2rem; }
 
     .btn {
@@ -73,19 +81,36 @@
     .locked-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; display: none; }
     .ia-diagnostic { background: #eff6ff; border: 2px solid #bfdbfe; padding: 2rem; border-radius: 16px; margin-bottom: 2rem; display: none; color: #1e40af; }
 
+    /* Overlay para cerrar al hacer clic fuera */
+    .sidebar-overlay {
+        display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.5); z-index: 999;
+    }
+
     @media (max-width: 1024px) {
       .sidebar { transform: translateX(-100%); }
+      .sidebar.active { transform: translateX(0); }
       .main-content { margin-left: 0; }
+      .menu-toggle { display: flex; }
+      .sidebar-overlay.active { display: block; }
+    }
+
+    @media (max-width: 600px) {
+        .sticky-header { padding: 0.8rem 1rem; }
+        .btn span { display: none; }
+        .timer-box { font-size: 1rem; padding: 8px 10px; }
     }
   </style>
 </head>
 <body>
 
-  <aside class="sidebar">
+  <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+  <aside class="sidebar" id="sidebar">
     <a href="simuladores-ceta.html" class="sidebar-brand"><i data-lucide="graduation-cap"></i> CETA Los Naranjos - Regresar</a>
     <div class="menu-group">
       <div class="menu-label">Ciencias</div>
-      <div class="nav-link active" onclick="reloadSim()"><i data-lucide="flask-conical"></i> Simulador Química</div>
+      <div class="nav-link active" onclick="toggleSidebar(); reloadSim()"><i data-lucide="flask-conical"></i> Simulador Química</div>
     </div>
     <div style="margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
         <button class="nav-link" style="background:none; border:none; cursor:pointer; width:100%" onclick="toggleDarkMode()">
@@ -97,9 +122,12 @@
   <main class="main-content">
     <header class="sticky-header">
       <div style="display: flex; gap: 10px; align-items: center;">
+        <button class="menu-toggle" id="menu-btn" onclick="toggleSidebar()">
+            <i data-lucide="menu" id="menu-icon"></i>
+        </button>
         <button class="btn btn-reset" onclick="reloadSim()"><i data-lucide="refresh-cw"></i> <span>Reiniciar</span></button>
         <div>
-            <h2 style="font-size: 0.9rem;">Simulador Química</h2>
+            <h2 style="font-size: 0.9rem;">Química</h2>
             <span id="student-name-display" style="font-size: 0.7rem; color: var(--sidebar-text);">Cargando...</span>
         </div>
       </div>
@@ -131,7 +159,6 @@
         { q: "La velocidad de una reacción aumenta si:", o: ["Aumenta la temperatura", "Disminuye la presión", "Se reduce la superficie", "No hay catalizador"], a: 0, t: "Cinética Química" }
     ];
 
-    // Generar banco de 550 sin IDs en el texto
     for(let i=1; i<=550; i++) {
         let p = TEMAS[i % TEMAS.length];
         DB_QUIMICA.push({ 
@@ -148,23 +175,35 @@
     let timer;
     let secondsLeft = 4500;
 
+    // Función para alternar Sidebar e Icono
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        const icon = document.getElementById('menu-icon');
+        
+        sidebar.classList.toggle('active');
+        overlay.classList.toggle('active');
+        
+        if (sidebar.classList.contains('active')) {
+            icon.setAttribute('data-lucide', 'x');
+        } else {
+            icon.setAttribute('data-lucide', 'menu');
+        }
+        lucide.createIcons();
+    }
+
     function handleSession() {
         const session = JSON.parse(localStorage.getItem('ceta_session'));
         if (session) {
-            const resp = confirm(`Sesión de ${session.nombre} detectada.\n\n¿Deseas continuar con este usuario o iniciar con otro?\n(Aceptar: Continuar / Cancelar: Nuevo Usuario)`);
-            if (resp) {
-                studentName = session.nombre;
-            } else {
-                promptNewUser();
-            }
-        } else {
-            promptNewUser();
-        }
+            const resp = confirm(`Sesión de ${session.nombre} detectada.\n\n¿Continuar?`);
+            if (resp) studentName = session.nombre;
+            else promptNewUser();
+        } else promptNewUser();
         document.getElementById('student-name-display').textContent = `Estudiante: ${studentName}`;
     }
 
     function promptNewUser() {
-        const name = prompt("Ingrese el nombre completo del estudiante:");
+        const name = prompt("Ingrese el nombre completo:");
         studentName = name && name.trim() !== "" ? name : "Invitado";
         localStorage.setItem('ceta_session', JSON.stringify({ nombre: studentName }));
     }
@@ -228,9 +267,8 @@
             document.getElementById(`q-${i}`).style.borderLeft = q.userSelected === q.correcta ? "6px solid #10b981" : "6px solid #ef4444";
         });
         const finalScore = ((score / 50) * 100).toFixed(2);
-        const iaBox = document.getElementById('ia-box');
-        iaBox.innerHTML = `<h3>Diagnóstico de IA Clover</h3><p>Resultado: <strong>${finalScore}/100</strong></p>`;
-        iaBox.style.display = 'block';
+        document.getElementById('ia-box').innerHTML = `<h3>Diagnóstico IA</h3><p>Resultado: <strong>${finalScore}/100</strong></p>`;
+        document.getElementById('ia-box').style.display = 'block';
         document.getElementById('btn-grade').style.display = 'none';
         document.getElementById('btn-pdf').style.display = 'flex';
         window.scrollTo({top: 0, behavior: 'smooth'});
@@ -243,7 +281,6 @@
         doc.setTextColor(255); doc.text("REPORTE QUÍMICA - CETA LOS NARANJOS", 105, 20, {align: "center"});
         doc.setTextColor(40); doc.setFontSize(10);
         doc.text(`Estudiante: ${studentName}`, 15, 45);
-        doc.text(`Docente: Ing. Teddy Valencia. Mgtr`, 130, 45);
         doc.autoTable({ 
             startY: 60, 
             head: [['#', 'Tema', 'Estado']], 

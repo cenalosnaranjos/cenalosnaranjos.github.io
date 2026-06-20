@@ -19,53 +19,26 @@
       --border: #334155; --sidebar-bg: #000000;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-main); color: var(--text-dark); transition: var(--transition); }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-main); color: var(--text-dark); transition: var(--transition); overflow-x: hidden; }
 
-    /* --- SIDEBAR --- */
+    /* SIDEBAR & RESPONSIVE */
     .sidebar {
       width: 280px; background: var(--sidebar-bg); color: white; padding: 1.5rem;
       position: fixed; height: 100vh; overflow-y: auto; z-index: 1000;
       transition: transform 0.3s ease;
     }
     .sidebar-brand { display: flex; align-items: center; gap: 10px; font-weight: 800; margin-bottom: 2rem; color: white; text-decoration: none; }
-    .menu-group { margin-bottom: 1.5rem; }
-    .menu-label { font-size: 0.7rem; text-transform: uppercase; color: #475569; letter-spacing: 1px; margin-bottom: 0.5rem; padding-left: 10px; }
-    
     .nav-link {
       display: flex; align-items: center; gap: 10px; padding: 12px 16px; color: var(--sidebar-text);
       text-decoration: none; border-radius: 10px; font-size: 0.85rem; margin-bottom: 4px; 
       transition: 0.2s; cursor: pointer; border-left: 4px solid transparent;
-    }
-    .nav-link:hover { background: rgba(255,255,255,0.05); color: white; }
-    .nav-link.active { 
-      background: rgba(37, 99, 235, 0.15); 
-      color: white; 
-      border-left-color: var(--primary);
-      font-weight: 600;
-    }
+    } 
+    .nav-link.active { background: rgba(37, 99, 235, 0.15); color: white; border-left-color: var(--primary); font-weight: 600; }
+    
+    .close-menu { display: none; position: absolute; top: 1.5rem; right: 1rem; color: white; cursor: pointer; }
 
-    /* --- RESPONSIVE ELEMENTS --- */
-    .menu-toggle {
-      display: none;
-      background: var(--primary);
-      color: white;
-      border: none;
-      padding: 10px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .sidebar-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      z-index: 999;
-    }
-
-    /* --- MAIN CONTENT --- */
-    .main-content { margin-left: 280px; min-height: 100vh; }
-
+    /* MAIN CONTENT */
+    .main-content { margin-left: 280px; min-height: 100vh; transition: margin-left 0.3s ease; }
     .sticky-header {
       position: sticky; top: 0; background: var(--card-bg); z-index: 900;
       padding: 0.8rem 2rem; border-bottom: 1px solid var(--border);
@@ -74,80 +47,94 @@
     }
     .timer-box { background: #fee2e2; color: #991b1b; padding: 8px 16px; border-radius: 8px; font-weight: 800; font-family: monospace; font-size: 1.2rem; }
 
-    .btn {
-      padding: 10px 18px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer;
-      display: flex; align-items: center; gap: 8px; font-size: 0.85rem; transition: 0.2s;
-    }
-    .btn-grade { background: #059669; color: white; }
-    .btn-pdf { background: #1e293b; color: white; display: none; }
-    .btn-reset { background: #f1f5f9; color: #1e293b; border: 1px solid var(--border); }
-    body.dark .btn-reset { background: #334155; color: white; border-color: #475569; }
+    /* HAMBURGER */
+    .menu-toggle { display: none; background: var(--primary); color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; }
 
-    /* --- EXAM UI --- */
+    /* EXAM UI */
     .exam-container { padding: 2rem; max-width: 900px; margin: 0 auto; }
     .question-card {
       background: var(--card-bg); border-radius: 16px; padding: 2rem; margin-bottom: 2rem;
-      border: 1px solid var(--border); position: relative; overflow: hidden;
+      border: 1px solid var(--border); position: relative;
     }
-    .question-text { font-size: 1.1rem; font-weight: 600; margin: 15px 0; line-height: 1.6; }
-    .options-list { display: grid; gap: 12px; }
+    .question-text { font-size: 1.15rem; font-weight: 600; margin: 15px 0; line-height: 1.6; }
     .option {
-      padding: 15px; border: 2px solid var(--border); border-radius: 12px; cursor: pointer;
-      transition: 0.2s; display: flex; align-items: center; gap: 12px;
+      padding: 16px; border: 2px solid var(--border); border-radius: 12px; cursor: pointer;
+      margin-bottom: 10px; display: flex; align-items: center; gap: 12px;
     }
-    .option:hover { border-color: var(--primary); }
     .option.selected { border-color: var(--primary); background: rgba(37,99,235,0.1); font-weight: 700; }
     .locked-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; display: none; }
     .ia-diagnostic { background: #eff6ff; border: 2px solid #bfdbfe; padding: 2rem; border-radius: 16px; margin-bottom: 2rem; display: none; color: #1e40af; }
 
+    /* MODAL */
+    #user-modal {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85); z-index: 2000; display: flex;
+      align-items: center; justify-content: center; backdrop-filter: blur(5px);
+    }
+    .modal-content {
+      background: var(--card-bg); padding: 2.5rem; border-radius: 24px;
+      max-width: 480px; width: 90%; text-align: center; border: 1px solid var(--border);
+    }
+    .modal-btn {
+      width: 100%; padding: 14px; margin-top: 12px; border-radius: 12px;
+      border: none; font-weight: 700; cursor: pointer; transition: 0.2s;
+    }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-secondary { background: #f1f5f9; color: #1e293b; border: 1px solid var(--border); }
+    .btn-reload { background: #0f172a; color: white; }
+
     @media (max-width: 1024px) {
       .sidebar { transform: translateX(-100%); }
-      .sidebar.active { transform: translateX(0); }
-      .sidebar-overlay.active { display: block; }
+      .sidebar.open { transform: translateX(0); }
+      .close-menu { display: block; }
       .main-content { margin-left: 0; }
       .menu-toggle { display: block; }
+      .btn-text { display: none; }
       .sticky-header { padding: 0.8rem 1rem; }
-      .btn span { display: none; }
     }
   </style>
 </head>
 <body>
 
-  <div class="sidebar-overlay" id="overlay" onclick="toggleMenu()"></div>
+  <div id="user-modal">
+    <div class="modal-content">
+      <div style="background: rgba(37,99,235,0.1); width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+        <i data-lucide="user-check" style="width: 40px; height: 40px; color: var(--primary);"></i>
+      </div>
+      <h2>Sistema CETA - Razonamiento Verbal</h2>
+      <p id="user-status" style="margin-bottom: 1.5rem; color: #64748b;"></p>
+      <button class="modal-btn btn-primary" onclick="keepUser()">Continuar sesión</button>
+      <button class="modal-btn btn-secondary" onclick="changeUser()">Cambiar Usuario</button>
+    </div>
+  </div>
 
   <aside class="sidebar" id="sidebar">
+    <div class="close-menu" onclick="toggleMenu()"><i data-lucide="x"></i></div>
     <a href="simuladores-ceta.html" class="sidebar-brand"><i data-lucide="graduation-cap"></i> CETA Los Naranjos - Regresar</a>
-    
-    <div class="menu-group">
-      <div class="menu-label">Lenguaje</div>
-      <div class="nav-link active" id="link-verbal" onclick="loadSim('R. link-verbal1', 'link-Verbal1')"><i data-lucide="book-open"></i> Simulador Verbal 1</div>
-    </div>
-
+    <div class="nav-link active" onclick="toggleMenu()"><i data-lucide="layout-list"></i>Simulador de R. Verbal</div>
     <div style="margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
-        <button class="nav-link" style="background:none; border:none; cursor:pointer; width:100%" onclick="toggleDarkMode()">
-            <i data-lucide="moon" id="dark-icon"></i> <span id="dark-text">Modo Oscuro</span>
+        <button class="nav-link" style="background:none; border:none; width:100%" onclick="handleDarkMode()">
+            <i data-lucide="moon"></i> <span>Modo Oscuro</span>
         </button>
     </div>
   </aside>
 
   <main class="main-content">
     <header class="sticky-header">
-      <div style="display: flex; gap: 10px; align-items: center;">
-        <button class="menu-toggle" onclick="toggleMenu()">
-          <i data-lucide="menu"></i>
-        </button>
-        <button class="btn btn-reset" onclick="reloadSim()"><i data-lucide="refresh-cw"></i> <span>Reiniciar</span></button>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <button class="menu-toggle" onclick="toggleMenu()"><i data-lucide="menu"></i></button>
         <div>
-            <h2 id="sim-title" style="font-size: 0.9rem;">Simulador de R. Verbal 1</h2>
-            <span id="student-name" style="font-size: 0.7rem; color: var(--sidebar-text);">...</span>
+          <h2 style="font-size: 0.95rem; font-weight: 700;">Simulador R. Verbal</h2>
+          <span id="display-name" style="font-size: 0.75rem; color: var(--sidebar-text);">Cargando...</span>
         </div>
       </div>
-
-      <div class="timer-box" id="timer">60:00</div>
-
-      <div class="actions-bar" style="display: flex; gap: 10px;">
-        <button class="btn btn-grade" id="btn-grade" onclick="gradeExam()"><i data-lucide="check-circle"></i> <span>Calificar</span></button>
-        <button class="btn btn-pdf" id="btn-pdf" onclick="generatePDF()"><i data-lucide="download"></i> <span>PDF</span></button>
+      <div class="timer-box" id="timer">75:00</div>
+      <div style="display: flex; gap: 8px;">
+        <button class="modal-btn btn-primary" id="btn-grade" style="margin:0; padding: 10px 15px;" onclick="gradeExam()">Calificar</button>
+        <button class="modal-btn btn-reload" style="margin:0; padding: 10px 15px;" onclick="reloadTest()">
+            <i data-lucide="refresh-cw"></i> <span class="btn-text">Reiniciar</span>
+        </button>
+        <button class="modal-btn btn-secondary" id="btn-pdf" style="margin:0; padding: 10px 15px; display:none" onclick="generatePDF()">PDF</button>
       </div>
     </header>
 
@@ -159,140 +146,163 @@
 
   <script>
     const DB_VERBAL = [];
-    const PLANTILLAS_VERBAL = [
-        { q: "Identifique el sinónimo de: ABNEGACIÓN", o: ["Sacrificio", "Egoísmo", "Odio", "Lujuria"], a: 0, t: "Sinónimos" },
-        { q: "Elija el término excluido de: PINTURA", o: ["Escultura", "Música", "Danza", "Fútbol"], a: 3, t: "Término Excluido" },
-        { q: "Complete la analogía: ANTORCHA es a LIBERTAD como...", o: ["Paloma es a Paz", "Corazón es a Odio", "Balanza es a Sueño", "Libro es a Guerra"], a: 0, t: "Analogías" },
-        { q: "Identifique el antónimo de: EFÍMERO", o: ["Eterno", "Breve", "Corto", "Fugaz"], a: 0, t: "Antónimos" },
-        { q: "Ordene la oración: 1. la 2. es 3. lectura 4. esencial", o: ["1-3-2-4", "4-2-1-3", "3-2-4-1", "2-1-3-4"], a: 0, t: "Orden Lógico" }
+    const PLANTILLAS = [
+      { t: "Sinónimos", q: "Identifique el sinónimo de la palabra: 'PULULAR'", o: ["Abundar", "Escasear", "Caminar", "Gritar"], a: 0 },
+      { t: "Antónimos", q: "Elija el antónimo de: 'EFÍMERO'", o: ["Perpetuo", "Fugaz", "Breve", "Pasajero"], a: 0 },
+      { t: "Analogías", q: "'PINTOR' es a 'PINCEL' como:", o: ["Escultor es a cincel", "Médico es a enfermo", "Coche es a mecánico", "Libro es a lector"], a: 0 },
+      { t: "Comprensión", q: "Complete: El hábito de la lectura _____ el pensamiento y _____ el léxico.", o: ["estimula - enriquece", "detiene - limita", "borra - altera", "ignora - reduce"], a: 0 },
+      { t: "Ortografía", q: "Seleccione la palabra escrita correctamente:", o: ["Exhibir", "Exivir", "Eshibir", "Exhivir"], a: 0 },
+      { t: "Término Excluido", q: "Identifique el término que no pertenece al grupo 'COLECCIONES':", o: ["Libro", "Hemeroteca", "Pinacoteca", "Filatelia"], a: 0 },
+      { t: "Sinónimos", q: "Sinónimo de la palabra 'INHERENTE':", o: ["Propio", "Ajeno", "Accidental", "Separado"], a: 0 },
+      { t: "Antónimos", q: "Antónimo de 'ALTRUISMO':", o: ["Egoísmo", "Bondad", "Generosidad", "Filantropía"], a: 0 },
+      { t: "Analogías", q: "'ESCALPELO' es a 'CIRUJANO' como:", o: ["Pincel es a pintor", "Martillo es a clavo", "Libro es a lector", "Coche es a camino"], a: 0 },
+      { t: "Precisión Semántica", q: "La _____ del juez fue vital para un veredicto justo.", o: ["imparcialidad", "rudeza", "celeridad", "omisión"], a: 0 }
     ];
 
-    for(let i=1; i<=300; i++) {
-        let p = PLANTILLAS_VERBAL[i % PLANTILLAS_VERBAL.length];
-        DB_VERBAL.push({ id: i, pregunta: `Ejercicio Verbal #${i}: ${p.q}`, opciones: p.o, correcta: p.a, tema: p.t });
+    // Banco de 550 preguntas (Simulado)
+    for (let i = 1; i <= 550; i++) {
+      let p = PLANTILLAS[(i - 1) % PLANTILLAS.length];
+      DB_VERBAL.push({
+        id: i,
+        tema: p.t,
+        pregunta: `Reactivo #${i} [${p.t}]: ${p.q}`,
+        opciones: [...p.o],
+        correcta: p.a
+      });
     }
 
     let activeQuestions = [];
-    let studentName = "Invitado";
+    let currentUser = "Ing. Teddy Fidel Valencia Castro. Mgtr";
     let timer;
-    let secondsLeft = 3600;
+    let timeLeft = 4500;
 
     function toggleMenu() {
-        document.getElementById('sidebar').classList.toggle('active');
-        document.getElementById('overlay').classList.toggle('active');
+        const sidebar = document.getElementById('sidebar');
+        sidebar.classList.toggle('open');
     }
 
-    function reloadSim() {
-        if(confirm("¿Deseas barajar nuevas preguntas?")) loadSim('R. Verbal1', 'link-verbal1');
+    function checkUser() {
+      const stored = localStorage.getItem('ceta_session');
+      if (stored) currentUser = JSON.parse(stored).nombre;
+      document.getElementById('user-status').innerHTML = `Usuario: <strong>${currentUser}</strong>`;
+      lucide.createIcons();
     }
 
-    function loadSim(tipo, linkId) {
-        document.getElementById('btn-grade').style.display = 'flex';
-        document.getElementById('btn-pdf').style.display = 'none';
-        document.getElementById('ia-box').style.display = 'none';
-        activeQuestions = [...DB_VERBAL].sort(() => 0.5 - Math.random()).slice(0, 50).map(q => ({...q, userSelected: null}));
-        renderExam();
-        resetTimer();
-        if(window.innerWidth <= 1024 && document.getElementById('sidebar').classList.contains('active')) toggleMenu();
+    function keepUser() {
+      document.getElementById('user-modal').style.display = 'none';
+      localStorage.setItem('ceta_session', JSON.stringify({ nombre: currentUser }));
+      initSim();
     }
 
-    function renderExam() {
-        const wrapper = document.getElementById('questions-wrapper');
-        wrapper.innerHTML = activeQuestions.map((q, i) => `
-            <div class="question-card" id="q-${i}">
-                <div class="locked-overlay" id="lock-${i}"></div>
-                <small style="color: var(--primary); font-weight: 700;">${q.tema}</small>
-                <div class="question-text">${q.pregunta}</div>
-                <div class="options-list">
-                    ${q.opciones.map((opt, oi) => `
-                        <div class="option" id="opt-${i}-${oi}" onclick="selectOpt(${i}, ${oi})">
-                            <strong>${String.fromCharCode(65+oi)}</strong> ${opt}
-                        </div>
-                    `).join('')}
-                </div>
-            </div>
-        `).join('');
-        lucide.createIcons();
+    function changeUser() {
+      const n = prompt("Ingrese el nombre del estudiante:");
+      if (n) currentUser = n;
+      keepUser();
+    }
+
+    function initSim() {
+      document.getElementById('display-name').innerText = `Estudiante: ${currentUser}`;
+      document.getElementById('btn-grade').style.display = 'block';
+      document.getElementById('btn-pdf').style.display = 'none';
+      document.getElementById('ia-box').style.display = 'none';
+      
+      // Liberación aleatoria de 75 preguntas
+      activeQuestions = [...DB_VERBAL]
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 75)
+        .map(q => ({...q, userSelected: null}));
+        
+      render();
+      startTimer();
+    }
+
+    function render() {
+      const wrapper = document.getElementById('questions-wrapper');
+      wrapper.innerHTML = activeQuestions.map((q, i) => `
+        <div class="question-card" id="q-${i}">
+          <div class="locked-overlay" id="lock-${i}"></div>
+          <small style="color: var(--primary); font-weight: 800; text-transform: uppercase;">CETA | ${q.tema}</small>
+          <div class="question-text">${q.pregunta}</div>
+          <div class="options-list">
+            ${q.opciones.map((opt, oi) => `
+              <div class="option" id="opt-${i}-${oi}" onclick="selectOpt(${i}, ${oi})">
+                <strong style="margin-right:10px">${String.fromCharCode(65+oi)})</strong> ${opt}
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
     }
 
     function selectOpt(qIdx, oIdx) {
-        activeQuestions[qIdx].userSelected = oIdx;
-        document.querySelectorAll(`#q-${qIdx} .option`).forEach(el => el.classList.remove('selected'));
-        document.getElementById(`opt-${qIdx}-${oIdx}`).classList.add('selected');
+      activeQuestions[qIdx].userSelected = oIdx;
+      document.querySelectorAll(`#q-${qIdx} .option`).forEach(el => el.classList.remove('selected'));
+      document.getElementById(`opt-${qIdx}-${oIdx}`).classList.add('selected');
     }
 
-    function resetTimer() {
-        clearInterval(timer);
-        
-        // --- CAMBIO 4: Reinicio del tiempo a 75 minutos ---
-        secondsLeft = 4500; 
-        
-        timer = setInterval(() => {
-            secondsLeft--;
-            let m = Math.floor(secondsLeft / 60), s = secondsLeft % 60;
-            document.getElementById('timer').textContent = `${m}:${s < 10 ? '0' : ''}${s}`;
-            if(secondsLeft <= 0) gradeExam();
-        }, 1000);
+    function startTimer() {
+      clearInterval(timer);
+      timeLeft = 4500;
+      timer = setInterval(() => {
+        timeLeft--;
+        let m = Math.floor(timeLeft / 60), s = timeLeft % 60;
+        document.getElementById('timer').textContent = `${m}:${s < 10 ? '0' : ''}${s}`;
+        if (timeLeft <= 0) gradeExam();
+      }, 1000);
+    }
+
+    function reloadTest() {
+      if(confirm("¿Deseas liberar un nuevo bloque de 75 preguntas del banco?")) {
+        initSim();
+        window.scrollTo({top: 0, behavior: 'smooth'});
+      }
     }
 
     function gradeExam() {
-        clearInterval(timer);
-        let correctas = 0;
-        activeQuestions.forEach((q, i) => {
-            document.getElementById(`lock-${i}`).style.display = 'block';
-            const card = document.getElementById(`q-${i}`);
-            if(q.userSelected === q.correcta) {
-                correctas++;
-                card.style.borderLeft = "6px solid #10b981";
-            } else {
-                card.style.borderLeft = "6px solid #ef4444";
-            }
-        });
-        const nota = ((correctas / activeQuestions.length) * 100).toFixed(2);
-        showIA(nota);
-        document.getElementById('btn-grade').style.display = 'none';
-        document.getElementById('btn-pdf').style.display = 'flex';
-        window.scrollTo({top: 0, behavior: 'smooth'});
-    }
-
-    function showIA(nota) {
-        const box = document.getElementById('ia-box');
-        box.innerHTML = `<h3><i data-lucide="bot"></i> Clover IA: Diagnóstico Verbal</h3><p>Resultado Final: <strong>${nota}/100</strong></p>`;
-        box.style.display = 'block';
-        lucide.createIcons();
+      clearInterval(timer);
+      let hits = 0;
+      activeQuestions.forEach((q, i) => {
+        document.getElementById(`lock-${i}`).style.display = 'block';
+        const card = document.getElementById(`q-${i}`);
+        if(q.userSelected === q.correcta) {
+          hits++;
+          card.style.borderLeft = "6px solid #10b981";
+        } else {
+          card.style.borderLeft = "6px solid #ef4444";
+        }
+      });
+      const final = (hits / 75) * 100;
+      const box = document.getElementById('ia-box');
+      box.style.display = 'block';
+      box.innerHTML = `<h3>Resultados de la Evaluación</h3><p>Estudiante: ${currentUser}</p><p>Puntaje: <strong>${final.toFixed(2)}/100</strong> (${hits} aciertos de 75)</p>`;
+      document.getElementById('btn-grade').style.display = 'none';
+      document.getElementById('btn-pdf').style.display = 'block';
+      window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
     function generatePDF() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        const nota = document.getElementById('ia-box').querySelector('strong').innerText;
-        doc.setFillColor(15, 23, 42); doc.rect(0, 0, 210, 30, 'F');
-        doc.setTextColor(255); doc.text("REPORTE R. VERBAL - CETA LOS NARANJOS", 105, 20, {align: "center"});
-        doc.setTextColor(40); doc.setFontSize(10);
-        doc.text(`Estudiante: ${studentName}`, 15, 45);
-        doc.text(`Docente: Ing. Teddy Valencia. Mgtr`, 130, 45);
-        doc.text(`Calificación Final: ${nota}`, 15, 52);
-
-        const tableBody = activeQuestions.map((q, i) => [i+1, q.tema, q.userSelected !== null ? String.fromCharCode(65 + q.userSelected) : '-', String.fromCharCode(65 + q.correcta), q.userSelected === q.correcta ? 'OK' : 'X']);
-        doc.autoTable({ startY: 60, head: [['#', 'TEMA', 'RPTA', 'CORRECTA', 'ESTADO']], body: tableBody, styles: { fontSize: 7 } });
-        doc.save(`Resultado_Verbal_${studentName}.pdf`);
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      doc.text("REPORTE CETA - RAZONAMIENTO VERBAL", 10, 10);
+      doc.text(`Estudiante: ${currentUser}`, 10, 20);
+      doc.text(`Tutor: Ing. Teddy Fidel Valencia Castro. Mgtr`, 10, 30);
+      doc.autoTable({
+        startY: 40,
+        head: [['#', 'Tema', 'Estado']],
+        body: activeQuestions.map((q, i) => [i+1, q.tema, q.userSelected === q.correcta ? 'Correcto' : 'Incorrecto'])
+      });
+      doc.save(`Resultado_Verbal_${currentUser}.pdf`);
     }
 
-    function toggleDarkMode() {
+    function handleDarkMode() {
         document.body.classList.toggle('dark');
-        const isDark = document.body.classList.contains('dark');
-        document.getElementById('dark-text').textContent = isDark ? 'Modo Claro' : 'Modo Oscuro';
-        document.getElementById('dark-icon').setAttribute('data-lucide', isDark ? 'sun' : 'moon');
         lucide.createIcons();
+        if (window.innerWidth <= 1024) toggleMenu();
     }
 
     window.onload = () => {
-        const session = JSON.parse(localStorage.getItem('ceta_session'));
-        if(session) {
-            studentName = session.nombre;
-            document.getElementById('student-name').textContent = `Estudiante: ${studentName}`;
-        }
-        loadSim('R. Verbal1', 'link-verbal1');
+      checkUser();
+      lucide.createIcons();
     };
   </script>
 </body>
